@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithm", "Algorithm\Algo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mj_1", "mj_1\mj_1.csproj", "{DD279D01-6D84-4967-921D-B4A7626BD1A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mj_2", "mj_2\mj_2.csproj", "{4926A2A4-8E83-4B8D-8FCA-4792E3F5AE71}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -23,6 +25,10 @@ Global
 		{DD279D01-6D84-4967-921D-B4A7626BD1A6}.Debug|x86.Build.0 = Debug|x86
 		{DD279D01-6D84-4967-921D-B4A7626BD1A6}.Release|x86.ActiveCfg = Release|x86
 		{DD279D01-6D84-4967-921D-B4A7626BD1A6}.Release|x86.Build.0 = Release|x86
+		{4926A2A4-8E83-4B8D-8FCA-4792E3F5AE71}.Debug|x86.ActiveCfg = Debug|x86
+		{4926A2A4-8E83-4B8D-8FCA-4792E3F5AE71}.Debug|x86.Build.0 = Debug|x86
+		{4926A2A4-8E83-4B8D-8FCA-4792E3F5AE71}.Release|x86.ActiveCfg = Release|x86
+		{4926A2A4-8E83-4B8D-8FCA-4792E3F5AE71}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
