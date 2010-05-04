@@ -10,6 +10,7 @@ namespace mj_2
     {
         public static void Main(string[] args)
         {
+            Extensions.牌s.Dump();
         }
 
         #region Helper methods
