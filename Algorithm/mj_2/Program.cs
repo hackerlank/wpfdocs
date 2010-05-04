@@ -26,9 +26,4 @@ namespace mj_2
 
         #endregion
     }
-
-    public static class Extensions
-    {
-        
-    }
 }
