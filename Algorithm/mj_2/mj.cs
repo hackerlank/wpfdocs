@@ -7,6 +7,7 @@ namespace mj_2
 {
     public partial class 成都麻将
     {
+
         public 成都麻将(int count)
         {
         }
