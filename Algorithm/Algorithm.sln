@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithm", "Algorithm\Algorithm.csproj", "{E5304E3F-34FE-48EE-9124-799E2D0403D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mj_1", "mj_1\mj_1.csproj", "{DD279D01-6D84-4967-921D-B4A7626BD1A6}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -17,6 +19,10 @@ Global
 		{E5304E3F-34FE-48EE-9124-799E2D0403D9}.Debug|x86.Build.0 = Debug|x86
 		{E5304E3F-34FE-48EE-9124-799E2D0403D9}.Release|x86.ActiveCfg = Release|x86
 		{E5304E3F-34FE-48EE-9124-799E2D0403D9}.Release|x86.Build.0 = Release|x86
+		{DD279D01-6D84-4967-921D-B4A7626BD1A6}.Debug|x86.ActiveCfg = Debug|x86
+		{DD279D01-6D84-4967-921D-B4A7626BD1A6}.Debug|x86.Build.0 = Debug|x86
+		{DD279D01-6D84-4967-921D-B4A7626BD1A6}.Release|x86.ActiveCfg = Release|x86
+		{DD279D01-6D84-4967-921D-B4A7626BD1A6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
