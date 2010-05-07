@@ -82,6 +82,39 @@ namespace mj_2
             return cps1.Where(o => o.张 > (byte)0).ToArray();
         }
 
+        public static List<KeyValuePair<int, 牌[]>> Get刻s(牌[] cps)
+        {
+            var result = new List<KeyValuePair<int, 牌[]>>();
+            for (int i = 0; i < cps.Length; i++)
+            {
+                if (cps[i].张 >= 3) result.Add(new KeyValuePair<int, 牌[]>(i, new 牌[] { new 牌 { 数据 = cps[i].数据, 张 = (byte)3 } }));
+            }
+            return result;
+        }
+        public static List<KeyValuePair<int, 牌[]>> Get顺s(牌[] cps)
+        {
+            var result = new List<KeyValuePair<int, 牌[]>>();
+            for (int i = 0; i < cps.Length - 2; i++)
+            {
+                if (cps[i].花点 == cps[i+1].花点 &&
+                    cps[i].花点 == cps[i+2].花点
+                    ) result.Add(new KeyValuePair<int, 牌[]>(i, new 牌[] {
+                        new 牌 { 数据 = cps[i].数据, 张 = (byte)1 },
+                        new 牌 { 数据 = cps[i].数据, 张 = (byte)1 },
+                        new 牌 { 数据 = cps[i].数据, 张 = (byte)1 }
+                    }));
+            }
+            return result;
+        }
+        public static List<KeyValuePair<int, 牌[]>> Get对s(牌[] cps)
+        {
+            var result = new List<KeyValuePair<int, 牌[]>>();
+            for (int i = 0; i < cps.Length; i++)
+            {
+                if (cps[i].张 >= 2) result.Add(new KeyValuePair<int, 牌[]>(i, new 牌[] { new 牌 { 数据 = cps[i].数据, 张 = (byte)2 } }));
+            }
+            return result;
+        }
 
         #region Helper methods
         private static void W(object text, params object[] args)
