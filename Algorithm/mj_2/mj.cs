@@ -54,7 +54,7 @@ namespace mj_2
                 W(" ");
             }
         }
-        public static 牌[][] 状态分组堆叠牌(this 牌[] ps)
+        public static 牌[][] 标分组堆叠排序(this 牌[] ps)
         {
             return (
                 from p in ps.OrderBy(o => o.花点)

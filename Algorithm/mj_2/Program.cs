@@ -20,17 +20,9 @@ namespace mj_2
                 0x0204u, 0x0205u,
                 0x0103u, 0x0104u, 0x0105u,
                 0x0204u, 0x0205u
-            }.状态分组堆叠牌();
+            }.标分组堆叠排序();
 
-            foreach (var pg in pgs) pg.Dump();
-
-            var ps1 = pgs[0];
-            var ps2 = ps1.复制();
-
-            ps1[0] = 0x0105u;
-            ps1[0].Dump();
-            ps2[0].Dump();
-
+            pgs[0].Dump();
         }
 
         #region Helper methods
