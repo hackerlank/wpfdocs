@@ -18,6 +18,13 @@ namespace mj_2
         [FieldOffset(0)]
         public UInt32 数据;
         [FieldOffset(0)]
-        public ushort 花点;
+        public uint 花点;
+
+        public static implicit operator uint(牌 p) {
+            return p.数据;
+        }
+        public static implicit operator 牌(uint i) {
+            return new 牌 { 数据 = i };
+        }
     }
 }
