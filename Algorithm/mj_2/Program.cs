@@ -14,7 +14,7 @@ namespace mj_2
             WL();
             WL(Extensions.牌s[8].花点.ToString("X4"));
             // 03 flag, 02 count, 01 type, 04 point 
-            new 牌 { 数据 = 0x03020104 }.Dump(true, true);
+            ((牌)0x03020104u).Dump(true, true);
         }
 
         #region Helper methods
