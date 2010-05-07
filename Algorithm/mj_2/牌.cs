@@ -16,15 +16,23 @@ namespace mj_2
         public byte 标;
 
         [FieldOffset(0)]
-        public UInt32 数据;
+        public uint 数据;
         [FieldOffset(0)]
-        public uint 花点;
+        public ushort 花点;
 
         public static implicit operator uint(牌 p) {
             return p.数据;
         }
         public static implicit operator 牌(uint i) {
             return new 牌 { 数据 = i };
+        }
+        public static implicit operator ushort(牌 p)
+        {
+            return p.花点;
+        }
+        public static implicit operator 牌(ushort i)
+        {
+            return new 牌 { 花点 = i };
         }
     }
 }
