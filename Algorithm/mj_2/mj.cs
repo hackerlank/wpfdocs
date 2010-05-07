@@ -69,7 +69,7 @@ namespace mj_2
             return ps.ToArray();
         }
 
-        public static void 减去(牌[] cps1, 牌[] cps2, int startIndex = 0)
+        public static 牌[] 减去(牌[] cps1, 牌[] cps2, int startIndex = 0)
         {
             for (int i = startIndex; i < startIndex + cps2.Length; i++)
             {
@@ -79,6 +79,7 @@ namespace mj_2
 #endif
                 cps1[i] = new 牌 { 数据 = cps1[i], 张 = (byte)(cps1[i].张 - cps2[i].张) };
             }
+            return cps1.Where(o => o.张 > (byte)0).ToArray();
         }
 
 
