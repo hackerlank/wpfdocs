@@ -57,7 +57,7 @@ namespace mj_2
 
         public static 牌 To牌(this string s)
         {
-            var o = Enum.Parse(typeof(global::mj_2.牌s), s);
+            var o = Enum.Parse(typeof(global::mj_2.牌s), s.Split('x')[0]);
             return new 牌 { 数据 = (uint)(global::mj_2.牌s)o };
         }
 
@@ -134,6 +134,9 @@ namespace mj_2
             }
             return result;
         }
+
+
+        
 
         #region Helper methods
         private static void W(object text, params object[] args)

@@ -92,4 +92,43 @@ namespace mj_2
         九万 = 0x0301u,
     }
 
+
+    public enum 牌型
+    {
+        对,
+        顺,
+        刻,
+    }
+    public class 牌型组
+    {
+        public 牌[] 牌s;
+        public 牌型 牌型;
+        /// <summary>
+        /// 对子的 hash 为 张:2 花点:ps[0].花点
+        /// 刻子的 hash 为 张:3 花点:ps[0].花点
+        /// 顺子的 hash 为 张:1 花点:ps[0].花点
+        /// (总之想办法放进一个int)
+        /// </summary>
+        public int HashCode;
+        public 牌型组(牌[] ps, 牌型 t)
+        {
+            this.牌s = ps;
+            this.牌型 = t;
+            switch (ps.Length)
+            {
+                case 1:
+                    this.HashCode = ps[0];
+                    break;
+                case 2:
+                    this.HashCode = ps[0] | (ps[1] << 10);
+                    break;
+                case 3:
+                    this.HashCode = ps[0] | (ps[1] << 10) | (ps[2] << 20);
+                    break;
+            }
+        }
+
+        // todo:
+    }
+
 }

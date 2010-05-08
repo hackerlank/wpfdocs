@@ -29,6 +29,9 @@ namespace mj_2
             hpgs[0].Dump(true);
             WL();
             hpgs[1].Dump(true);
+            WL();
+            var p = (牌)0x0204u;
+            WL(p.ToString());//.To牌().Dump();
         }
 
         #region Helper methods
