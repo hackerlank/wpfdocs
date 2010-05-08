@@ -40,7 +40,13 @@ namespace mj_2
 
             //WL(o);
 
-            Extensions.RandomGet(14).Dump();
+            var ps = Extensions.RandomGet(108);
+            for (int i = 0; i < ps.Length; i++)
+            {
+                ps[i].标 = (byte)i;
+            }
+            ps.Dump(false,true);
+
         }
 
         #region Helper methods
