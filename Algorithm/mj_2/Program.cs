@@ -16,22 +16,29 @@ namespace mj_2
             //// 03 flag, 02 count, 01 type, 04 point 
             //((牌)0x03020104u).Dump(true, true);
 
-            var pgs = new 牌[] {
-                0x0204u, 0x0205u,
-                0x0103u, 0x0104u, 0x0105u,
-                0x0204u, 0x0205u
-            }.标分组堆叠排序();
+            //var pgs = new 牌[] {
+            //    0x0204u, 0x0205u,
+            //    0x0103u, 0x0104u, 0x0105u,
+            //    0x0204u, 0x0205u
+            //}.标分组堆叠排序();
 
-            pgs[0].Dump(true);
-            WL();
-            var hpgs = pgs[0].花分组();
-            WL(hpgs.Length);
-            hpgs[0].Dump(true);
-            WL();
-            hpgs[1].Dump(true);
-            WL();
+            //pgs[0].Dump(true);
+            //WL();
+            //var hpgs = pgs[0].花分组();
+            //WL(hpgs.Length);
+            //hpgs[0].Dump(true);
+            //WL();
+            //hpgs[1].Dump(true);
+            //WL();
             var p = (牌)0x0204u;
-            WL(p.ToString());//.To牌().Dump();
+            p.Dump();
+            WL();
+            WL(p.ToString());
+            var s = p.ToString().Substring(0, 2);
+            WL(s);
+            var o = Enum.Parse(typeof(牌s), s);
+
+            WL(o);
         }
 
         #region Helper methods

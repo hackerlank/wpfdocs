@@ -57,16 +57,16 @@ namespace mj_2
 
         public static 牌 To牌(this string s)
         {
-            var o = Enum.Parse(typeof(global::mj_2.牌s), s.Split('x')[0]);
+            var o = Enum.Parse(typeof(global::mj_2.牌s), s.Substring(0, 2));
             return new 牌 { 数据 = (uint)(global::mj_2.牌s)o };
         }
 
         public static 牌[][] 花分组(this 牌[] ps)
         {
             var tmp = from p in ps
-                       group p by p.花 into pg
-                       orderby pg.Key
-                       select pg.ToArray();
+                      group p by p.花 into pg
+                      orderby pg.Key
+                      select pg.ToArray();
             return tmp.ToArray();
         }
 
@@ -136,7 +136,7 @@ namespace mj_2
         }
 
 
-        
+
 
         #region Helper methods
         private static void W(object text, params object[] args)
