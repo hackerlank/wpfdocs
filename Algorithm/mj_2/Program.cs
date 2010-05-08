@@ -30,15 +30,17 @@ namespace mj_2
             //WL();
             //hpgs[1].Dump(true);
             //WL();
-            var p = (牌)0x0204u;
-            p.Dump();
-            WL();
-            WL(p.ToString());
-            var s = p.ToString().Substring(0, 2);
-            WL(s);
-            var o = Enum.Parse(typeof(牌s), s);
+            //var p = (牌)0x0204u;
+            //p.Dump();
+            //WL();
+            //WL(p.ToString());
+            //var s = p.ToString().Substring(0, 2);
+            //WL(s);
+            //var o = Enum.Parse(typeof(牌s), s);
 
-            WL(o);
+            //WL(o);
+
+            Extensions.RandomGet(14).Dump();
         }
 
         #region Helper methods

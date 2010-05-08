@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace mj_2
 {
@@ -54,6 +55,34 @@ namespace mj_2
                 W(" ");
             }
         }
+
+        /// <summary>
+        /// 随机发 c 张牌
+        /// </summary>
+        public static 牌[] RandomGet(int c)
+        {
+            var ps = 牌s.ToArray();
+            var result = new 牌[c];
+            for (int idx = 0; idx < c; idx++)
+            {
+                var rnd_idx = Rnd(108 - idx);
+                result[idx] = ps[rnd_idx];
+                ps[rnd_idx] = ps[108 - 1 - idx];
+            }
+            //Array.Sort<牌>(result);
+            return result;
+        }
+        #region True Random ??
+        public static int Rnd(int m)
+        {
+            var rng = new RNGCryptoServiceProvider();
+            var rndBytes = new byte[4];
+            rng.GetBytes(rndBytes);
+            int rand = BitConverter.ToInt32(rndBytes, 0);
+            return Math.Abs(rand % m);
+        }
+        #endregion
+
 
         public static 牌 To牌(this string s)
         {

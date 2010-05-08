@@ -131,4 +131,23 @@ namespace mj_2
         // todo:
     }
 
+    //public class 匹配
+    //{
+    //    public int Rank;
+    //    public List<Group> 牌型组s;
+    //    public int[] LeftTPs;
+
+    //    public Result(List<Group> groups, TPC[] left)
+    //    {
+    //        this.Gs = groups;
+    //        this.LeftTPs = left.GetTPs();
+    //        if (groups != null && groups.Count > 0)
+    //        {
+    //            this.Rank = groups.Sum(o => (int)o.CheckType);
+    //        }
+    //        else this.Rank = 0;
+    //        if (left == null || left.Length == 0) this.Rank += 1000;    // const 1000
+    //    }
+    //}
+
 }
