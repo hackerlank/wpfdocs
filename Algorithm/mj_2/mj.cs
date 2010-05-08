@@ -54,35 +54,22 @@ namespace mj_2
                 W(" ");
             }
         }
+
         public static 牌 To牌(this string s)
         {
             var o = Enum.Parse(typeof(global::mj_2.牌s), s);
             return new 牌 { 数据 = (uint)(global::mj_2.牌s)o };
         }
 
-        public static 牌[][][] 标花分组堆叠排序(this 牌[] ps)
+        public static 牌[][] 花分组(this 牌[] ps)
         {
             var tmp = from p in ps
-                      group p by p.花点 into pg
-                      orderby pg.Key
-                      select new 牌 { 数据 = pg.First(), 张 = (byte)pg.Count() };
-            var tmp2 = from p in tmp
-                       group p by p.标 into pg
+                       group p by p.花 into pg
                        orderby pg.Key
                        select pg.ToArray();
-            //var result = new List<牌[]>();
-            //foreach (var g in tmp2)
-            //{
-            //    result.AddRange(from p in g
-            //                    group p by p.花 into pg
-            //                    orderby pg.Key
-            //                    select pg.ToArray()
-            //    );
-            //    // todo
-            //}
-            //return result.ToArray();
-            return null;
+            return tmp.ToArray();
         }
+
         public static 牌[][] 标分组堆叠排序(this 牌[] ps)
         {
             var tmp = from p in ps
