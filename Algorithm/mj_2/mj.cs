@@ -72,7 +72,7 @@ namespace mj_2
             }
             return result;
         }
-        #region True Random ??
+
         public static int Rnd(int m)
         {
             var rng = new RNGCryptoServiceProvider();
@@ -81,7 +81,6 @@ namespace mj_2
             int rand = BitConverter.ToInt32(rndBytes, 0);
             return Math.Abs(rand % m);
         }
-        #endregion
 
 
         public static 牌 To牌(this string s)
