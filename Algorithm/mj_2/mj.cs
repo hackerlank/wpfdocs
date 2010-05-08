@@ -61,15 +61,15 @@ namespace mj_2
         /// </summary>
         public static 牌[] RandomGet(int c)
         {
-            var ps = 牌s.ToArray();
+            var ps = 牌s.复制();
+            var max = 牌s.Length;
             var result = new 牌[c];
             for (int idx = 0; idx < c; idx++)
             {
-                var rnd_idx = Rnd(108 - idx);
+                var rnd_idx = Rnd(max - idx);
                 result[idx] = ps[rnd_idx];
-                ps[rnd_idx] = ps[108 - 1 - idx];
+                ps[rnd_idx] = ps[max - 1 - idx];
             }
-            //Array.Sort<牌>(result);
             return result;
         }
         #region True Random ??
