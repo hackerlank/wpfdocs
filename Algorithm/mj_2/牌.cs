@@ -20,10 +20,12 @@ namespace mj_2
         [FieldOffset(0)]
         public ushort 花点;
 
-        public static implicit operator uint(牌 p) {
+        public static implicit operator uint(牌 p)
+        {
             return p.数据;
         }
-        public static implicit operator 牌(uint i) {
+        public static implicit operator 牌(uint i)
+        {
             return new 牌 { 数据 = i };
         }
         public static implicit operator ushort(牌 p)
@@ -43,4 +45,51 @@ namespace mj_2
             return s;
         }
     }
+
+    public enum 牌s : uint
+    {
+        筒 = 0x0100u,
+        条 = 0x0200u,
+        万 = 0x0300u,
+        一 = 1,
+        二 = 2,
+        三 = 3,
+        四 = 4,
+        五 = 5,
+        六 = 6,
+        七 = 7,
+        八 = 8,
+        九 = 9,
+
+        一筒 = 0x0101u,
+        二筒 = 0x0101u,
+        三筒 = 0x0101u,
+        四筒 = 0x0101u,
+        五筒 = 0x0101u,
+        六筒 = 0x0101u,
+        七筒 = 0x0101u,
+        八筒 = 0x0101u,
+        九筒 = 0x0101u,
+
+        一条 = 0x0201u,
+        二条 = 0x0201u,
+        三条 = 0x0201u,
+        四条 = 0x0201u,
+        五条 = 0x0201u,
+        六条 = 0x0201u,
+        七条 = 0x0201u,
+        八条 = 0x0201u,
+        九条 = 0x0201u,
+
+        一万 = 0x0301u,
+        二万 = 0x0301u,
+        三万 = 0x0301u,
+        四万 = 0x0301u,
+        五万 = 0x0301u,
+        六万 = 0x0301u,
+        七万 = 0x0301u,
+        八万 = 0x0301u,
+        九万 = 0x0301u,
+    }
+
 }

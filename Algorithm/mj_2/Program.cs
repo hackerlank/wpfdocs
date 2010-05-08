@@ -22,7 +22,7 @@ namespace mj_2
                 0x0204u, 0x0205u
             }.标分组堆叠排序();
 
-            pgs[0].Dump();
+            pgs[0].Dump(true);
         }
 
         #region Helper methods

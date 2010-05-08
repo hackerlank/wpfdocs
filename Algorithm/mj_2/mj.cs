@@ -54,14 +54,46 @@ namespace mj_2
                 W(" ");
             }
         }
+        public static 牌 To牌(this string s)
+        {
+            var o = Enum.Parse(typeof(global::mj_2.牌s), s);
+            return new 牌 { 数据 = (uint)(global::mj_2.牌s)o };
+        }
+
+        public static 牌[][][] 标花分组堆叠排序(this 牌[] ps)
+        {
+            var tmp = from p in ps
+                      group p by p.花点 into pg
+                      orderby pg.Key
+                      select new 牌 { 数据 = pg.First(), 张 = (byte)pg.Count() };
+            var tmp2 = from p in tmp
+                       group p by p.标 into pg
+                       orderby pg.Key
+                       select pg.ToArray();
+            //var result = new List<牌[]>();
+            //foreach (var g in tmp2)
+            //{
+            //    result.AddRange(from p in g
+            //                    group p by p.花 into pg
+            //                    orderby pg.Key
+            //                    select pg.ToArray()
+            //    );
+            //    // todo
+            //}
+            //return result.ToArray();
+            return null;
+        }
         public static 牌[][] 标分组堆叠排序(this 牌[] ps)
         {
-            return (
-                from p in ps.OrderBy(o => o.花点)
-                group p by p.标 into pg
-                orderby pg.Key
-                select pg.ToArray()
-            ).ToArray();
+            var tmp = from p in ps
+                      group p by p.花点 into pg
+                      orderby pg.Key
+                      select new 牌 { 数据 = pg.First(), 张 = (byte)pg.Count() };
+            var tmp2 = from p in tmp
+                       group p by p.标 into pg
+                       orderby pg.Key
+                       select pg.ToArray();
+            return tmp2.ToArray();
         }
 
         public static 牌[] 复制(this 牌[] ps)
@@ -96,8 +128,8 @@ namespace mj_2
             var result = new List<KeyValuePair<int, 牌[]>>();
             for (int i = 0; i < cps.Length - 2; i++)
             {
-                if (cps[i].花点 == cps[i+1].花点 &&
-                    cps[i].花点 == cps[i+2].花点
+                if (cps[i].花点 == cps[i + 1].花点 &&
+                    cps[i].花点 == cps[i + 2].花点
                     ) result.Add(new KeyValuePair<int, 牌[]>(i, new 牌[] {
                         new 牌 { 数据 = cps[i].数据, 张 = (byte)1 },
                         new 牌 { 数据 = cps[i].数据, 张 = (byte)1 },
