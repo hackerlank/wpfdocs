@@ -37,7 +37,7 @@ namespace mj_2
 
         public override string ToString()
         {
-            var s = Extensions.点s[this.点] + Extensions.花s[this.花] + "x" + o.张;
+            var s = Extensions.点s[this.点] + Extensions.花s[this.花] + "x" + this.张;
             var tmp = Convert.ToString(this.标, 2);
             s += "[" + new string('0', 8 - tmp.Length) + tmp + "]";
             return s;
