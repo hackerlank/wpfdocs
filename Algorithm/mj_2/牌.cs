@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace mj_2
 {
@@ -8,15 +10,19 @@ namespace mj_2
     {
         [FieldOffset(0)]
         public byte 点;
+
         [FieldOffset(1)]
         public byte 花;
+
         [FieldOffset(2)]
         public byte 张;
+
         [FieldOffset(3)]
         public byte 标;
 
         [FieldOffset(0)]
         public uint 数据;
+
         [FieldOffset(0)]
         public ushort 花点;
 
@@ -93,61 +99,48 @@ namespace mj_2
     }
 
 
-    public enum 牌型
+    public enum 牌型 : byte
     {
-        对,
-        顺,
-        刻,
+        顺 = 1,
+        对 = 2,
+        刻 = 3
     }
     public class 牌型组
     {
-        public 牌[] 牌s;
-        public 牌型 牌型;
+        public 牌[] 牌s { private set; get; }
+        public 牌型 牌型 { private set; get; }
         /// <summary>
-        /// 对子的 hash 为 张:2 花点:ps[0].花点
-        /// 刻子的 hash 为 张:3 花点:ps[0].花点
-        /// 顺子的 hash 为 张:1 花点:ps[0].花点
-        /// (总之想办法放进一个int)
+        /// 第一张牌的数据, 张数存放 牌型
         /// </summary>
-        public int HashCode;
+        public uint 哈希 { private set; get; }
+
         public 牌型组(牌[] ps, 牌型 t)
         {
             this.牌s = ps;
             this.牌型 = t;
-            switch (ps.Length)
-            {
-                case 1:
-                    this.HashCode = ps[0];
-                    break;
-                case 2:
-                    this.HashCode = ps[0] | (ps[1] << 10);
-                    break;
-                case 3:
-                    this.HashCode = ps[0] | (ps[1] << 10) | (ps[2] << 20);
-                    break;
-            }
+            var p = ps[0];
+            p.张 = (byte)t;
+            this.哈希 = p.数据;
         }
-
-        // todo:
     }
 
-    //public class 匹配
-    //{
-    //    public int Rank;
-    //    public List<Group> 牌型组s;
-    //    public int[] LeftTPs;
+    public class 匹配组
+    {
+        //public int 评分 { private set; get; }
+        public List<牌型组> 牌型组s { private set; get; }
+        public 牌[] 剩牌s { private set; get; }
 
-    //    public Result(List<Group> groups, TPC[] left)
-    //    {
-    //        this.Gs = groups;
-    //        this.LeftTPs = left.GetTPs();
-    //        if (groups != null && groups.Count > 0)
-    //        {
-    //            this.Rank = groups.Sum(o => (int)o.CheckType);
-    //        }
-    //        else this.Rank = 0;
-    //        if (left == null || left.Length == 0) this.Rank += 1000;    // const 1000
-    //    }
-    //}
+        public 匹配组(List<牌型组> gs, 牌[] ps)
+        {
+            this.牌型组s = gs;
+            this.剩牌s = ps;
+            ////暂行评分
+            ////完全匹配先多加点评分
+            //if (gs != null && gs.Count > 0)
+            //    this.评分 = gs.Sum(o => (int)o.牌型);
+            //else this.评分 = 0;
+            //if (ps == null || ps.Length == 0) this.评分 += 1000;
+        }
+    }
 
 }

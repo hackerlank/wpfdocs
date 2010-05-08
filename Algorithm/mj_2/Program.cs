@@ -40,7 +40,7 @@ namespace mj_2
 
             //WL(o);
 
-            var ps = Extensions.RandomGet(108);
+            var ps = Extensions.随机发牌(108);
             for (int i = 0; i < ps.Length; i++)
             {
                 ps[i].标 = (byte)i;

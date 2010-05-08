@@ -57,23 +57,23 @@ namespace mj_2
         }
 
         /// <summary>
-        /// 随机发 c 张牌
+        /// 随机发 c 张牌(C不可以超过 108 张)
         /// </summary>
-        public static 牌[] RandomGet(int c)
+        public static 牌[] 随机发牌(int c)
         {
             var ps = 牌s.复制();
             var max = 牌s.Length;
             var result = new 牌[c];
             for (int idx = 0; idx < c; idx++)
             {
-                var rnd_idx = Rnd(max - idx);
+                var rnd_idx = 取随机数(max - idx);
                 result[idx] = ps[rnd_idx];
                 ps[rnd_idx] = ps[max - 1 - idx];
             }
             return result;
         }
 
-        public static int Rnd(int m)
+        public static int 取随机数(int m)
         {
             var rng = new RNGCryptoServiceProvider();
             var rndBytes = new byte[4];
