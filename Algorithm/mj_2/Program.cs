@@ -23,6 +23,12 @@ namespace mj_2
             }.标分组堆叠排序();
 
             pgs[0].Dump(true);
+            WL();
+            var hpgs = pgs[0].花分组();
+            WL(hpgs.Length);
+            hpgs[0].Dump(true);
+            WL();
+            hpgs[1].Dump(true);
         }
 
         #region Helper methods
