@@ -113,13 +113,13 @@ namespace mj_2
 
         public static 牌[] 复制(this 牌[] ps)
         {
-            return ps;//.ToArray();
+            return ps.ToArray();
         }
 
         /// <summary>
-        /// 从牌数组1 中减去指定位置的 牌数组2  并返回 牌数组1的引用
+        /// 从牌数组1 中减去指定位置的 牌数组2  并返回一个新数组
         /// </summary>
-        public static 牌[] 减去(ref 牌[] cps1, ref 牌[] cps2, int startIndex = 0)
+        public static 牌[] 减去(this 牌[] cps1, 牌[] cps2, int startIndex = 0)
         {
             for (int i = startIndex; i < startIndex + cps2.Length; i++)
             {

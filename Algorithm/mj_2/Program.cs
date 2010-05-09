@@ -9,18 +9,16 @@ namespace mj_2
     public static class Program
     {
 
-        public static 牌[] Copy(this 牌[] ii)
-        {
-            return ii;
-        }
 
         public static void Main(string[] args)
         {
-            var ii = new 牌[] { 1, 2, 3 };
-            WL(ii[0]);
-            var ii2 = Copy(ii);
-            ii2[0] = 4;
-            WL(ii[0]);
+
+
+
+
+
+
+
 
             return;
 
