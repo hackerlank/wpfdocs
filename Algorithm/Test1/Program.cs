@@ -313,4 +313,5 @@ namespace Test1
             return this.数据.CompareTo(other.数据);
         }
     }
+
 }

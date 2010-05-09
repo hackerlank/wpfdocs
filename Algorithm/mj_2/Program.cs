@@ -12,7 +12,13 @@ namespace mj_2
 
         public static void Main(string[] args)
         {
+            var mj = new 成都麻将(new 牌[] {
+                0x0204u, 0x0205u,
+                0x0103u, 0x0104u, 0x0105u,
+                0x0204u, 0x0205u
+            });
 
+            mj.判胡();
 
 
 
@@ -86,6 +92,10 @@ namespace mj_2
         }
 
         #region Helper methods
+        private static void W(object text, params object[] args)
+        {
+            Console.Write(text.ToString(), args);
+        }
         private static void WL()
         {
             Console.WriteLine();

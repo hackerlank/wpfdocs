@@ -8,10 +8,87 @@ namespace mj_2
 {
     public partial class 成都麻将
     {
+        private 牌[,]   _坎牌容器 = new 牌[5000, 7];
+        private int[]   _坎牌长度 = new int[5000];
+        private 牌[,]   _剩牌容器 = new 牌[5000, 14];
+        private int[]   _剩牌长度 = new int[5000];
+        private int     _索引     = 0;
 
-        public 成都麻将(int count)
+        private 牌[]    _原始牌组 = null;
+        private 牌[][]  _手牌组   = null;
+        private 牌[]    _手牌     = null;
+
+
+        public 成都麻将(牌[] ps)
         {
+            _原始牌组 = ps.复制();
+            var pss = _原始牌组.标分组堆叠排序();
+            _手牌 = pss[0];
+            _手牌组 = _手牌.花分组();
         }
+
+        public bool 判胡()
+        {
+            // 非以下的手牌张数胡不了
+            if (!(_手牌.Length == 14 ||
+                _手牌.Length == 11 ||
+                _手牌.Length == 8 ||
+                _手牌.Length == 5 ||
+                _手牌.Length == 2)) return false;
+
+            // 三花胡不了
+            if (_手牌组.Length == 3) return false;
+
+            // 两门牌 其中一门只有一张 胡不了
+            if (_手牌组.Length == 2 && 
+                (_手牌组[0].Length == 1 || _手牌组[1].Length == 1)) return false;
+
+            // 两门牌 其中一门只有 2 张 但不是对子 胡不了
+            if (_手牌组.Length == 2 && 
+                (_手牌组[0].Length == 2 && _手牌组[0][0].花点 != _手牌组[0][1].花点
+                || _手牌组[1].Length == 2 && _手牌组[0][0].花点 != _手牌组[0][1].花点)) return false;
+
+            // 一门, 只有两张, 不是对子 胡不了
+            if (_手牌组.Length == 1 &&
+                _手牌组[0].Length == 2 && _手牌组[0][0].花点 != _手牌组[0][1].花点) return false;
+
+
+            foreach (var ps in _手牌组)
+            {
+                ps.Dump(true);
+                WL();
+            }
+
+            return true;
+        }
+
+
+
+
+
+
+        #region Helper methods
+
+        private static void W(object text, params object[] args)
+        {
+            Console.Write(text.ToString(), args);
+        }
+        private static void WL()
+        {
+            Console.WriteLine();
+        }
+
+        private static void WL(object text, params object[] args)
+        {
+            Console.WriteLine(text.ToString(), args);
+        }
+
+        private static void RL()
+        {
+            Console.ReadLine();
+        }
+
+        #endregion
     }
 
     public static class Utils
@@ -113,7 +190,9 @@ namespace mj_2
 
         public static 牌[] 复制(this 牌[] ps)
         {
-            return ps.ToArray();
+            var ps2 = new 牌[ps.Length];
+            Array.Copy(ps, ps2, ps.Length);
+            return ps2;
         }
 
         /// <summary>
@@ -135,11 +214,11 @@ namespace mj_2
         /// <summary>
         /// 从牌数组中减去指定位置的指定牌型 并返回牌数组的引用
         /// </summary>
-        public static 牌[] 减去(ref 牌[] cps, 牌型 t, int startIndex)
+        public static 牌[] 减去(ref 牌[] cps, 坎型 t, int startIndex)
         {
             switch (t)
             {
-                case 牌型.对:
+                case 坎型.对:
                     {
                         var p = cps[startIndex];
                         if (p.张 == (byte)2) 移除(ref cps, startIndex);
@@ -150,7 +229,7 @@ namespace mj_2
                         }
                     }
                     break;
-                case 牌型.刻:
+                case 坎型.刻:
                     {
                         var p = cps[startIndex];
                         if (p.张 == (byte)3) 移除(ref cps, startIndex);
@@ -161,7 +240,7 @@ namespace mj_2
                         }
                     }
                     break;
-                case 牌型.顺:
+                case 坎型.顺:
                     {
                         var p = cps[startIndex];
                         if (p.张 == (byte)1) 移除(ref cps, startIndex);
@@ -258,7 +337,7 @@ namespace mj_2
             return tps;
         }
 
-        public static 牌 To坎牌(this 牌 p, 牌型 t)
+        public static 牌 To坎牌(this 牌 p, 坎型 t)
         {
             p.张 = (byte)t;
             return p;

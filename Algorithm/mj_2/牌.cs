@@ -108,14 +108,26 @@ namespace mj_2
     }
 
     /// <summary>
-    /// 牌型的顺序将影响 牌型组 于 匹配组 中的排序效果
+    /// 坎型的顺序将影响 牌型组 于 匹配组 中的排序效果
     /// </summary>
-    public enum 牌型 : byte
+    public enum 坎型 : byte
     {
         对 = 1,
         刻 = 2,
         顺 = 3,
     }
+
+    //public class 匹配组
+    //{
+    //    public 牌[] 匹配牌s { private set; get; }
+    //    public 牌[] 剩牌s { private set; get; }
+
+    //    public 匹配组(牌[] gs, 牌[] ps)
+    //    {
+    //        this.匹配牌s = gs;
+    //        this.剩牌s = ps;
+    //    }
+    //}
 
     //public class 牌型组
     //{
@@ -155,17 +167,6 @@ namespace mj_2
     //    }
     //}
 
-    public class 匹配组
-    {
-        public 牌[] 匹配牌s { private set; get; }
-        public 牌[] 剩牌s { private set; get; }
-
-        public 匹配组(牌[] gs, 牌[] ps)
-        {
-            this.匹配牌s = gs;
-            this.剩牌s = ps;
-        }
-    }
 
 
 }
