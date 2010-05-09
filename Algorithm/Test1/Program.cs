@@ -12,36 +12,219 @@ namespace Test1
         static void Main(string[] args)
         {
             // 测试一下用 List 和 数组 之间的 操作速度问题 (读, Remove/Resize, Sort)
-
             var sw = new Stopwatch();
-            sw.Restart();
-            for (int i = 0; i < 1000000; i++)
+
+            //{
+            //    var ps = new List<牌>(new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 });
+            //    ps.RemoveAt(0);
+            //    ps.RemoveAt(1);
+            //    ps.RemoveAt(2);
+            //    foreach (var p in ps) WL(p.数据);
+            //}
+
+            //return;
+
+
+            WL("create");
+            {
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps = new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 };
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            {
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps = new List<牌>(new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 });
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            WL("sort");
             {
                 var ps = new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 };
-                排序(ps);
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    排序(ps);
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
             }
-            sw.Stop();
-            WL(sw.ElapsedMilliseconds);
 
-            sw.Restart();
-            for (int i = 0; i < 1000000; i++)
             {
                 var ps = new List<牌>(new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 });
-                ps.Sort();
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    ps.Sort();
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
             }
-            sw.Stop();
-            WL(sw.ElapsedMilliseconds);
+
+            WL("create + sort");
+            {
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps = new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 };
+                    排序(ps);
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            {
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps = new List<牌>(new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 });
+                    ps.Sort();
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+
+            WL("read");
+            {
+                var ps = new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 };
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    for (int j = 0; j < ps.Length; j++)
+                    {
+                        var o = ps[j];
+                        o++;
+                    }
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            {
+                var ps = new List<牌>(new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 });
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    for (int j = 0; j < ps.Count; j++)
+                    {
+                        var o = ps[j];
+                        o++;
+                    }
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            WL("remove");
+            {
+                var pss = new List<牌[]>();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    pss.Add(new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 });
+                }
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps = pss[i];
+                    移除(ps, 5);
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            {
+                var pss = new List<List<牌>>();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    pss.Add(new List<牌>(new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 }));
+                }
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps = pss[i];
+                    ps.RemoveAt(5);
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            WL("new + remove");
+            {
+                sw.Restart();
+                var pss = new List<牌[]>();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    pss.Add(new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 });
+                }
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps = pss[i];
+                    移除(ps, 5);
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            {
+                sw.Restart();
+                var pss = new List<List<牌>>();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    pss.Add(new List<牌>(new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 }));
+                }
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps = pss[i];
+                    ps.RemoveAt(5);
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            WL("copy1");
+            {
+                var ps = new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 };
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps2 = new 牌[ps.Length];
+                    Array.Copy(ps, ps2, ps.Length);
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            WL("copy2");
+            {
+                var ps = new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 };
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps2 = ps.ToArray();
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
         }
 
 
         /// <summary>
         /// 从牌数组中"移除"指定位置的元素, 并 resize
         /// </summary>
-        public static 牌[] 移除(ref 牌[] cps, int index)
+        public static void 移除(牌[] cps, int index)
         {
             var len = cps.Length - 1;
-            if (index == 0 && cps.Length == 0)
-                return cps;
+            if (index == 0 && cps.Length == 0) { }
             else if (index == 0 && len == 0)
             {
                 Array.Resize<牌>(ref cps, len);
@@ -58,7 +241,6 @@ namespace Test1
                 Array.Copy(cps, index, cps, index - 1, len - index);
                 Array.Resize<牌>(ref cps, len);
             }
-            return cps;
         }
 
         public static 牌[] 排序(this 牌[] tps)

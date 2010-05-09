@@ -258,11 +258,16 @@ namespace mj_2
             return tps;
         }
 
-        public static 牌 To牌型牌(this 牌 p, 牌型 t)
+        public static 牌 To坎牌(this 牌 p, 牌型 t)
         {
             p.张 = (byte)t;
             return p;
         }
+
+        //public static 牌[] To散牌(this 牌 tp)
+        //{
+
+        //}
 
 
         #region Helper methods
