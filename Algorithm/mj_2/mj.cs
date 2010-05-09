@@ -129,16 +129,95 @@ namespace mj_2
             return cps1.Where(o => o.张 > (byte)0).ToArray();
         }
 
-        public static List<KeyValuePair<int, 牌[]>> Get刻s(牌[] cps)
+        /// <summary>
+        /// 从牌数组中减去指定位置的指定牌型
+        /// </summary>
+        public static void 减去(this 牌[] cps, 牌型 t, int startIndex)
         {
-            var result = new List<KeyValuePair<int, 牌[]>>();
-            for (int i = 0; i < cps.Length; i++)
+            switch (t)
             {
-                if (cps[i].张 >= 3) result.Add(new KeyValuePair<int, 牌[]>(i, new 牌[] { new 牌 { 数据 = cps[i].数据, 张 = (byte)3 } }));
+                case 牌型.对:
+                    {
+                        var p = cps[startIndex];
+                        if (p.张 == (byte)2) cps.移除(startIndex);
+                        else
+                        {
+                            p.张 -= (byte)2;
+                            cps[startIndex] = p;
+                        }
+                    }
+                    break;
+                case 牌型.刻:
+                    {
+                        var p = cps[startIndex];
+                        if (p.张 == (byte)3) cps.移除(startIndex);
+                        else
+                        {
+                            p.张 -= (byte)3;
+                            cps[startIndex] = p;
+                        }
+                    }
+                    break;
+                case 牌型.顺:
+                    {
+                        var p = cps[startIndex];
+                        if (p.张 == (byte)1) cps.移除(startIndex);
+                        else
+                        {
+                            p.张 -= (byte)1;
+                            cps[startIndex] = p;
+                            startIndex++;
+                        }
+                        p = cps[startIndex];
+                        if (p.张 == (byte)1) cps.移除(startIndex);
+                        else
+                        {
+                            p.张 -= (byte)1;
+                            cps[startIndex] = p;
+                            startIndex++;
+                        }
+                        p = cps[startIndex];
+                        if (p.张 == (byte)1) cps.移除(startIndex);
+                        else
+                        {
+                            p.张 -= (byte)1;
+                            cps[startIndex] = p;
+                        }
+                    }
+                    break;
             }
+        }
+
+        /// <summary>
+        /// 从牌数组中"移除"指定位置的元素, 并 resize
+        /// </summary>
+        public static void 移除(this 牌[] cps, int index)
+        {
+            var len = cps.Length - 1;
+            if (index == len)
+                Array.Resize<牌>(ref cps, len);
+            else
+            {
+                Array.Copy(cps, index, cps, index - 1, len - index);
+                Array.Resize<牌>(ref cps, len);
+            }
+        }
+
+        /// <summary>
+        /// 找到并返回 牌[] 中所有 重复牌的索引 (用于找对子,刻子,杠)
+        /// </summary>
+        public static List<int> 找所有相同花点(牌[] cps, byte c)
+        {
+            var result = new List<int>();
+            for (byte i = 0; i < cps.Length; i++)
+                if (cps[i].张 >= c) result.Add(i);
             return result;
         }
-        public static List<KeyValuePair<int, 牌[]>> Get顺s(牌[] cps)
+
+        /// <summary>
+        /// 找到并返回 牌[] 中所有 顺子牌 的起始索引
+        /// </summary>
+        public static List<KeyValuePair<int, 牌[]>> 找所有顺子(牌[] cps)
         {
             var result = new List<KeyValuePair<int, 牌[]>>();
             for (int i = 0; i < cps.Length - 2; i++)
@@ -153,17 +232,20 @@ namespace mj_2
             }
             return result;
         }
-        public static List<KeyValuePair<int, 牌[]>> Get对s(牌[] cps)
+
+        /// <summary>
+        /// 将牌(型)组按 数据 从小到大排序
+        /// </summary>
+        public static void 排序(this 牌[] tps)
         {
-            var result = new List<KeyValuePair<int, 牌[]>>();
-            for (int i = 0; i < cps.Length; i++)
-            {
-                if (cps[i].张 >= 2) result.Add(new KeyValuePair<int, 牌[]>(i, new 牌[] { new 牌 { 数据 = cps[i].数据, 张 = (byte)2 } }));
-            }
-            return result;
+            Array.Sort<牌>(tps);
         }
 
-
+        public static 牌 To牌型牌(this 牌 p, 牌型 t)
+        {
+            p.张 = (byte)t;
+            return p;
+        }
 
 
         #region Helper methods

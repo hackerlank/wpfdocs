@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace mj_2
 {
     [StructLayout(LayoutKind.Explicit, Size = 4, CharSet = CharSet.Ansi)]
-    public struct 牌
+    public struct 牌 : IComparable<牌>
     {
         [FieldOffset(0)]
         public byte 点;
@@ -50,13 +50,22 @@ namespace mj_2
             s += "[" + new string('0', 8 - tmp.Length) + tmp + "]";
             return s;
         }
+
+        public int CompareTo(牌 other)
+        {
+            return this.数据.CompareTo(other.数据);
+        }
     }
 
+    /// <summary>
+    /// 所有的牌张枚举
+    /// </summary>
     public enum 牌s : uint
     {
         筒 = 0x0100u,
         条 = 0x0200u,
         万 = 0x0300u,
+
         一 = 1u,
         二 = 2u,
         三 = 3u,
@@ -98,49 +107,65 @@ namespace mj_2
         九万 = 0x0309u,
     }
 
-
+    /// <summary>
+    /// 牌型的顺序将影响 牌型组 于 匹配组 中的排序效果
+    /// </summary>
     public enum 牌型 : byte
     {
-        顺 = 1,
-        对 = 2,
-        刻 = 3
+        对 = 1,
+        刻 = 2,
+        顺 = 3,
     }
-    public class 牌型组
-    {
-        public 牌[] 牌s { private set; get; }
-        public 牌型 牌型 { private set; get; }
-        /// <summary>
-        /// 第一张牌的数据, 张数存放 牌型
-        /// </summary>
-        public uint 哈希 { private set; get; }
 
-        public 牌型组(牌[] ps, 牌型 t)
-        {
-            this.牌s = ps;
-            this.牌型 = t;
-            var p = ps[0];
-            p.张 = (byte)t;
-            this.哈希 = p.数据;
-        }
-    }
+    //public class 牌型组
+    //{
+    //    public 牌[] 牌s { private set; get; }
+    //    public 牌型 牌型 { private set; get; }
+    //    /// <summary>
+    //    /// 哈希构成: 第一张牌的数据, 张数存放 牌型
+    //    /// </summary>
+    //    public uint 哈希 { private set; get; }
+
+    //    public 牌型组(牌[] ps, 牌型 t)
+    //    {
+    //        this.牌s = ps;
+    //        this.牌型 = t;
+    //        var p = ps[0];
+    //        p.张 = (byte)t;
+    //        this.哈希 = p.数据;
+    //    }
+    //}
+
+    //public class 匹配组
+    //{
+    //    //public int 评分 { private set; get; }
+    //    public List<牌型组> 牌型组s { private set; get; }
+    //    public 牌[] 剩牌s { private set; get; }
+
+    //    public 匹配组(List<牌型组> gs, 牌[] ps)
+    //    {
+    //        this.牌型组s = gs;
+    //        this.剩牌s = ps;
+    //        ////暂行评分
+    //        ////完全匹配先多加点评分
+    //        //if (gs != null && gs.Count > 0)
+    //        //    this.评分 = gs.Sum(o => (int)o.牌型);
+    //        //else this.评分 = 0;
+    //        //if (ps == null || ps.Length == 0) this.评分 += 1000;
+    //    }
+    //}
 
     public class 匹配组
     {
-        //public int 评分 { private set; get; }
-        public List<牌型组> 牌型组s { private set; get; }
+        public 牌[] 匹配牌s { private set; get; }
         public 牌[] 剩牌s { private set; get; }
 
-        public 匹配组(List<牌型组> gs, 牌[] ps)
+        public 匹配组(牌[] gs, 牌[] ps)
         {
-            this.牌型组s = gs;
+            this.匹配牌s = gs;
             this.剩牌s = ps;
-            ////暂行评分
-            ////完全匹配先多加点评分
-            //if (gs != null && gs.Count > 0)
-            //    this.评分 = gs.Sum(o => (int)o.牌型);
-            //else this.评分 = 0;
-            //if (ps == null || ps.Length == 0) this.评分 += 1000;
         }
     }
+
 
 }
