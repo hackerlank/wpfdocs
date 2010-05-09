@@ -14,7 +14,7 @@ namespace mj_2
         }
     }
 
-    public static class Extensions
+    public static class Utils
     {
         // 108 张
         public static 牌[] 牌s = new 牌[] {
@@ -113,10 +113,13 @@ namespace mj_2
 
         public static 牌[] 复制(this 牌[] ps)
         {
-            return ps.ToArray();
+            return ps;//.ToArray();
         }
 
-        public static 牌[] 减去(牌[] cps1, 牌[] cps2, int startIndex = 0)
+        /// <summary>
+        /// 从牌数组1 中减去指定位置的 牌数组2  并返回 牌数组1的引用
+        /// </summary>
+        public static 牌[] 减去(ref 牌[] cps1, ref 牌[] cps2, int startIndex = 0)
         {
             for (int i = startIndex; i < startIndex + cps2.Length; i++)
             {
@@ -130,16 +133,16 @@ namespace mj_2
         }
 
         /// <summary>
-        /// 从牌数组中减去指定位置的指定牌型
+        /// 从牌数组中减去指定位置的指定牌型 并返回牌数组的引用
         /// </summary>
-        public static void 减去(this 牌[] cps, 牌型 t, int startIndex)
+        public static 牌[] 减去(ref 牌[] cps, 牌型 t, int startIndex)
         {
             switch (t)
             {
                 case 牌型.对:
                     {
                         var p = cps[startIndex];
-                        if (p.张 == (byte)2) cps.移除(startIndex);
+                        if (p.张 == (byte)2) 移除(ref cps, startIndex);
                         else
                         {
                             p.张 -= (byte)2;
@@ -150,7 +153,7 @@ namespace mj_2
                 case 牌型.刻:
                     {
                         var p = cps[startIndex];
-                        if (p.张 == (byte)3) cps.移除(startIndex);
+                        if (p.张 == (byte)3) 移除(ref cps, startIndex);
                         else
                         {
                             p.张 -= (byte)3;
@@ -161,7 +164,7 @@ namespace mj_2
                 case 牌型.顺:
                     {
                         var p = cps[startIndex];
-                        if (p.张 == (byte)1) cps.移除(startIndex);
+                        if (p.张 == (byte)1) 移除(ref cps, startIndex);
                         else
                         {
                             p.张 -= (byte)1;
@@ -169,7 +172,7 @@ namespace mj_2
                             startIndex++;
                         }
                         p = cps[startIndex];
-                        if (p.张 == (byte)1) cps.移除(startIndex);
+                        if (p.张 == (byte)1) 移除(ref cps, startIndex);
                         else
                         {
                             p.张 -= (byte)1;
@@ -177,7 +180,7 @@ namespace mj_2
                             startIndex++;
                         }
                         p = cps[startIndex];
-                        if (p.张 == (byte)1) cps.移除(startIndex);
+                        if (p.张 == (byte)1) 移除(ref cps, startIndex);
                         else
                         {
                             p.张 -= (byte)1;
@@ -186,21 +189,34 @@ namespace mj_2
                     }
                     break;
             }
+            return cps;
         }
 
         /// <summary>
         /// 从牌数组中"移除"指定位置的元素, 并 resize
         /// </summary>
-        public static void 移除(this 牌[] cps, int index)
+        public static 牌[] 移除(ref 牌[] cps, int index)
         {
             var len = cps.Length - 1;
-            if (index == len)
+            if (index == 0 && cps.Length == 0)
+                return cps;
+            else if (index == 0 && len == 0)
+            {
+                Array.Resize<牌>(ref cps, len);
+            }
+            else if (index == 0)
+            {
+                Array.Copy(cps, index + 1, cps, index, len);
+                Array.Resize<牌>(ref cps, len);
+            }
+            else if (index == len)
                 Array.Resize<牌>(ref cps, len);
             else
             {
                 Array.Copy(cps, index, cps, index - 1, len - index);
                 Array.Resize<牌>(ref cps, len);
             }
+            return cps;
         }
 
         /// <summary>
@@ -236,9 +252,10 @@ namespace mj_2
         /// <summary>
         /// 将牌(型)组按 数据 从小到大排序
         /// </summary>
-        public static void 排序(this 牌[] tps)
+        public static 牌[] 排序(this 牌[] tps)
         {
             Array.Sort<牌>(tps);
+            return tps;
         }
 
         public static 牌 To牌型牌(this 牌 p, 牌型 t)

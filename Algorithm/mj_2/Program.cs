@@ -8,8 +8,46 @@ namespace mj_2
 {
     public static class Program
     {
+
+        public static 牌[] Copy(this 牌[] ii)
+        {
+            return ii;
+        }
+
         public static void Main(string[] args)
         {
+            var ii = new 牌[] { 1, 2, 3 };
+            WL(ii[0]);
+            var ii2 = Copy(ii);
+            ii2[0] = 4;
+            WL(ii[0]);
+
+            return;
+
+            var pgs = new 牌[] {
+                0x0204u, 0x0205u,
+                0x0103u, 0x0104u, 0x0105u,
+                0x0204u, 0x0205u
+            }.标分组堆叠排序();
+
+            var ps = pgs[0];
+            var ps1 = ps.复制();
+            ps1.Dump(true);
+            WL();
+            Utils.移除(ref ps, 4).Dump(true);
+            WL();
+            Utils.移除(ref ps, 3).Dump(true);
+            WL();
+            Utils.移除(ref ps, 0).Dump(true);
+            WL();
+            Utils.移除(ref ps, 0).Dump(true);
+            WL();
+            Utils.移除(ref ps, 0).Dump(true);
+            WL();
+            ps1.Dump(true);
+
+
+
             //Extensions.牌s.Dump();
             //WL();
             //WL(Extensions.牌s[8].花点.ToString("X4"));
@@ -40,12 +78,12 @@ namespace mj_2
 
             //WL(o);
 
-            var ps = Extensions.随机发牌(108);
-            for (int i = 0; i < ps.Length; i++)
-            {
-                ps[i].标 = (byte)i;
-            }
-            ps.Dump(false,true);
+            //var ps = Extensions.随机发牌(108);
+            //for (int i = 0; i < ps.Length; i++)
+            //{
+            //    ps[i].标 = (byte)i;
+            //}
+            //ps.Dump(false,true);
 
         }
 
