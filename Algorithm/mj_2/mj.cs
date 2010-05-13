@@ -133,7 +133,7 @@ namespace mj_2
             {
                 case 坎型.对:
                     {
-                        if (cps[cpsIdx].张 == (byte)2)   // remove
+                        if (cps[cpsIdx].张 == (byte)2)   // remove index unit
                         {
                             switch (cpsIdx)
                             {
