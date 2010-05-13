@@ -8,11 +8,13 @@ namespace mj_2
 {
     public partial class 成都麻将
     {
-        private 牌[,]   _坎牌容器 = new 牌[5000, 7];
-        private int[]   _坎牌长度 = new int[5000];
-        private 牌[,]   _剩牌容器 = new 牌[5000, 14];
-        private int[]   _剩牌长度 = new int[5000];
-        private int     _索引     = 0;
+        // 4096 方便计算偏移量 ( 13 )
+
+        private 牌[,]   _坎牌容器 = new 牌[4096, 7];
+        private int[]   _坎牌长度 = new int[4096];
+        private 牌[,]   _剩牌容器 = new 牌[4096, 14];
+        private int[]   _剩牌长度 = new int[4096];
+        private int     _索引     = -1;
 
         private 牌[]    _原始牌组 = null;
         private 牌[][]  _手牌组   = null;
@@ -65,26 +67,28 @@ namespace mj_2
                     return false;
             }
 
+            var 对数 = 获取对子数量(_手牌);
             // 如果牌有 7 对, 胡了
-            if (_手牌.统计对子数量() == 7) return true;
+            if (对数 == 7) return true;
+            // 没对子, 胡不了
+            if (对数 == 0) return false;
 
             if (_手牌组.Length == 1)
             {
                 // 如果只有一门牌:
                 // 扫所有对子出来
-                // 如果加起来有 7 对, 胡了
-                // 如果无对, 胡不了
                 // 如果在拿掉对子之后匹配则胡 不匹配则 不胡
 
                 var ps = _手牌组[0];
-                var 对子索引s = ps.获取所有大于等于指定张数牌的索引(2);
-                if (对子索引s.Length == 0) return false;
-
-                foreach (var idx in 对子索引s)
+                for (int i = 0; i < ps.Length; i++)
                 {
-                    _坎牌容器[_索引, 0] = new 牌 { 数据 = ps[idx].数据, 张 = (byte)坎型.对 };
+                    if (ps[i].张 == (byte)1) continue;
+                    _索引++;
+                    var p = ps[i]; p.张 = (byte)坎型.对;
+                    _坎牌容器[_索引, 0] = p;
                     _坎牌长度[_索引] = 1;
-                    _剩牌长度[_索引] = 减去(ps, 坎型.对, idx, _剩牌容器, _索引);
+                    减去(ps, 坎型.对, i);
+                    判胡(_索引);
                 }
             }
             else
@@ -102,19 +106,15 @@ namespace mj_2
 
 
             }
-
-
-            foreach (var ps in _手牌组)
-            {
-                ps.Dump(true);
-                WL();
-            }
-
             return true;
         }
 
-        public bool 判胡(牌[] 坎s, int 坎len, 牌[] 剩s)
+        public bool 判胡(int idx)
         {
+            _索引++;
+
+            // todo
+
             return false;
         }
 
@@ -123,20 +123,52 @@ namespace mj_2
 
 
         /// <summary>
-        /// 从牌数组中减去指定位置的指定牌型 将结果写入指定数组, 返回数组长度
+        /// 从牌数组中减去指定位置的指定牌型 将结果写入结果数组, 返回数组长度
         /// </summary>
-        public int 减去(牌[] cps, 坎型 t, int cpsIdx, 牌[,] sps, int spsIdx)
+        public void 减去(牌[] cps, 坎型 t, int cpsIdx)
         {
+            var cpsLen = cps.Length;
+            var preIdx = _索引 << 13;
             switch (t)
             {
                 case 坎型.对:
                     {
-                        if (cps[cpsIdx].张 == (byte)2)
+                        if (cps[cpsIdx].张 == (byte)2)   // remove
+                        {
+                            switch (cpsIdx)
+                            {
+                                case 0:
+                                    break;
+                                case 1:
+                                    _剩牌容器[_索引, 0] = cps[0];
+                                    break;
+                                case 2:
+                                    _剩牌容器[_索引, 0] = cps[0];
+                                    _剩牌容器[_索引, 1] = cps[1];
+                                    break;
+                                default:
+                                    Array.Copy(cps, 0, _剩牌容器, preIdx, cpsIdx);
+                            }
+                            var len = cpsLen - 1;
+                            switch (len)
+                            {
+                                case 0:
+                                    break;
+                                case 1:
+                                    _剩牌容器[_索引, cpsIdx] = cps[cpsIdx + 1];
+                                    break;
+                                case 2:
+                                    _剩牌容器[_索引, cpsIdx] = cps[cpsIdx + 1];
+                                    _剩牌容器[_索引, cpsIdx + 1] = cps[cpsIdx + 2];
+                                    break;
+                                default:
+                                    Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, len);
+                            }
+                            _剩牌长度[_索引] = len;
+                        }
+                        else   // 张 -= 2
                         {
 
-                        }
-                        else
-                        {
                         }
                     }
                     break;
@@ -178,8 +210,36 @@ namespace mj_2
         }
 
 
+        /// <summary>
+        /// 用于找对子,刻子,杠
+        /// </summary>
+        public int[] 获取所有大于等于指定张数牌的索引(牌[] cps, byte c)
+        {
+            var result = new int[cps.Length];
+            var length = 0;
+            for (byte i = 0; i < cps.Length; i++)
+                if (cps[i].张 >= c) result[length++] = i;
+            Array.Resize<int>(ref result, length);
+            return result;
+        }
 
+        /// <summary>
+        /// 用于找对子,刻子,杠
+        /// </summary>
+        public int[] 获取所有大于等于指定张数牌的索引(int cpsIdx, byte c)
+        {
+            var result = new int[cps.Length];
+            var length = 0;
+            for (byte i = 0; i < cps.Length; i++)
+                if (cps[cpsIdx, i].张 >= c) result[length++] = i;
+            Array.Resize<int>(ref result, length);
+            return result;
+        }
 
+        public int 获取对子数量(牌[] cps)
+        {
+            return cps.Sum(o => o.张 >> 1);
+        }
 
 
         #region Helper methods
@@ -208,10 +268,7 @@ namespace mj_2
 
     public static class Utils
     {
-        public static int 统计对子数量(this 牌[] cps)
-        {
-            return cps.Sum(o => o.张 >> 1);
-        }
+
 
 
 
