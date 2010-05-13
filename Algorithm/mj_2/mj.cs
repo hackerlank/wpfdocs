@@ -77,9 +77,15 @@ namespace mj_2
                 // 如果在拿掉对子之后匹配则胡 不匹配则 不胡
 
                 var ps = _手牌组[0];
-                var 对子索引s = ps.返回所有大于等于指定张数牌的索引(2);
+                var 对子索引s = ps.获取所有大于等于指定张数牌的索引(2);
+                if (对子索引s.Length == 0) return false;
 
-
+                foreach (var idx in 对子索引s)
+                {
+                    _坎牌容器[_索引, 0] = new 牌 { 数据 = ps[idx].数据, 张 = (byte)坎型.对 };
+                    _坎牌长度[_索引] = 1;
+                    _剩牌长度[_索引] = 减去(ps, 坎型.对, idx, _剩牌容器, _索引);
+                }
             }
             else
             {
@@ -107,6 +113,75 @@ namespace mj_2
             return true;
         }
 
+        public bool 判胡(牌[] 坎s, int 坎len, 牌[] 剩s)
+        {
+            return false;
+        }
+
+
+
+
+
+        /// <summary>
+        /// 从牌数组中减去指定位置的指定牌型 将结果写入指定数组, 返回数组长度
+        /// </summary>
+        public int 减去(牌[] cps, 坎型 t, int cpsIdx, 牌[,] sps, int spsIdx)
+        {
+            switch (t)
+            {
+                case 坎型.对:
+                    {
+                        if (cps[cpsIdx].张 == (byte)2)
+                        {
+
+                        }
+                        else
+                        {
+                        }
+                    }
+                    break;
+                case 坎型.刻:
+                    {
+                        if (cps[cpsIdx].张 == (byte)3)
+                        {
+                        }
+                        else
+                        {
+                        }
+                    }
+                    break;
+                case 坎型.顺:
+                    {
+                        if (cps[cpsIdx].张 == (byte)1)
+                        {
+                            if (cps[cpsIdx + 1].张 == (byte)1)
+                            {
+                                if (cps[cpsIdx + 2].张 == (byte)1)
+                                {
+
+                                }
+                                else
+                                {
+                                }
+                            }
+                            else
+                            {
+                            }
+                        }
+                        else
+                        {
+                        }
+                    }
+                    break;
+            }
+            return 0;
+        }
+
+
+
+
+
+
         #region Helper methods
 
         private static void W(object text, params object[] args)
@@ -133,6 +208,17 @@ namespace mj_2
 
     public static class Utils
     {
+        public static int 统计对子数量(this 牌[] cps)
+        {
+            return cps.Sum(o => o.张 >> 1);
+        }
+
+
+
+
+
+
+
         // 108 张
         public static 牌[] 牌s = new 牌[] {
             // 1 ~ 9 筒 x 4 张
@@ -254,7 +340,7 @@ namespace mj_2
         /// <summary>
         /// 从牌数组中减去指定位置的指定牌型 并返回牌数组的引用
         /// </summary>
-        public static 牌[] 减去(ref 牌[] cps, 坎型 t, int startIndex)
+        public static 牌[] 减去(this 牌[] cps, 坎型 t, int startIndex)
         {
             switch (t)
             {
@@ -341,17 +427,14 @@ namespace mj_2
         /// <summary>
         /// 用于找对子,刻子,杠
         /// </summary>
-        public static List<int> 返回所有大于等于指定张数牌的索引(this 牌[] cps, byte c)
+        public static int[] 获取所有大于等于指定张数牌的索引(this 牌[] cps, byte c)
         {
-            var result = new List<int>();
+            var result = new int[cps.Length];
+            var length = 0;
             for (byte i = 0; i < cps.Length; i++)
-                if (cps[i].张 >= c) result.Add(i);
+                if (cps[i].张 >= c) result[length++] = i;
+            Array.Resize<int>(ref result, length);
             return result;
-        }
-
-        public static int 统计对子数量(this 牌[] cps)
-        {
-            return cps.Sum(o => o.张 >> 1);
         }
 
         /// <summary>

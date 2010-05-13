@@ -24,6 +24,28 @@ namespace Test1
 
             //return;
 
+            WL("resize");
+            {
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps = new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 };
+                    Array.Resize<牌>(ref ps, ps.Length - 1);
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
+
+            {
+                sw.Restart();
+                for (int i = 0; i < 1000000; i++)
+                {
+                    var ps = new 牌[] { 5, 6, 4, 7, 3, 8, 2, 9, 1 };
+                    Array.Resize<牌>(ref ps, ps.Length + 1);
+                }
+                sw.Stop();
+                WL(sw.ElapsedMilliseconds);
+            }
 
             WL("create");
             {
@@ -36,6 +58,7 @@ namespace Test1
                 WL(sw.ElapsedMilliseconds);
             }
 
+
             {
                 sw.Restart();
                 for (int i = 0; i < 1000000; i++)
@@ -45,6 +68,7 @@ namespace Test1
                 sw.Stop();
                 WL(sw.ElapsedMilliseconds);
             }
+            return;
 
             WL("sort");
             {
