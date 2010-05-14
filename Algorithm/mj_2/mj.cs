@@ -127,24 +127,32 @@ namespace mj_2
 
         public void test减去()
         {
-            var ps = new 牌[] { 0x040105u, 0x030106u, 0x020107u, 0x010208u, 0x040309u };
-            ps.Dump(true);
-            WL();
+            var ps = new 牌[] { 0x040104u, 0x030105u, 0x020106u, 0x010107u, 0x020108u, 0x020109u };
 
             _索引 = 0;
             减去刻(ps, 1);
 
-            //_索引 = 1;
-            //减去(ps, 坎型.刻, 0);
-
             _索引 = 1;
-            减去顺(ps, 0);
+            减去对(ps, 2);
+
+            _索引 = 2;
+            减去顺(ps, 1);
 
 
-            _剩牌容器.Dump(true, false, 0 << 13, (0 << 13) + _剩牌长度[0]);
+            ps.Dump(true);
             WL();
 
-            _剩牌容器.Dump(true, false, 1 << 13, (1 << 13) + _剩牌长度[1]);
+            var i = 0;
+            WL("3, 1");
+            _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
+            WL();
+
+            WL("2, 2");
+            _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
+            WL();
+
+            WL("1");
+            _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
             WL();
         }
 
@@ -174,20 +182,20 @@ namespace mj_2
                         break;
                 }
                 var len = cpsLen - 1;
-                switch (len)
+                var left = len - cpsIdx;
+                switch (left)
                 {
                     case 0:
-                    case 1:
                         break;
-                    case 2:
+                    case 1:
                         _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
                         break;
-                    case 3:
+                    case 2:
                         _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
                         _剩牌容器[preIdx + cpsIdx + 1] = cps[cpsIdx + 2];
                         break;
                     default:    // more
-                        Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, len - cpsIdx);
+                        Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, left);
                         break;
                 }
                 _剩牌长度[_索引] = len;
@@ -227,20 +235,20 @@ namespace mj_2
                         break;
                 }
                 var len = cpsLen - 1;
+                var left = len - cpsIdx;
                 switch (len)
                 {
                     case 0:
-                    case 1:
                         break;
-                    case 2:
+                    case 1:
                         _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
                         break;
-                    case 3:
+                    case 2:
                         _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
                         _剩牌容器[preIdx + cpsIdx + 1] = cps[cpsIdx + 2];
                         break;
                     default:    // more
-                        Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, len - cpsIdx);
+                        Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, left);
                         break;
                 }
                 _剩牌长度[_索引] = len;
@@ -265,177 +273,71 @@ namespace mj_2
             var preIdx = _索引 << 13;  // * 8
             var cpsIdx1 = cpsIdx + 1;
             var cpsIdx2 = cpsIdx + 2;
-            // 复制时可能需要跳过的单元 7 种组合:  1, 2, 3, 12, 23, 13, 123
-            if (cps[cpsIdx].张 == (byte)1)
+
+            // 先复制位于索引前面的牌
+            switch (cpsIdx)
             {
-                if (cps[cpsIdx1].张 == (byte)1)
-                {
-                    if (cps[cpsIdx2].张 == (byte)1)
-                    {
-                        // 跳过 123
-
-                    }
-                    else
-                    {
-                        // 跳过 12
-                    }
-                }
-                else
-                {
-                    if (cps[cpsIdx2].张 == (byte)1)
-                    {
-                        // 跳过 13
-                    }
-                    else
-                    {
-                        // 跳过 1
-
-                        switch (cpsIdx)
-                        {
-                            case 0:
-                                break;
-                            case 1:
-                                _剩牌容器[preIdx] = cps[0];
-                                break;
-                            case 2:
-                                _剩牌容器[preIdx] = cps[0];
-                                _剩牌容器[preIdx + 1] = cps[1];
-                                break;
-                            default:    // more
-                                Array.Copy(cps, 0, _剩牌容器, preIdx, cpsIdx);
-                                break;
-                        }
-                        var len = cpsLen - 1;
-                        switch (len)
-                        {
-                            case 0:
-                            case 1:
-                                break;
-                            case 2:
-                                _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
-                                break;
-                            case 3:
-                                _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
-                                _剩牌容器[preIdx + cpsIdx + 1] = cps[cpsIdx + 2];
-                                break;
-                            default:    // more
-                                Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, len - cpsIdx);
-                                break;
-                        }
-                        _剩牌长度[_索引] = len;
-                    }
-                }
+                case 0:
+                    break;
+                case 1:
+                    _剩牌容器[preIdx] = cps[0];
+                    break;
+                case 2:
+                    _剩牌容器[preIdx] = cps[0];
+                    _剩牌容器[preIdx + 1] = cps[1];
+                    break;
+                default:    // more
+                    Array.Copy(cps, 0, _剩牌容器, preIdx, cpsIdx);
+                    break;
             }
+            var skip = 0;
+
+            if (cps[cpsIdx + 0].张 == (byte)1)
+                skip++;
             else
             {
-                if (cps[cpsIdx1].张 == (byte)1)
-                {
-                    if (cps[cpsIdx2].张 == (byte)1)
-                    {
-                        // 跳过 23
-                    }
-                    else
-                    {
-                        // 跳过 2
-
-                        switch (cpsIdx1)
-                        {
-                            case 0:
-                                break;
-                            case 1:
-                                _剩牌容器[preIdx] = cps[0];
-                                break;
-                            case 2:
-                                _剩牌容器[preIdx] = cps[0];
-                                _剩牌容器[preIdx + 1] = cps[1];
-                                break;
-                            default:    // more
-                                Array.Copy(cps, 0, _剩牌容器, preIdx, cpsIdx1);
-                                break;
-                        }
-                        var len = cpsLen - 1;
-                        switch (len)
-                        {
-                            case 0:
-                            case 1:
-                                break;
-                            case 2:
-                                _剩牌容器[preIdx + cpsIdx1] = cps[cpsIdx1 + 1];
-                                break;
-                            case 3:
-                                _剩牌容器[preIdx + cpsIdx1] = cps[cpsIdx1 + 1];
-                                _剩牌容器[preIdx + cpsIdx1 + 1] = cps[cpsIdx1 + 2];
-                                break;
-                            default:    // more
-                                Array.Copy(cps, cpsIdx1 + 1, _剩牌容器, preIdx + cpsIdx1, len - cpsIdx1);
-                                break;
-                        }
-                        _剩牌长度[_索引] = len;
-                    }
-                }
-                else
-                {
-                    if (cps[cpsIdx2].张 == (byte)1)
-                    {
-                        // 跳过 3
-
-                        switch (cpsIdx2)
-                        {
-                            case 0:
-                                break;
-                            case 1:
-                                _剩牌容器[preIdx] = cps[0];
-                                break;
-                            case 2:
-                                _剩牌容器[preIdx] = cps[0];
-                                _剩牌容器[preIdx + 1] = cps[1];
-                                break;
-                            default:    // more
-                                Array.Copy(cps, 0, _剩牌容器, preIdx, cpsIdx2);
-                                break;
-                        }
-                        var len = cpsLen - 1;
-                        switch (len)
-                        {
-                            case 0:
-                            case 1:
-                                break;
-                            case 2:
-                                _剩牌容器[preIdx + cpsIdx2] = cps[cpsIdx2 + 1];
-                                break;
-                            case 3:
-                                _剩牌容器[preIdx + cpsIdx2] = cps[cpsIdx2 + 1];
-                                _剩牌容器[preIdx + cpsIdx2 + 1] = cps[cpsIdx2 + 2];
-                                break;
-                            default:    // more
-                                Array.Copy(cps, cpsIdx2 + 1, _剩牌容器, preIdx + cpsIdx2, len - cpsIdx2);
-                                break;
-                        }
-                        _剩牌长度[_索引] = len;
-                    }
-                    else
-                    {
-                        // 不跳过
-
-                        var idx = preIdx + cpsIdx;
-                        Array.Copy(cps, 0, _剩牌容器, preIdx, cpsLen);
-
-                        var p = _剩牌容器[idx];
-                        p.张 -= (byte)1;
-                        _剩牌容器[idx++] = p;
-
-                        p = _剩牌容器[idx];
-                        p.张 -= (byte)1;
-                        _剩牌容器[idx++] = p;
-
-                        p = _剩牌容器[idx];
-                        p.张 -= (byte)1;
-                        _剩牌容器[idx] = p;
-
-                        _剩牌长度[_索引] = cpsLen;
-                    }
-                }
+                var p = cps[cpsIdx + 0];
+                p.张 -= (byte)1;
+                _剩牌容器[preIdx + cpsIdx + 0 - skip] = p;
             }
+
+            if (cps[cpsIdx + 1].张 == (byte)1)
+                skip++;
+            else
+            {
+                var p = cps[cpsIdx + 1];
+                p.张 -= (byte)1;
+                _剩牌容器[preIdx + cpsIdx + 1 - skip] = p;
+            }
+
+            if (cps[cpsIdx + 2].张 == (byte)1)
+                skip++;
+            else
+            {
+                var p = cps[cpsIdx + 2];
+                p.张 -= (byte)1;
+                _剩牌容器[preIdx + cpsIdx + 2 - skip] = p;
+            }
+
+            // todo
+            var len = cpsLen - skip;
+            var left = len - cpsIdx - 3 + skip;
+            switch (len)
+            {
+                case 0:
+                    break;
+                case 1:
+                    _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
+                    break;
+                case 2:
+                    _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
+                    _剩牌容器[preIdx + cpsIdx + 1] = cps[cpsIdx + 2];
+                    break;
+                default:    // more
+                    Array.Copy(cps, cpsIdx + 3, _剩牌容器, preIdx + cpsIdx + 3 - skip, left);
+                    break;
+            }
+            _剩牌长度[_索引] = len;
         }
 
 
@@ -485,7 +387,19 @@ namespace mj_2
 
     public static class Utils
     {
-
+        /// <summary>
+        /// 往控制台输出 牌IList 的指定范围数据
+        /// </summary>
+        public static void Dump(this IList<牌> os, bool isContain张 = false, bool isContain标 = false, int startIndex = 0, int count = 0)
+        {
+            if (count == 0) count = os.Count;
+            var endIndex = startIndex + count;
+            for (int i = startIndex; i < endIndex; i++)
+            {
+                Dump(os[i], isContain张, isContain标);
+                W(" ");
+            }
+        }
 
 
 
@@ -532,15 +446,7 @@ namespace mj_2
                 W(" ");
             }
         }
-        public static void Dump(this IList<牌> os, bool isContain张 = false, bool isContain标 = false, int startIndex = 0, int endIndex = -1)
-        {
-            if (endIndex == -1) endIndex = os.Count;
-            for (int i = startIndex; i <= endIndex; i++)
-            {
-                Dump(os[i], isContain张, isContain标);
-                W(" ");
-            }
-        }
+
 
         /// <summary>
         /// 随机发 c 张牌(C不可以超过 108 张)
