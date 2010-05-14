@@ -279,6 +279,8 @@ namespace mj_2
 
         #endregion
 
+        // todo: 实现方法：对比 _坎牌容器 中 2 个起始地址，指定长度　的内容是否相等
+
         #region 减去张
 
         /// <summary>
