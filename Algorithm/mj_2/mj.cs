@@ -111,7 +111,7 @@ namespace mj_2
                 //     如果 1 在拿掉对子之后无法匹配, 则继续判断:
                 //          2 在拿掉对子之后匹配, 1 则不用拿对子, 如果匹配则 胡了 不匹配则 不胡
                 //     如果 1 在拿掉对子之后匹配, 2 则不用拿对子, 如果匹配则 胡了 不匹配则 不胡
-
+                // todo
 
             }
             return true;
@@ -130,6 +130,7 @@ namespace mj_2
                     _索引++;
                     var preIdx2 = _索引 << 13;
                     // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2], 追加(append, change length) 刻子 匹配
+                    // todo
                     减去张(idx, i, (byte)3, _索引);
                     if (判胡(_索引)) return true;
                 }
@@ -140,6 +141,7 @@ namespace mj_2
                 {
                     _索引++;
                     // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2], 追加(append, change length) 顺子 匹配
+                    // todo
                     减去顺(idx, i, _索引);
                     if (判胡(_索引)) return true;
                 }
