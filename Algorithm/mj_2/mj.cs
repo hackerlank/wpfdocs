@@ -8,6 +8,38 @@ namespace mj_2
 {
     public partial class 成都麻将
     {
+        #region test减去
+        public void test减去()
+        {
+            var ps = new 牌[] { 0x040104u, 0x030105u, 0x020106u, 0x010107u, 0x020108u, 0x020109u };
+
+            减去张(ps, 1, 3, 0);
+            减去张(ps, 2, 2, 1);
+            减去张(0, 1, 2, 2);
+            减去张(2, 0, 3, 3);
+            减去顺(3, 1, 4);
+            减去顺(ps, 1, 5);
+            减去顺(ps, 2, 6);
+            减去顺(ps, 3, 7);
+
+            ps.Dump(true);
+            WL();
+
+            for (int i = 0; i <= 7; i++)
+            {
+                WL();
+                _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i]);
+            }
+
+            WL();
+        }
+        #endregion
+
+
+
+
+        #region Fields
+
         // 4096(<<13), 8(<<3), 16(<<4) 方便用位移来替代乘法
 
         private 牌[] _坎牌容器 = new 牌[8 * 4096];
@@ -20,6 +52,9 @@ namespace mj_2
         private 牌[][] _手牌组 = null;
         private 牌[] _手牌 = null;
 
+        #endregion
+
+        #region Constructors
 
         public 成都麻将(牌[] ps)
         {
@@ -36,8 +71,16 @@ namespace mj_2
             }
         }
 
+        #endregion
+
+        #region 判胡
+
+        #region 判胡
+
         public bool 判胡()
         {
+            #region 简单的不胡判断
+
             // 非以下的手牌张数胡不了
             if (!(_手牌.Length == 14 ||
                 _手牌.Length == 11 ||
@@ -75,10 +118,20 @@ namespace mj_2
             }
 
             var 对数 = 获取对子数量(_手牌);
-            // 如果牌有 7 对, 胡了
-            if (对数 == 7) return true;
+
             // 没对子, 胡不了
             if (对数 == 0) return false;
+
+            #endregion
+
+            #region ７对子判断
+
+            // 如果牌有 7 对, 胡了
+            if (对数 == 7) return true;
+
+            // todo: 5 对子， 3 对子
+
+            #endregion
 
             if (_手牌组.Length == 1)
             {
@@ -118,6 +171,10 @@ namespace mj_2
             return true;
         }
 
+        #endregion
+
+        #region 判胡（递归体）
+
         public bool 判胡(int idx)
         {
             var preIdx1 = idx << 13;
@@ -150,30 +207,11 @@ namespace mj_2
             return false;
         }
 
-        public void test减去()
-        {
-            var ps = new 牌[] { 0x040104u, 0x030105u, 0x020106u, 0x010107u, 0x020108u, 0x020109u };
+        #endregion
 
-            减去张(ps, 1, 3, 0);
-            减去张(ps, 2, 2, 1);
-            减去张(0, 1, 2, 2);
-            减去张(2, 0, 3, 3);
-            减去顺(3, 1, 4);
-            减去顺(ps, 1, 5);
-            减去顺(ps, 2, 6);
-            减去顺(ps, 3, 7);
+        #endregion
 
-            ps.Dump(true);
-            WL();
-
-            for (int i = 0; i <= 7; i++)
-            {
-                WL();
-                _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i]);
-            }
-
-            WL();
-        }
+        #region 减去张
 
         /// <summary>
         /// 从 _剩牌容器[idx1] 中减去指定位置的牌的指定张数 将结果写入 _剩牌容器[idx2]
@@ -293,6 +331,10 @@ namespace mj_2
                 _剩牌长度[idx2] = len1;
             }
         }
+
+        #endregion
+
+        #region 减去顺
 
         /// <summary>
         /// 从 _剩牌容器[idx1] 中减去 指定位置的 顺子牌 将结果写入 _剩牌容器[idx2]
@@ -421,26 +463,14 @@ namespace mj_2
             _剩牌长度[idx2] = len;
         }
 
+        #endregion
 
-        ///// <summary>
-        ///// 用于找对子,刻子,杠
-        ///// </summary>
-        //public int[] 获取所有大于等于指定张数牌的索引(牌[] cps, byte c)
-        //{
-        //    var result = new int[cps.Length];
-        //    var length = 0;
-        //    for (byte i = 0; i < cps.Length; i++)
-        //        if (cps[i].张 >= c) result[length++] = i;
-        //    Array.Resize<int>(ref result, length);
-        //    return result;
-        //}
-
-
+        #region 获取对子数量
         public int 获取对子数量(牌[] cps)
         {
             return cps.Sum(o => o.张 >> 1);
         }
-
+        #endregion
 
         #region Helper methods
 
@@ -466,6 +496,8 @@ namespace mj_2
         #endregion
     }
 
+    #region Utils
+
     public static class Utils
     {
         /// <summary>
@@ -484,6 +516,18 @@ namespace mj_2
 
 
 
+        ///// <summary>
+        ///// 用于找对子,刻子,杠
+        ///// </summary>
+        //public int[] 获取所有大于等于指定张数牌的索引(牌[] cps, byte c)
+        //{
+        //    var result = new int[cps.Length];
+        //    var length = 0;
+        //    for (byte i = 0; i < cps.Length; i++)
+        //        if (cps[i].张 >= c) result[length++] = i;
+        //    Array.Resize<int>(ref result, length);
+        //    return result;
+        //}
 
 
 
@@ -769,4 +813,6 @@ namespace mj_2
 
         #endregion
     }
+
+    #endregion
 }
