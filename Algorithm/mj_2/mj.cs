@@ -186,7 +186,7 @@ namespace mj_2
             {
                 // 扫所有对子
                 // 如果在拿掉对子之后匹配则胡 不匹配则 不胡
-                return 初步匹配(0);
+                return 匹配手牌对(0);
             }
             else
             {
@@ -201,15 +201,15 @@ namespace mj_2
                 //     如果 1 在拿掉对子之后匹配, 2 则不用拿对子, 如果匹配则 胡了 不匹配则 不胡
                 // todo
 
-                //var has对1 = 判断是否有对子(0);
-                //var has对2 = 判断是否有对子(1);
+                var has对1 = 判断是否有对子(0);
+                var has对2 = 判断是否有对子(1);
 
-                //if (has对1 && !has对2)
-                //{
-                //    if (!初步匹配(0)) return false;
-                //    // todo: 匹配 (1)
-                //    // 将牌型复制到 剩牌[0]
-                //}
+                if (has对1 && !has对2)
+                {
+                    if (!匹配手牌对(0)) return false;
+                    // if (匹配(1, 0)) return true;
+                    return false;
+                }
 
 
                 //bool has对1 = false, has对2 = false;
@@ -233,7 +233,7 @@ namespace mj_2
         /// <summary>
         /// 提取对子并判断剩下的牌是否能完全成坎
         /// </summary>
-        protected bool 初步匹配(int gidx)
+        protected bool 匹配手牌对(int gidx)
         {
             var ps = _手牌组[gidx];
             var len = ps.Length;
@@ -246,37 +246,37 @@ namespace mj_2
                 _坎牌长度[_索引] = 1;
                 减去张(ps, i, 2, _索引);
                 if (_剩牌长度[_索引] == 0) return true;
-                if (匹配(_索引)) return true;
+                if (匹配剩牌坎(_索引)) return true;
             }
             return false;
         }
 
-        /// <summary>
-        /// 从 _剩牌容器[0] 提取对子并判断剩下的牌是否能完全成坎
-        /// </summary>
-        protected bool 初步匹配()
-        {
-            //var ps = _手牌组[gidx];
-            //var len = ps.Length;
-            //for (int i = 0; i < len; i++)
-            //{
-            //    if (ps[i].张 == (byte)1) continue;
-            //    _索引++;
-            //    var p = ps[i]; p.张 = (byte)坎型.对;
-            //    _坎牌容器[_索引 << 4] = p;
-            //    _坎牌长度[_索引] = 1;
-            //    减去张(ps, i, 2, _索引);
-            //    if (_剩牌长度[_索引] == 0) return true;
-            //    if (匹配(_索引)) return true;
-            //}
-            return false;
-        }
+        ///// <summary>
+        ///// 从 _剩牌容器[?] 提取对子并判断剩下的牌是否能完全成坎
+        ///// </summary>
+        //protected bool 初步匹配(int idx)
+        //{
+        //    var preIdx = idx << 4;
+        //    var len = _剩牌长度[idx];
+        //    for (int i = 0; i < len; i++)
+        //    {
+        //        if (_剩牌容器[preIdx + i].张 == (byte)1) continue;
+        //        _索引++;
+        //        var p = _剩牌容器[preIdx + i]; p.张 = (byte)坎型.对;
+        //        _坎牌容器[_索引 << 4] = p;
+        //        _坎牌长度[_索引] = 1;
+        //        减去张(idx, i, 2, _索引);
+        //        if (_剩牌长度[_索引] == 0) return true;
+        //        if (匹配(_索引)) return true;
+        //    }
+        //    return false;
+        //}
 
         #endregion
 
         #region 匹配（递归体）
 
-        protected bool 匹配(int idx)
+        protected bool 匹配剩牌坎(int idx)
         {
             var preIdx1 = idx << 4;
             var len = _剩牌长度[idx];
@@ -303,7 +303,7 @@ namespace mj_2
                     // 得到剩牌继续 判胡
                     减去张(idx, i, (byte)3, _索引);
                     if (_剩牌长度[_索引] == 0) return true;
-                    if (匹配(_索引)) return true;
+                    if (匹配剩牌坎(_索引)) return true;
                 }
 
                 if (i < len2
@@ -327,7 +327,60 @@ namespace mj_2
                     // 得到剩牌继续 判胡
                     减去顺(idx, i, _索引);
                     if (_剩牌长度[_索引] == 0) return true;
-                    if (匹配(_索引)) return true;
+                    if (匹配剩牌坎(_索引)) return true;
+                }
+            }
+            return false;
+        }
+
+
+        protected bool 匹配手牌坎(int gidx)
+        {
+            var ps = _手牌组[gidx];
+            var preIdx1 = 0;
+            var len = ps.Length;
+            var len2 = len - 2;
+            for (int i = 0; i < len; i++)
+            {
+                var p1 = ps[preIdx1 + i];
+                if (p1.张 >= (byte)3)
+                {
+                    _索引++;
+                    var preIdx2 = _索引 << 4;
+                    // 追加 刻子 匹配
+                    var p = p1;
+                    p.张 = (byte)坎型.刻;
+                    _坎牌容器[preIdx2] = p;
+                    _坎牌长度[_索引] = 1;
+
+                    // 扫描 坎牌容器 看看在追加后　是否有重复，　是则 return false
+                    // todo
+
+                    // 得到剩牌继续 判胡
+                    减去张(ps, i, (byte)3, _索引);
+                    if (_剩牌长度[_索引] == 0) return true;
+                    if (匹配手牌坎(_索引)) return true;
+                }
+
+                if (i < len2
+                    && p1.点 + (byte)1 == ps[preIdx1 + i + 1].点
+                    && p1.点 + (byte)2 == ps[preIdx1 + i + 2].点)
+                {
+                    _索引++;
+                    var preIdx2 = _索引 << 4;
+                    // 追加 顺子 匹配
+                    var p = p1;
+                    p.张 = (byte)坎型.顺;
+                    _坎牌容器[preIdx2] = p;
+                    _坎牌长度[_索引] = 1;
+
+                    // 扫描 坎牌容器 看看在追加后　是否有重复，　是则 return false
+                    // todo
+
+                    // 得到剩牌继续 判胡
+                    减去顺(ps, i, _索引);
+                    if (_剩牌长度[_索引] == 0) return true;
+                    if (匹配手牌坎(_索引)) return true;
                 }
             }
             return false;
