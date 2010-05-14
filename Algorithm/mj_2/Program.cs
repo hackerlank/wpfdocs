@@ -13,25 +13,32 @@ namespace mj_2
 
         public static void Main(string[] args)
         {
-
-            var mj = new 成都麻将(new 牌[] {
+            var ps = new 牌[] {
                 0x0101u, 0x0102u, 0x0103u, 0x0104u,
                 0x0101u, 0x0102u, 0x0103u, 0x0104u,
                 0x0101u, 0x0102u, 0x0103u,
-            });
+            };
+
+            var mj = new 成都麻将(ps);
 
             //mj.test减去();
+            ps.Dump();
 
+            WL();
 
             var sw = new Stopwatch();
             sw.Restart();
             for (int i = 0; i < 1000000; i++)
             {
-                mj.判胡();
                 mj.Init();
+                mj.判胡();
             }
             sw.Stop();
             WL(sw.ElapsedMilliseconds);
+
+            // 输出判胡的结果
+            var gs = mj.GetLast坎牌();
+            gs.Dump(true);
 
 
 
@@ -39,27 +46,27 @@ namespace mj_2
 
             return;
 
-            var pgs = new 牌[] {
-                0x0204u, 0x0205u,
-                0x0103u, 0x0104u, 0x0105u,
-                0x0204u, 0x0205u
-            }.标分组堆叠排序();
+            //var pgs = new 牌[] {
+            //    0x0204u, 0x0205u,
+            //    0x0103u, 0x0104u, 0x0105u,
+            //    0x0204u, 0x0205u
+            //}.标分组堆叠排序();
 
-            var ps = pgs[0];
-            var ps1 = ps.复制();
-            ps1.Dump(true);
-            WL();
-            Utils.移除(ref ps, 4).Dump(true);
-            WL();
-            Utils.移除(ref ps, 3).Dump(true);
-            WL();
-            Utils.移除(ref ps, 0).Dump(true);
-            WL();
-            Utils.移除(ref ps, 0).Dump(true);
-            WL();
-            Utils.移除(ref ps, 0).Dump(true);
-            WL();
-            ps1.Dump(true);
+            //var ps = pgs[0];
+            //var ps1 = ps.复制();
+            //ps1.Dump(true);
+            //WL();
+            //Utils.移除(ref ps, 4).Dump(true);
+            //WL();
+            //Utils.移除(ref ps, 3).Dump(true);
+            //WL();
+            //Utils.移除(ref ps, 0).Dump(true);
+            //WL();
+            //Utils.移除(ref ps, 0).Dump(true);
+            //WL();
+            //Utils.移除(ref ps, 0).Dump(true);
+            //WL();
+            //ps1.Dump(true);
 
 
 

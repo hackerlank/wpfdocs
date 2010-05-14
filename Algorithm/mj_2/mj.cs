@@ -61,6 +61,14 @@ namespace mj_2
         #endregion
 
 
+        public 牌[] GetLast坎牌()
+        {
+            if (_索引 == -1) return null;
+            var len = _坎牌长度[_索引];
+            var result = new 牌[len];
+            Array.Copy(_坎牌容器, _索引 << 4, result, 0, len);
+            return result;
+        }
 
 
         #region Fields

@@ -112,9 +112,9 @@ namespace mj_2
     /// </summary>
     public enum 坎型 : byte
     {
-        对 = 1,
-        刻 = 2,
-        顺 = 3,
+        顺 = 1,
+        对 = 2,
+        刻 = 3,
     }
 
     //public class 匹配组
