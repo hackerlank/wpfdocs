@@ -290,36 +290,20 @@ namespace mj_2
                     Array.Copy(cps, 0, _剩牌容器, preIdx, cpsIdx);
                     break;
             }
+            // 一张张的依次搞
             var skip = 0;
-
-            if (cps[cpsIdx + 0].张 == (byte)1)
-                skip++;
-            else
+            for (int i = 0; i <= 2; i++)
             {
-                var p = cps[cpsIdx + 0];
-                p.张 -= (byte)1;
-                _剩牌容器[preIdx + cpsIdx + 0 - skip] = p;
+                if (cps[cpsIdx + i].张 == (byte)1)
+                    skip++;
+                else
+                {
+                    var p = cps[cpsIdx + i];
+                    p.张 -= (byte)1;
+                    _剩牌容器[preIdx + cpsIdx + i - skip] = p;
+                }
             }
-
-            if (cps[cpsIdx + 1].张 == (byte)1)
-                skip++;
-            else
-            {
-                var p = cps[cpsIdx + 1];
-                p.张 -= (byte)1;
-                _剩牌容器[preIdx + cpsIdx + 1 - skip] = p;
-            }
-
-            if (cps[cpsIdx + 2].张 == (byte)1)
-                skip++;
-            else
-            {
-                var p = cps[cpsIdx + 2];
-                p.张 -= (byte)1;
-                _剩牌容器[preIdx + cpsIdx + 2 - skip] = p;
-            }
-
-            // todo
+            // 复制剩下的牌
             var len = cpsLen - skip;
             var left = len - cpsIdx - 3 + skip;
             switch (len)
