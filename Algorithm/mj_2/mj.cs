@@ -238,6 +238,10 @@ namespace mj_2
                     p.张 = (byte)坎型.刻;
                     _坎牌容器[preIdx2 + kLen] = p;
                     _坎牌长度[_索引] = kLen + 1;
+
+                    // 扫描 坎牌容器 看看在追加后　是否有重复，　是则 return false
+                    // todo
+
                     // 得到剩牌继续 判胡
                     减去张(idx, i, (byte)3, _索引);
                     if (_剩牌长度[_索引] == 0) return true;
@@ -258,6 +262,10 @@ namespace mj_2
                     p.张 = (byte)坎型.顺;
                     _坎牌容器[preIdx2 + kLen] = p;
                     _坎牌长度[_索引] = kLen + 1;
+
+                    // 扫描 坎牌容器 看看在追加后　是否有重复，　是则 return false
+                    // todo
+
                     // 得到剩牌继续 判胡
                     减去顺(idx, i, _索引);
                     if (_剩牌长度[_索引] == 0) return true;
