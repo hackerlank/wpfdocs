@@ -162,7 +162,7 @@ namespace mj_2
         {
             var preIdx1 = idx1 << 13;  // * 4096
 #if DEBUG
-            if (pIdx >= _剩牌长度[idx1]) throw new Exception("索引越界");
+            if (pIdx >= _剩牌长度[idx1]) throw new Exception("指定的索引越界");
             if (_剩牌容器[preIdx1 + pIdx].张 < count) throw new Exception("指定位置的牌的张数不足");
 #endif
             var preIdx2 = idx2 << 13;  // * 4096
@@ -220,7 +220,7 @@ namespace mj_2
         public void 减去张(牌[] cps, int cpsIdx, byte count, int idx2)
         {
 #if DEBUG
-            if (cpsIdx >= cps.Length) throw new Exception("索引越界");
+            if (cpsIdx >= cps.Length) throw new Exception("指定的索引越界");
             if (cps[cpsIdx].张 < count) throw new Exception("指定位置的牌的张数不足");
 #endif
             var cpsLen = cps.Length;
@@ -278,6 +278,14 @@ namespace mj_2
         /// </summary>
         public void 减去顺(int idx1, int pIdx, int idx2)
         {
+            var preIdx1 = idx1 << 13;  // * 4096
+#if DEBUG
+            if (pIdx >= _剩牌长度[idx1]) throw new Exception("指定的索引越界");
+            if (pIdx >= _剩牌长度[idx1 - 2]) throw new Exception("指定的 索引牌 + 剩下的牌 不足以做 顺子牌 操作");
+#endif
+            var preIdx2 = idx2 << 13;  // * 4096
+            var len1 = _剩牌长度[idx1];
+
             var cpsLen = cps.Length;
             var preIdx = _索引 << 13;  // * 4096
             var cpsIdx1 = cpsIdx + 1;
