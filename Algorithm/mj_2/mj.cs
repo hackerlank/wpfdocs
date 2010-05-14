@@ -216,7 +216,7 @@ namespace mj_2
                     // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2]
                     var kLen = _坎牌长度[idx];
                     Array.Copy(_坎牌容器, preIdx1, _坎牌容器, preIdx2, kLen);
-                    // 追加(append, change length) 刻子 匹配
+                    // 追加 刻子 匹配
                     var p = p1;
                     p.张 = (byte)坎型.刻;
                     _坎牌容器[preIdx2 + kLen] = p;
@@ -236,7 +236,7 @@ namespace mj_2
                     // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2]
                     var kLen = _坎牌长度[idx];
                     Array.Copy(_坎牌容器, preIdx1, _坎牌容器, preIdx2, kLen);
-                    // 追加(append, change length) 顺子 匹配
+                    // 追加 顺子 匹配
                     var p = p1;
                     p.张 = (byte)坎型.顺;
                     _坎牌容器[preIdx2 + kLen] = p;
