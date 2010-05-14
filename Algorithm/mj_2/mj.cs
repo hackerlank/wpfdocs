@@ -173,6 +173,7 @@ namespace mj_2
                     _坎牌容器[_索引 << 13] = p;
                     _坎牌长度[_索引] = 1;
                     减去张(ps, i, 2, _索引);
+                    if (_剩牌长度[_索引] == 0) return true;
                     if (判胡(_索引)) return true;
                 }
                 return false;
@@ -212,9 +213,17 @@ namespace mj_2
                 {
                     _索引++;
                     var preIdx2 = _索引 << 13;
-                    // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2], 追加(append, change length) 刻子 匹配
-                    // todo
+                    // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2]
+                    var kLen = _坎牌长度[idx];
+                    Array.Copy(_坎牌容器, preIdx1, _坎牌容器, preIdx2, kLen);
+                    // 追加(append, change length) 刻子 匹配
+                    var p = p1;
+                    p.张 = (byte)坎型.刻;
+                    _坎牌容器[preIdx2 + kLen] = p;
+                    _坎牌长度[_索引] = kLen + 1;
+                    // 得到剩牌继续 判胡
                     减去张(idx, i, (byte)3, _索引);
+                    if (_剩牌长度[_索引] == 0) return true;
                     if (判胡(_索引)) return true;
                 }
 
@@ -223,9 +232,18 @@ namespace mj_2
                     && p1.点 + (byte)1 == _剩牌容器[preIdx1 + i + 2].点)
                 {
                     _索引++;
-                    // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2], 追加(append, change length) 顺子 匹配
-                    // todo
+                    var preIdx2 = _索引 << 13;
+                    // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2]
+                    var kLen = _坎牌长度[idx];
+                    Array.Copy(_坎牌容器, preIdx1, _坎牌容器, preIdx2, kLen);
+                    // 追加(append, change length) 顺子 匹配
+                    var p = p1;
+                    p.张 = (byte)坎型.顺;
+                    _坎牌容器[preIdx2 + kLen] = p;
+                    _坎牌长度[_索引] = kLen + 1;
+                    // 得到剩牌继续 判胡
                     减去顺(idx, i, _索引);
+                    if (_剩牌长度[_索引] == 0) return true;
                     if (判胡(_索引)) return true;
                 }
             }
