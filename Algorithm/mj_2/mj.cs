@@ -127,33 +127,25 @@ namespace mj_2
 
         public void test减去()
         {
-            var ps = new 牌[] { 0x040101u, 0x030102u, 0x020103u, 0x010203u, 0x040303u };
+            var ps = new 牌[] { 0x040105u, 0x030106u, 0x020107u, 0x010208u, 0x040309u };
+            ps.Dump(true);
+            WL();
 
             _索引 = 0;
-            减去(ps, 坎型.对, 1);
+            减去刻(ps, 1);
 
             //_索引 = 1;
             //减去(ps, 坎型.刻, 0);
 
             _索引 = 1;
-            减去(ps, 坎型.顺, 0);
+            减去顺(ps, 0);
 
-            var preIdx = 0 << 13;
-            var count = _剩牌长度[0];
-            for (int i = 0; i < count; i++)
-            {
-                _剩牌容器[preIdx + i].Dump(true);
-                WL();
-            }
+
+            _剩牌容器.Dump(true, false, 0 << 13, (0 << 13) + _剩牌长度[0]);
             WL();
 
-            preIdx = 1 << 13;
-            count = _剩牌长度[1];
-            for (int i = 0; i < count; i++)
-            {
-                _剩牌容器[preIdx + i].Dump(true);
-                WL();
-            }
+            _剩牌容器.Dump(true, false, 1 << 13, (1 << 13) + _剩牌长度[1]);
+            WL();
         }
 
 
@@ -281,6 +273,7 @@ namespace mj_2
                     if (cps[cpsIdx2].张 == (byte)1)
                     {
                         // 跳过 123
+
                     }
                     else
                     {
@@ -536,6 +529,15 @@ namespace mj_2
             foreach (var o in os)
             {
                 Dump(o, isContain张, isContain标);
+                W(" ");
+            }
+        }
+        public static void Dump(this IList<牌> os, bool isContain张 = false, bool isContain标 = false, int startIndex = 0, int endIndex = -1)
+        {
+            if (endIndex == -1) endIndex = os.Count;
+            for (int i = startIndex; i <= endIndex; i++)
+            {
+                Dump(os[i], isContain张, isContain标);
                 W(" ");
             }
         }
