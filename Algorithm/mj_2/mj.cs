@@ -207,12 +207,12 @@ namespace mj_2
                 if (has对1 && !has对2)
                 {
                     if (!匹配手牌对(0)) return false;
-                    return 匹配手牌坎(0);
+                    return 匹配手牌坎(1);
                 }
                 else if (has对2 && !has对1)
                 {
                     if (!匹配手牌对(1)) return false;
-                    return 匹配手牌坎(1);
+                    return 匹配手牌坎(0);
                 }
                 else
                 {
