@@ -130,7 +130,7 @@ namespace mj_2
                     _索引++;
                     var preIdx2 = _索引 << 13;
                     // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2], 追加(append, change length) 刻子 匹配
-                    // 减去张(idx, i, (byte)3, _索引);
+                    减去张(idx, i, (byte)3, _索引);
                     if (判胡(_索引)) return true;
                 }
 
@@ -140,7 +140,7 @@ namespace mj_2
                 {
                     _索引++;
                     // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2], 追加(append, change length) 顺子 匹配
-                    // 减去顺(idx, i, _索引);
+                    减去顺(idx, i, _索引);
                     if (判胡(_索引)) return true;
                 }
             }
