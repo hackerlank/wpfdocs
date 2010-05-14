@@ -8,17 +8,17 @@ namespace mj_2
 {
     public partial class 成都麻将
     {
-        // 4096 方便计算偏移量 ( 13 )
+        // 4096(<<13), 8(<<3), 16(<<4) 方便用位移来替代乘法
 
-        private 牌[,]   _坎牌容器 = new 牌[4096, 7];
-        private int[]   _坎牌长度 = new int[4096];
-        private 牌[,]   _剩牌容器 = new 牌[4096, 14];
-        private int[]   _剩牌长度 = new int[4096];
-        private int     _索引     = -1;
+        private 牌[] _坎牌容器 = new 牌[8 * 4096];
+        private int[] _坎牌长度 = new int[4096];
+        private 牌[] _剩牌容器 = new 牌[16 * 4096];
+        private int[] _剩牌长度 = new int[4096];
+        private int _索引 = -1;
 
-        private 牌[]    _原始牌组 = null;
-        private 牌[][]  _手牌组   = null;
-        private 牌[]    _手牌     = null;
+        private 牌[] _原始牌组 = null;
+        private 牌[][] _手牌组 = null;
+        private 牌[] _手牌 = null;
 
 
         public 成都麻将(牌[] ps)
@@ -27,6 +27,13 @@ namespace mj_2
             var pss = _原始牌组.标分组堆叠排序();
             _手牌 = pss[0];
             _手牌组 = _手牌.花分组();
+
+
+            var ii = new int[10][];
+            for (int i = 0; i < 10; i++)
+            {
+                ii[i] = new int[] { };
+            }
         }
 
         public bool 判胡()
@@ -85,7 +92,7 @@ namespace mj_2
                     if (ps[i].张 == (byte)1) continue;
                     _索引++;
                     var p = ps[i]; p.张 = (byte)坎型.对;
-                    _坎牌容器[_索引, 0] = p;
+                    _坎牌容器[_索引 << 13] = p;
                     _坎牌长度[_索引] = 1;
                     减去(ps, 坎型.对, i);
                     判胡(_索引);
@@ -128,25 +135,25 @@ namespace mj_2
         public void 减去(牌[] cps, 坎型 t, int cpsIdx)
         {
             var cpsLen = cps.Length;
-            var preIdx = _索引 << 13;
+            var preIdx = _索引 << 13;  // * 8
             switch (t)
             {
                 case 坎型.对:
                     {
-                        if (cps[cpsIdx].张 == (byte)2)   // remove index unit
+                        if (cps[cpsIdx].张 == (byte)2)   // copy except index
                         {
                             switch (cpsIdx)
                             {
                                 case 0:
                                     break;
                                 case 1:
-                                    _剩牌容器[_索引, 0] = cps[0];
+                                    _剩牌容器[preIdx] = cps[0];
                                     break;
                                 case 2:
-                                    _剩牌容器[_索引, 0] = cps[0];
-                                    _剩牌容器[_索引, 1] = cps[1];
+                                    _剩牌容器[preIdx] = cps[0];
+                                    _剩牌容器[preIdx + 1] = cps[1];
                                     break;
-                                default:
+                                default:    // more
                                     Array.Copy(cps, 0, _剩牌容器, preIdx, cpsIdx);
                             }
                             var len = cpsLen - 1;
@@ -155,20 +162,23 @@ namespace mj_2
                                 case 0:
                                     break;
                                 case 1:
-                                    _剩牌容器[_索引, cpsIdx] = cps[cpsIdx + 1];
+                                    _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
                                     break;
                                 case 2:
-                                    _剩牌容器[_索引, cpsIdx] = cps[cpsIdx + 1];
-                                    _剩牌容器[_索引, cpsIdx + 1] = cps[cpsIdx + 2];
+                                    _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
+                                    _剩牌容器[preIdx + cpsIdx + 1] = cps[cpsIdx + 2];
                                     break;
-                                default:
+                                default:    // more
                                     Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, len);
                             }
                             _剩牌长度[_索引] = len;
                         }
-                        else   // 张 -= 2
+                        else   // copy & 张 -= 2
                         {
-
+                            Array.Copy(cps, 0, _剩牌容器, preIdx, cpsLen);
+                            var p = _剩牌容器[preIdx + cpsIdx];
+                            p.张 -= (byte)2;
+                            _剩牌容器[preIdx + cpsIdx] = p;
                         }
                     }
                     break;
