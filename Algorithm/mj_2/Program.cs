@@ -14,12 +14,14 @@ namespace mj_2
         {
 
             var mj = new 成都麻将(new 牌[] {
-                0x0204u, 0x0205u,
-                0x0103u, 0x0104u, 0x0105u,
-                0x0204u, 0x0205u
+                0x0101u, 0x0102u, 0x0103u,
+                                  0x0103u,
+                                  0x0103u
             });
 
-            mj.test减去();
+            //mj.test减去();
+
+            WL(mj.判胡());
 
 
             return;

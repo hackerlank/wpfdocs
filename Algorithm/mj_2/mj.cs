@@ -73,7 +73,7 @@ namespace mj_2
         private int[] _剩牌长度 = new int[4096];
         private int _索引 = -1;
 
-        private 牌[] _原始牌组 = null;
+        private 牌[] _原始手牌 = null;
         private 牌[][] _手牌组 = null;
         private 牌[] _手牌 = null;
 
@@ -83,8 +83,8 @@ namespace mj_2
 
         public 成都麻将(牌[] ps)
         {
-            _原始牌组 = ps.复制();
-            var pss = _原始牌组.标分组堆叠排序();
+            _原始手牌 = ps.复制();
+            var pss = _原始手牌.标分组堆叠排序();
             _手牌 = pss[0];
             _手牌组 = _手牌.花分组();
 
@@ -107,11 +107,11 @@ namespace mj_2
             #region 简单的不胡判断
 
             // 非以下的手牌张数胡不了
-            if (!(_手牌.Length == 14 ||
-                _手牌.Length == 11 ||
-                _手牌.Length == 8 ||
-                _手牌.Length == 5 ||
-                _手牌.Length == 2)) return false;
+            if (!(_原始手牌.Length == 14 ||
+                _原始手牌.Length == 11 ||
+                _原始手牌.Length == 8 ||
+                _原始手牌.Length == 5 ||
+                _原始手牌.Length == 2)) return false;
 
             // 三门牌: 三花 胡不了
             if (_手牌组.Length == 3) return false;
@@ -165,7 +165,8 @@ namespace mj_2
                 // 如果在拿掉对子之后匹配则胡 不匹配则 不胡
 
                 var ps = _手牌组[0];
-                for (int i = 0; i < ps.Length; i++)
+                var len = ps.Length;
+                for (int i = 0; i < len; i++)
                 {
                     if (ps[i].张 == (byte)1) continue;
                     _索引++;
@@ -229,7 +230,7 @@ namespace mj_2
 
                 if (i < len2
                     && p1.点 + (byte)1 == _剩牌容器[preIdx1 + i + 1].点
-                    && p1.点 + (byte)1 == _剩牌容器[preIdx1 + i + 2].点)
+                    && p1.点 + (byte)2 == _剩牌容器[preIdx1 + i + 2].点)
                 {
                     _索引++;
                     var preIdx2 = _索引 << 13;
