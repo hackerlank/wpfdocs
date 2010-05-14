@@ -207,19 +207,24 @@ namespace mj_2
                 if (has对1 && !has对2)
                 {
                     if (!匹配手牌对(0)) return false;
-                    // if (匹配(1, 0)) return true;
-                    return false;
+                    return 匹配手牌坎(0);
                 }
-
-
-                //bool has对1 = false, has对2 = false;
-                //var is匹配1 = 初步匹配(0, ref has对1);
-                //var is匹配2 = 初步匹配(1, ref has对2);
-                //if (has对1 && is匹配1 && !has对2) return false;
-                //if (has对2 && is匹配2 && !has对1) return false;
-
+                else if (has对2 && !has对1)
+                {
+                    if (!匹配手牌对(1)) return false;
+                    return 匹配手牌坎(1);
+                }
+                else
+                {
+                    if (匹配手牌对(0))
+                        return 匹配手牌坎(1);
+                    else
+                    {
+                        if (匹配手牌对(1)) return 匹配手牌坎(0);
+                        return false;
+                    }
+                }
             }
-            return true;
         }
 
         protected bool 判断是否有对子(int gidx)
