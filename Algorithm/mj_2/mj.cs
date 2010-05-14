@@ -256,27 +256,6 @@ namespace mj_2
             return false;
         }
 
-        ///// <summary>
-        ///// 从 _剩牌容器[?] 提取对子并判断剩下的牌是否能完全成坎
-        ///// </summary>
-        //protected bool 初步匹配(int idx)
-        //{
-        //    var preIdx = idx << 4;
-        //    var len = _剩牌长度[idx];
-        //    for (int i = 0; i < len; i++)
-        //    {
-        //        if (_剩牌容器[preIdx + i].张 == (byte)1) continue;
-        //        _索引++;
-        //        var p = _剩牌容器[preIdx + i]; p.张 = (byte)坎型.对;
-        //        _坎牌容器[_索引 << 4] = p;
-        //        _坎牌长度[_索引] = 1;
-        //        减去张(idx, i, 2, _索引);
-        //        if (_剩牌长度[_索引] == 0) return true;
-        //        if (匹配(_索引)) return true;
-        //    }
-        //    return false;
-        //}
-
         #endregion
 
         #region 匹配（递归体）
@@ -385,7 +364,7 @@ namespace mj_2
                     // 得到剩牌继续 判胡
                     减去顺(ps, i, _索引);
                     if (_剩牌长度[_索引] == 0) return true;
-                    if (匹配手牌坎(_索引)) return true;
+                    if (匹配剩牌坎(_索引)) return true;
                 }
             }
             return false;

@@ -14,9 +14,9 @@ namespace mj_2
         public static void Main(string[] args)
         {
             var ps = new 牌[] {
-                0x0101u, 0x0102u, 0x0103u, 0x0104u,
-                0x0101u, 0x0102u, 0x0103u, 0x0104u,
-                0x0101u, 0x0102u, 0x0103u,
+                0x010101u, 0x010102u, 0x010103u, 0x010104u,
+                0x010101u, 0x010102u, 0x010103u, 0x010104u,
+                0x010201u, 0x010202u, 0x010203u,
             };
 
             var mj = new 成都麻将(ps);
@@ -25,6 +25,7 @@ namespace mj_2
             ps.Dump();
 
             WL();
+            WL(mj.判胡());
 
             var sw = new Stopwatch();
             sw.Restart();
