@@ -83,6 +83,22 @@ namespace mj_2
 
         public 成都麻将(牌[] ps)
         {
+            Init(ps);
+        }
+
+        #endregion
+
+        #region Init
+
+        public void Init()
+        {
+            _索引 = -1;
+        }
+
+        public void Init(牌[] ps)
+        {
+            _索引 = -1;
+
             _原始手牌 = ps.复制();
             var pss = _原始手牌.标分组堆叠排序();
             _手牌 = pss[0];

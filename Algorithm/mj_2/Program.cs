@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace mj_2
 {
@@ -21,14 +22,16 @@ namespace mj_2
 
             //mj.test减去();
 
-            WL(mj.判胡());
 
-
-            return;
-
-            mj.判胡();
-
-
+            var sw = new Stopwatch();
+            sw.Restart();
+            for (int i = 0; i < 1000000; i++)
+            {
+                mj.判胡();
+                mj.Init();
+            }
+            sw.Stop();
+            WL(sw.ElapsedMilliseconds);
 
 
 
