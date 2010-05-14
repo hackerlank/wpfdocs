@@ -133,24 +133,21 @@ namespace mj_2
             减去张(ps, 2, 2, 1);
             减去张(0, 1, 2, 2);
             减去张(2, 0, 3, 3);
-            //减去顺(3, 1, 4);
-
-
+            减去顺(3, 1, 4);
+            减去顺(ps, 1, 5);
+            减去顺(ps, 2, 6);
+            减去顺(ps, 3, 7);
 
             ps.Dump(true);
             WL();
 
-            var i = 0;
-            _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
+            for (int i = 0; i <= 7; i++)
+            {
+                WL();
+                _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i]);
+            }
+
             WL();
-            _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
-            WL();
-            _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
-            WL();
-            _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
-            WL();
-            //_剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
-            //WL();
         }
 
         /// <summary>
