@@ -38,7 +38,7 @@ namespace mj_2
 
             // 输出判胡的结果
             var gs = mj.GetLast坎牌();
-            gs.Dump(true);
+            gs.Dump坎();
 
 
 
