@@ -343,7 +343,7 @@ namespace mj_2
                     // 得到剩牌继续 判胡
                     减去张(ps, i, (byte)3, _索引);
                     if (_剩牌长度[_索引] == 0) return true;
-                    if (匹配手牌坎(_索引)) return true;
+                    if (匹配剩牌坎(_索引)) return true;
                 }
 
                 if (i < len2
@@ -611,7 +611,7 @@ namespace mj_2
             // 复制剩下的牌
             var len = len1 - skip;
             var left = len - pIdx - 3 + skip;
-            switch (len)
+            switch (left)
             {
                 case 0:
                     break;
@@ -682,6 +682,7 @@ namespace mj_2
 
         public static void Dump坎(this IList<牌> os, int startIndex = 0, int count = 0)
         {
+            if (os == null) return;
             if (count == 0) count = os.Count;
             var endIndex = startIndex + count;
             for (int i = startIndex; i < endIndex; i++)

@@ -17,6 +17,7 @@ namespace mj_2
                 0x010101u, 0x010102u, 0x010103u, 0x010104u,
                 0x010101u, 0x010102u, 0x010103u, 0x010104u,
                 0x010201u, 0x010202u, 0x010203u,
+                0x010201u, 0x010202u, 0x010203u,
             };
 
             var mj = new 成都麻将(ps);
@@ -31,17 +32,11 @@ namespace mj_2
             sw.Restart();
             for (int i = 0; i < 1000000; i++)
             {
-                mj.Init();
+                mj.Init(Utils.随机发牌(14));
                 mj.判胡();
             }
             sw.Stop();
             WL(sw.ElapsedMilliseconds);
-
-            // 输出判胡的结果
-            var gs = mj.GetLast坎牌();
-            gs.Dump坎();
-
-
 
 
 
