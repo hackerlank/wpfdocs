@@ -12,11 +12,17 @@ namespace mj_2
 
         public static void Main(string[] args)
         {
+
             var mj = new 成都麻将(new 牌[] {
                 0x0204u, 0x0205u,
                 0x0103u, 0x0104u, 0x0105u,
                 0x0204u, 0x0205u
             });
+
+            mj.test减去();
+
+
+            return;
 
             mj.判胡();
 
