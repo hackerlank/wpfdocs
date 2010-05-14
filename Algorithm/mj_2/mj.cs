@@ -119,30 +119,29 @@ namespace mj_2
 
         public bool 判胡(int idx)
         {
-            var preIdx = idx << 13;
+            var preIdx1 = idx << 13;
             var len = _剩牌长度[idx];
             var len2 = len - 2;
             for (int i = 0; i < len; i++)
             {
-                var p = _剩牌容器[preIdx + i];
-                if (p.张 >= (byte)3)
+                var p1 = _剩牌容器[preIdx1 + i];
+                if (p1.张 >= (byte)3)
                 {
-                    //_索引++;
-                    //_坎牌容器[_索引 << 13] = p;
-                    //_坎牌长度[_索引] = 1;
-                    //减去顺(ps, i, 2, _索引);
-                    //if (判胡(_索引)) return true;
+                    _索引++;
+                    var preIdx2 = _索引 << 13;
+                    // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2], 追加(append, change length) 刻子 匹配
+                    // 减去张(idx, i, (byte)3, _索引);
+                    if (判胡(_索引)) return true;
                 }
 
                 if (i < len2
-                    && p.点 + (byte)1 == _剩牌容器[preIdx + i + 1].点
-                    && p.点 + (byte)1 == _剩牌容器[preIdx + i + 2].点)
+                    && p1.点 + (byte)1 == _剩牌容器[preIdx1 + i + 1].点
+                    && p1.点 + (byte)1 == _剩牌容器[preIdx1 + i + 2].点)
                 {
-                    //_索引++;
-                    //_坎牌容器[_索引 << 13] = p;
-                    //_坎牌长度[_索引] = 1;
-                    //减去顺(ps, i, 2, _索引);
-                    //if (判胡(_索引)) return true;
+                    _索引++;
+                    // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2], 追加(append, change length) 顺子 匹配
+                    // 减去顺(idx, i, _索引);
+                    if (判胡(_索引)) return true;
                 }
             }
             return false;
