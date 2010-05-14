@@ -127,16 +127,29 @@ namespace mj_2
 
         public void test减去()
         {
-            _索引++;
+            var ps = new 牌[] { 0x030101u, 0x020102u, 0x010103u, 0x010203u, 0x010303u };
 
-            var ps = new 牌[] { 0x030101u, 0x020102u, 0x010103u };
+            _索引 = 0;
             减去(ps, 坎型.对, 1);
 
-            var preIdx = _索引 << 13;
-            var count = _剩牌长度[preIdx];
+            _索引 = 1;
+            减去(ps, 坎型.刻, 0);
+
+
+            var preIdx = 0 << 13;
+            var count = _剩牌长度[0];
             for (int i = 0; i < count; i++)
             {
-                _剩牌容器[preIdx + i].Dump();
+                _剩牌容器[preIdx + i].Dump(true);
+                WL();
+            }
+            WL();
+
+            preIdx = 1 << 13;
+            count = _剩牌长度[1];
+            for (int i = 0; i < count; i++)
+            {
+                _剩牌容器[preIdx + i].Dump(true);
                 WL();
             }
         }
@@ -183,7 +196,7 @@ namespace mj_2
                                     _剩牌容器[preIdx + cpsIdx + 1] = cps[cpsIdx + 2];
                                     break;
                                 default:    // more
-                                    Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, len);
+                                    Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, len - cpsIdx);
                                     break;
                             }
                             _剩牌长度[_索引] = len;
@@ -232,7 +245,7 @@ namespace mj_2
                                     _剩牌容器[preIdx + cpsIdx + 1] = cps[cpsIdx + 2];
                                     break;
                                 default:    // more
-                                    Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, len);
+                                    Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, len - cpsIdx);
                                     break;
                             }
                             _剩牌长度[_索引] = len;
