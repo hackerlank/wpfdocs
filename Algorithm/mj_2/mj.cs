@@ -218,7 +218,7 @@ namespace mj_2
 
         #region 判胡（递归体）
 
-        public bool 判胡(int idx)
+        protected bool 判胡(int idx)
         {
             var preIdx1 = idx << 4;
             var len = _剩牌长度[idx];
