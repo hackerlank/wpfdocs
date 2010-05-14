@@ -138,6 +138,8 @@ namespace mj_2
             _索引 = 2;
             减去顺(ps, 1);
 
+            减去对(1, 2, 3);
+
 
             ps.Dump(true);
             WL();
@@ -154,16 +156,76 @@ namespace mj_2
             WL("1");
             _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
             WL();
+
+            WL("2 2");
+            _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
+            WL();
+        }
+
+        /// <summary>
+        /// 从 _剩牌容器[idx1] 中减去指定位置的对子 将结果写入 _剩牌容器[idx2]
+        /// </summary>
+        public void 减去对(int pIdx, int idx1, int idx2)
+        {
+            var preIdx1 = idx1 << 13;  // * 4096
+            var preIdx2 = idx2 << 13;  // * 4096
+            var len1 = _剩牌长度[idx1];
+            if (_剩牌容器[preIdx1 + pIdx].张 == (byte)2)   // copy except index
+            {
+                switch (pIdx)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        _剩牌容器[preIdx2] = _剩牌容器[preIdx1];
+                        break;
+                    case 2:
+                        _剩牌容器[preIdx2] = _剩牌容器[preIdx1];
+                        _剩牌容器[preIdx2 + 1] = _剩牌容器[preIdx1 + 1];
+                        break;
+                    default:    // more
+                        Array.Copy(_剩牌容器, preIdx1, _剩牌容器, preIdx2, pIdx);
+                        break;
+                }
+                var len2 = len1 - 1;
+                var left = len2 - pIdx;
+                switch (left)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        _剩牌容器[preIdx2 + pIdx] = _剩牌容器[preIdx1 + pIdx + 1];
+                        break;
+                    case 2:
+                        _剩牌容器[preIdx2 + pIdx] = _剩牌容器[preIdx1 + pIdx + 1];
+                        _剩牌容器[preIdx2 + pIdx + 1] = _剩牌容器[preIdx1 + pIdx + 2];
+                        break;
+                    default:    // more
+                        Array.Copy(_剩牌容器, preIdx1 + pIdx + 1, _剩牌容器, preIdx2 + pIdx, left);
+                        break;
+                }
+                _剩牌长度[idx2] = len2;
+            }
+            else   // copy & 张 -= 2
+            {
+                Array.Copy(_剩牌容器, preIdx1, _剩牌容器, preIdx2, len1);
+                var idx = preIdx2 + pIdx;
+                var p = _剩牌容器[idx];
+                p.张 -= (byte)2;
+                _剩牌容器[idx] = p;
+                _剩牌长度[idx2] = len1;
+            }
         }
 
 
+
         /// <summary>
-        /// 从牌数组中减去指定位置的对子 将结果写入结果数组, 返回数组长度
+        /// 从 _剩牌容器[_索引] 中减去指定位置的对子 将结果写入结果数组, 返回数组长度
         /// </summary>
         public void 减去对(牌[] cps, int cpsIdx)
         {
             var cpsLen = cps.Length;
-            var preIdx = _索引 << 13;  // * 8
+            var preIdx = _索引 << 13;  // * 4096
             if (cps[cpsIdx].张 == (byte)2)   // copy except index
             {
                 switch (cpsIdx)
@@ -216,7 +278,7 @@ namespace mj_2
         public void 减去刻(牌[] cps, int cpsIdx)
         {
             var cpsLen = cps.Length;
-            var preIdx = _索引 << 13;  // * 8
+            var preIdx = _索引 << 13;  // * 4096
             if (cps[cpsIdx].张 == (byte)3)   // copy except index
             {
                 switch (cpsIdx)
@@ -270,7 +332,7 @@ namespace mj_2
         public void 减去顺(牌[] cps, int cpsIdx)
         {
             var cpsLen = cps.Length;
-            var preIdx = _索引 << 13;  // * 8
+            var preIdx = _索引 << 13;  // * 4096
             var cpsIdx1 = cpsIdx + 1;
             var cpsIdx2 = cpsIdx + 2;
 
