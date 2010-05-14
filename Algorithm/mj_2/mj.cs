@@ -127,14 +127,16 @@ namespace mj_2
 
         public void test减去()
         {
-            var ps = new 牌[] { 0x030101u, 0x020102u, 0x010103u, 0x010203u, 0x010303u };
+            var ps = new 牌[] { 0x040101u, 0x030102u, 0x020103u, 0x010203u, 0x040303u };
 
             _索引 = 0;
             减去(ps, 坎型.对, 1);
 
-            _索引 = 1;
-            减去(ps, 坎型.刻, 0);
+            //_索引 = 1;
+            //减去(ps, 坎型.刻, 0);
 
+            _索引 = 1;
+            减去(ps, 坎型.顺, 0);
 
             var preIdx = 0 << 13;
             var count = _剩牌长度[0];
@@ -263,12 +265,14 @@ namespace mj_2
                     break;
                 case 坎型.顺:
                     {
+                        var cpsIdx1 = cpsIdx + 1;
+                        var cpsIdx2 = cpsIdx + 2;
                         // 复制时可能需要跳过的单元 7 种组合:  1, 2, 3, 12, 23, 13, 123
                         if (cps[cpsIdx].张 == (byte)1)
                         {
-                            if (cps[cpsIdx + 1].张 == (byte)1)
+                            if (cps[cpsIdx1].张 == (byte)1)
                             {
-                                if (cps[cpsIdx + 2].张 == (byte)1)
+                                if (cps[cpsIdx2].张 == (byte)1)
                                 {
                                     // 跳过 123
                                 }
@@ -279,7 +283,7 @@ namespace mj_2
                             }
                             else
                             {
-                                if (cps[cpsIdx + 2].张 == (byte)1)
+                                if (cps[cpsIdx2].张 == (byte)1)
                                 {
                                     // 跳过 13
                                 }
@@ -291,9 +295,9 @@ namespace mj_2
                         }
                         else
                         {
-                            if (cps[cpsIdx + 1].张 == (byte)1)
+                            if (cps[cpsIdx1].张 == (byte)1)
                             {
-                                if (cps[cpsIdx + 2].张 == (byte)1)
+                                if (cps[cpsIdx2].张 == (byte)1)
                                 {
                                     // 跳过 23
                                 }
@@ -304,13 +308,30 @@ namespace mj_2
                             }
                             else
                             {
-                                if (cps[cpsIdx + 2].张 == (byte)1)
+                                if (cps[cpsIdx2].张 == (byte)1)
                                 {
                                     // 跳过 3
                                 }
                                 else
                                 {
                                     // 不跳过
+
+                                    var idx = preIdx + cpsIdx;
+                                    Array.Copy(cps, 0, _剩牌容器, preIdx, cpsLen);
+
+                                    var p = _剩牌容器[idx];
+                                    p.张 -= (byte)1;
+                                    _剩牌容器[idx++] = p;
+
+                                    p = _剩牌容器[idx];
+                                    p.张 -= (byte)1;
+                                    _剩牌容器[idx++] = p;
+
+                                    p = _剩牌容器[idx];
+                                    p.张 -= (byte)1;
+                                    _剩牌容器[idx] = p;
+
+                                    _剩牌长度[_索引] = cpsLen;
                                 }
                             }
                         }
