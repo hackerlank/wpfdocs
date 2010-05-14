@@ -94,7 +94,7 @@ namespace mj_2
                     var p = ps[i]; p.张 = (byte)坎型.对;
                     _坎牌容器[_索引 << 13] = p;
                     _坎牌长度[_索引] = 1;
-                    减去对(ps, i);
+                    减去张(ps, i, 2, _索引);
                     判胡(_索引);
                 }
             }
@@ -129,48 +129,45 @@ namespace mj_2
         {
             var ps = new 牌[] { 0x040104u, 0x030105u, 0x020106u, 0x010107u, 0x020108u, 0x020109u };
 
-            _索引 = 0;
-            减去刻(ps, 1);
-
-            _索引 = 1;
-            减去对(ps, 2);
+            减去张(ps, 1, 3, 0);
+            减去张(ps, 2, 2, 1);
 
             _索引 = 2;
             减去顺(ps, 1);
 
-            减去对(1, 2, 3);
+            减去张(1, 2, 2, 3);
+            减去张(1, 3, 1, 4);
 
 
             ps.Dump(true);
             WL();
 
             var i = 0;
-            WL("3, 1");
             _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
             WL();
-
-            WL("2, 2");
             _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
             WL();
-
-            WL("1");
             _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
             WL();
-
-            WL("2 2");
+            _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
+            WL();
             _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i++]);
             WL();
         }
 
         /// <summary>
-        /// 从 _剩牌容器[idx1] 中减去指定位置的对子 将结果写入 _剩牌容器[idx2]
+        /// 从 _剩牌容器[idx1] 中减去指定位置的牌的指定张数 将结果写入 _剩牌容器[idx2]
         /// </summary>
-        public void 减去对(int pIdx, int idx1, int idx2)
+        public void 减去张(int idx1, int pIdx, byte count, int idx2)
         {
             var preIdx1 = idx1 << 13;  // * 4096
+#if DEBUG
+            if (pIdx >= _剩牌长度[idx1]) throw new Exception("索引越界");
+            if (_剩牌容器[preIdx1 + pIdx].张 < count) throw new Exception("指定位置的牌的张数不足");
+#endif
             var preIdx2 = idx2 << 13;  // * 4096
             var len1 = _剩牌长度[idx1];
-            if (_剩牌容器[preIdx1 + pIdx].张 == (byte)2)   // copy except index
+            if (_剩牌容器[preIdx1 + pIdx].张 == count)   // 跳过索引牌复制剩下的
             {
                 switch (pIdx)
                 {
@@ -206,27 +203,29 @@ namespace mj_2
                 }
                 _剩牌长度[idx2] = len2;
             }
-            else   // copy & 张 -= 2
+            else   // 复制 & 修改　索引牌的 张 -= count
             {
                 Array.Copy(_剩牌容器, preIdx1, _剩牌容器, preIdx2, len1);
                 var idx = preIdx2 + pIdx;
                 var p = _剩牌容器[idx];
-                p.张 -= (byte)2;
+                p.张 -= count;
                 _剩牌容器[idx] = p;
                 _剩牌长度[idx2] = len1;
             }
         }
 
-
-
         /// <summary>
-        /// 从 _剩牌容器[_索引] 中减去指定位置的对子 将结果写入结果数组, 返回数组长度
+        /// 从 cps 中 减去 指定位置的 牌的 指定张数 将结果写入 _剩牌数组[idx2]
         /// </summary>
-        public void 减去对(牌[] cps, int cpsIdx)
+        public void 减去张(牌[] cps, int cpsIdx, byte count, int idx2)
         {
+#if DEBUG
+            if (cpsIdx >= cps.Length) throw new Exception("索引越界");
+            if (cps[cpsIdx].张 < count) throw new Exception("指定位置的牌的张数不足");
+#endif
             var cpsLen = cps.Length;
-            var preIdx = _索引 << 13;  // * 4096
-            if (cps[cpsIdx].张 == (byte)2)   // copy except index
+            var preIdx = idx2 << 13;  // * 4096
+            if (cps[cpsIdx].张 == count)   // 跳过索引牌复制剩下的
             {
                 switch (cpsIdx)
                 {
@@ -260,70 +259,78 @@ namespace mj_2
                         Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, left);
                         break;
                 }
-                _剩牌长度[_索引] = len;
+                _剩牌长度[idx2] = len;
             }
-            else   // copy & 张 -= 2
+            else   // 复制 & 修改　索引牌的 张 -= count
             {
                 var idx = preIdx + cpsIdx;
                 Array.Copy(cps, 0, _剩牌容器, preIdx, cpsLen);
                 var p = _剩牌容器[idx];
-                p.张 -= (byte)2;
+                p.张 -= count;
                 _剩牌容器[idx] = p;
-                _剩牌长度[_索引] = cpsLen;
+                _剩牌长度[idx2] = cpsLen;
             }
         }
+
         /// <summary>
-        /// 从牌数组中减去指定位置的刻子 将结果写入结果数组, 返回数组长度
+        /// 从 _剩牌容器[idx1] 中减去 指定位置的 顺子牌 将结果写入 _剩牌容器[idx2]
+        /// todo
         /// </summary>
-        public void 减去刻(牌[] cps, int cpsIdx)
+        public void 减去顺(int idx1, int pIdx, int idx2)
         {
             var cpsLen = cps.Length;
             var preIdx = _索引 << 13;  // * 4096
-            if (cps[cpsIdx].张 == (byte)3)   // copy except index
+            var cpsIdx1 = cpsIdx + 1;
+            var cpsIdx2 = cpsIdx + 2;
+
+            // 先复制位于索引前面的牌
+            switch (cpsIdx)
             {
-                switch (cpsIdx)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        _剩牌容器[preIdx] = cps[0];
-                        break;
-                    case 2:
-                        _剩牌容器[preIdx] = cps[0];
-                        _剩牌容器[preIdx + 1] = cps[1];
-                        break;
-                    default:    // more
-                        Array.Copy(cps, 0, _剩牌容器, preIdx, cpsIdx);
-                        break;
-                }
-                var len = cpsLen - 1;
-                var left = len - cpsIdx;
-                switch (len)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
-                        break;
-                    case 2:
-                        _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
-                        _剩牌容器[preIdx + cpsIdx + 1] = cps[cpsIdx + 2];
-                        break;
-                    default:    // more
-                        Array.Copy(cps, cpsIdx + 1, _剩牌容器, preIdx + cpsIdx, left);
-                        break;
-                }
-                _剩牌长度[_索引] = len;
+                case 0:
+                    break;
+                case 1:
+                    _剩牌容器[preIdx] = cps[0];
+                    break;
+                case 2:
+                    _剩牌容器[preIdx] = cps[0];
+                    _剩牌容器[preIdx + 1] = cps[1];
+                    break;
+                default:    // more
+                    Array.Copy(cps, 0, _剩牌容器, preIdx, cpsIdx);
+                    break;
             }
-            else   // copy & 张 -= 3
+            // 一张张的依次搞
+            var skip = 0;
+            for (int i = 0; i <= 2; i++)
             {
-                var idx = preIdx + cpsIdx;
-                Array.Copy(cps, 0, _剩牌容器, preIdx, cpsLen);
-                var p = _剩牌容器[idx];
-                p.张 -= (byte)3;
-                _剩牌容器[idx] = p;
-                _剩牌长度[_索引] = cpsLen;
+                if (cps[cpsIdx + i].张 == (byte)1)
+                    skip++;
+                else
+                {
+                    var p = cps[cpsIdx + i];
+                    p.张 -= (byte)1;
+                    _剩牌容器[preIdx + cpsIdx + i - skip] = p;
+                }
             }
+            // 复制剩下的牌
+            var len = cpsLen - skip;
+            var left = len - cpsIdx - 3 + skip;
+            switch (len)
+            {
+                case 0:
+                    break;
+                case 1:
+                    _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
+                    break;
+                case 2:
+                    _剩牌容器[preIdx + cpsIdx] = cps[cpsIdx + 1];
+                    _剩牌容器[preIdx + cpsIdx + 1] = cps[cpsIdx + 2];
+                    break;
+                default:    // more
+                    Array.Copy(cps, cpsIdx + 3, _剩牌容器, preIdx + cpsIdx + 3 - skip, left);
+                    break;
+            }
+            _剩牌长度[_索引] = len;
         }
 
         /// <summary>
