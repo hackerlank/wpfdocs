@@ -53,7 +53,7 @@ namespace mj_2
             for (int i = 0; i <= 7; i++)
             {
                 WL();
-                _剩牌容器.Dump(true, false, i << 13, _剩牌长度[i]);
+                _剩牌容器.Dump(true, false, i << 4, _剩牌长度[i]);
             }
 
             WL();
@@ -65,12 +65,12 @@ namespace mj_2
 
         #region Fields
 
-        // 4096(<<13), 8(<<3), 16(<<4) 方便用位移来替代乘法
+        // 16(<<4) 方便用位移来替代乘法
 
-        private 牌[] _坎牌容器 = new 牌[8 * 4096];
-        private int[] _坎牌长度 = new int[4096];
-        private 牌[] _剩牌容器 = new 牌[16 * 4096];
-        private int[] _剩牌长度 = new int[4096];
+        private 牌[] _坎牌容器 = new 牌[16 * 5000];
+        private int[] _坎牌长度 = new int[5000];
+        private 牌[] _剩牌容器 = new 牌[16 * 5000];
+        private int[] _剩牌长度 = new int[5000];
         private int _索引 = -1;
 
         private 牌[] _原始手牌 = null;
@@ -187,7 +187,7 @@ namespace mj_2
                     if (ps[i].张 == (byte)1) continue;
                     _索引++;
                     var p = ps[i]; p.张 = (byte)坎型.对;
-                    _坎牌容器[_索引 << 13] = p;
+                    _坎牌容器[_索引 << 4] = p;
                     _坎牌长度[_索引] = 1;
                     减去张(ps, i, 2, _索引);
                     if (_剩牌长度[_索引] == 0) return true;
@@ -220,7 +220,7 @@ namespace mj_2
 
         public bool 判胡(int idx)
         {
-            var preIdx1 = idx << 13;
+            var preIdx1 = idx << 4;
             var len = _剩牌长度[idx];
             var len2 = len - 2;
             for (int i = 0; i < len; i++)
@@ -229,7 +229,7 @@ namespace mj_2
                 if (p1.张 >= (byte)3)
                 {
                     _索引++;
-                    var preIdx2 = _索引 << 13;
+                    var preIdx2 = _索引 << 4;
                     // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2]
                     var kLen = _坎牌长度[idx];
                     Array.Copy(_坎牌容器, preIdx1, _坎牌容器, preIdx2, kLen);
@@ -253,7 +253,7 @@ namespace mj_2
                     && p1.点 + (byte)2 == _剩牌容器[preIdx1 + i + 2].点)
                 {
                     _索引++;
-                    var preIdx2 = _索引 << 13;
+                    var preIdx2 = _索引 << 4;
                     // 复制 _坎牌容器[preIdx1] 到 _坎牌容器[preIdx2]
                     var kLen = _坎牌长度[idx];
                     Array.Copy(_坎牌容器, preIdx1, _坎牌容器, preIdx2, kLen);
@@ -288,8 +288,8 @@ namespace mj_2
         /// </summary>
         public void 减去张(int idx1, int pIdx, byte count, int idx2)
         {
-            var preIdx1 = idx1 << 13;  // * 4096
-            var preIdx2 = idx2 << 13;  // * 4096
+            var preIdx1 = idx1 << 4;  // * 16
+            var preIdx2 = idx2 << 4;  // * 16
             var pIdx1 = preIdx1 + pIdx;
             var len1 = _剩牌长度[idx1];
 #if DEBUG
@@ -354,7 +354,7 @@ namespace mj_2
 #endif
             var len1 = cps.Length;
             var preIdx1 = 0;
-            var preIdx2 = idx2 << 13;  // * 4096
+            var preIdx2 = idx2 << 4;  // * 16
             if (cps[pIdx].张 == count)   // 跳过索引牌复制剩下的
             {
                 switch (pIdx)
@@ -412,8 +412,8 @@ namespace mj_2
         /// </summary>
         public void 减去顺(int idx1, int pIdx, int idx2)
         {
-            var preIdx1 = idx1 << 13;  // * 4096
-            var preIdx2 = idx2 << 13;  // * 4096
+            var preIdx1 = idx1 << 4;  // * 16
+            var preIdx2 = idx2 << 4;  // * 16
             var len1 = _剩牌长度[idx1];
 #if DEBUG
             if (pIdx >= len1) throw new Exception("指定的索引越界");
@@ -476,7 +476,7 @@ namespace mj_2
         public void 减去顺(牌[] cps, int pIdx, int idx2)
         {
             var preIdx1 = 0;
-            var preIdx2 = idx2 << 13;  // * 4096
+            var preIdx2 = idx2 << 4;  // * 16
             var len1 = cps.Length;
 #if DEBUG
             if (pIdx >= cps.Length) throw new Exception("指定的索引越界");
