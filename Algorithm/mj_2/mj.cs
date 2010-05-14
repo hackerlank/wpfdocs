@@ -263,24 +263,56 @@ namespace mj_2
                     break;
                 case 坎型.顺:
                     {
+                        // 复制时可能需要跳过的单元 7 种组合:  1, 2, 3, 12, 23, 13, 123
                         if (cps[cpsIdx].张 == (byte)1)
                         {
                             if (cps[cpsIdx + 1].张 == (byte)1)
                             {
                                 if (cps[cpsIdx + 2].张 == (byte)1)
                                 {
-
+                                    // 跳过 123
                                 }
                                 else
                                 {
+                                    // 跳过 12
                                 }
                             }
                             else
                             {
+                                if (cps[cpsIdx + 2].张 == (byte)1)
+                                {
+                                    // 跳过 13
+                                }
+                                else
+                                {
+                                    // 跳过 1
+                                }
                             }
                         }
                         else
                         {
+                            if (cps[cpsIdx + 1].张 == (byte)1)
+                            {
+                                if (cps[cpsIdx + 2].张 == (byte)1)
+                                {
+                                    // 跳过 23
+                                }
+                                else
+                                {
+                                    // 跳过 2
+                                }
+                            }
+                            else
+                            {
+                                if (cps[cpsIdx + 2].张 == (byte)1)
+                                {
+                                    // 跳过 3
+                                }
+                                else
+                                {
+                                    // 不跳过
+                                }
+                            }
                         }
                     }
                     break;
