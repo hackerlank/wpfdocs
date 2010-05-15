@@ -32,7 +32,7 @@ namespace mj_2
             sw.Restart();
             for (int i = 0; i < 1000000; i++)
             {
-                mj.Init(Utils.随机发牌(14));
+                mj.初始化(Utils.随机发牌(14));
                 mj.判胡();
             }
             sw.Stop();

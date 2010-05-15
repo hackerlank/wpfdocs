@@ -60,6 +60,7 @@ namespace mj_2
         }
         #endregion
 
+        #region 取环境数据相关
 
         public 牌[] GetLast坎牌()
         {
@@ -70,8 +71,12 @@ namespace mj_2
             return result;
         }
 
+        #endregion
 
-        #region Fields
+
+
+
+        #region 字段s
 
         // 16(<<4) 方便用位移来替代乘法
 
@@ -80,30 +85,44 @@ namespace mj_2
         private 牌[] _剩牌容器 = new 牌[16 * 5000];
         private int[] _剩牌长度 = new int[5000];
         private int _索引 = -1;
-
         private 牌[] _原始手牌 = null;
         private 牌[][] _手牌组 = null;
         private 牌[] _手牌 = null;
 
         #endregion
 
-        #region Constructors
+        #region 属性s
 
+        public 牌[] 原始手牌
+        {
+            get { return _原始手牌; }
+            set
+            {
+                初始化(value);
+            }
+        }
+
+
+        #endregion
+
+        #region 构造函数
+
+        public 成都麻将() { }
         public 成都麻将(牌[] ps)
         {
-            Init(ps);
+            初始化(ps);
         }
 
         #endregion
 
-        #region Init
+        #region 初始化
 
-        public void Init()
+        public void 初始化()
         {
             _索引 = -1;
         }
 
-        public void Init(牌[] ps)
+        public void 初始化(牌[] ps)
         {
             _索引 = -1;
 
@@ -124,10 +143,10 @@ namespace mj_2
 
         #region 判胡
 
-        #region 判胡
-
         public bool 判胡()
         {
+            if (_原始手牌 == null) throw new Exception("请先设置 原始手牌 的数据");
+
             #region 简单的不胡判断
 
             // 非以下的手牌张数胡不了
@@ -166,7 +185,7 @@ namespace mj_2
                     return false;
             }
 
-            var 对数 = 获取对子数量(_手牌);
+            var 对数 = _手牌.获取对子数量();
 
             // 没对子, 胡不了
             if (对数 == 0) return false;
@@ -227,6 +246,13 @@ namespace mj_2
             }
         }
 
+
+
+
+        #endregion
+
+        #region 判断是否有对子
+
         protected bool 判断是否有对子(int gidx)
         {
             var ps = _手牌组[gidx];
@@ -234,6 +260,10 @@ namespace mj_2
             for (int i = 0; i < count; i++) if (ps[i].张 >= 2) return true;
             return false;
         }
+
+        #endregion
+
+        #region 匹配手牌对
 
         /// <summary>
         /// 提取对子并判断剩下的牌是否能完全成坎
@@ -258,7 +288,7 @@ namespace mj_2
 
         #endregion
 
-        #region 匹配（递归体）
+        #region 匹配剩牌坎
 
         protected bool 匹配剩牌坎(int idx)
         {
@@ -316,7 +346,9 @@ namespace mj_2
             }
             return false;
         }
+        #endregion
 
+        #region 匹配手牌坎
 
         protected bool 匹配手牌坎(int gidx)
         {
@@ -372,17 +404,12 @@ namespace mj_2
 
         #endregion
 
-        #endregion
-
-        // todo: 实现方法：对比 _坎牌容器 中 2 个起始地址，指定长度　的内容是否相等
-        // todo: 排序 (插入式追加)
-
         #region 减去张
 
         /// <summary>
         /// 从 _剩牌容器[idx1] 中减去指定位置的牌的指定张数 将结果写入 _剩牌容器[idx2]
         /// </summary>
-        public void 减去张(int idx1, int pIdx, byte count, int idx2)
+        protected void 减去张(int idx1, int pIdx, byte count, int idx2)
         {
             var preIdx1 = idx1 << 4;  // * 16
             var preIdx2 = idx2 << 4;  // * 16
@@ -506,7 +533,7 @@ namespace mj_2
         /// 从 _剩牌容器[idx1] 中减去 指定位置的 顺子牌 将结果写入 _剩牌容器[idx2]
         /// todo
         /// </summary>
-        public void 减去顺(int idx1, int pIdx, int idx2)
+        protected void 减去顺(int idx1, int pIdx, int idx2)
         {
             var preIdx1 = idx1 << 4;  // * 16
             var preIdx2 = idx2 << 4;  // * 16
@@ -631,11 +658,12 @@ namespace mj_2
 
         #endregion
 
-        #region 获取对子数量
-        public int 获取对子数量(牌[] cps)
-        {
-            return cps.Sum(o => o.张 >> 1);
-        }
+
+
+
+        #region TODO
+        // todo: 实现方法：对比 _坎牌容器 中 2 个起始地址，指定长度　的内容是否相等
+        // todo: 排序 (插入式追加)
         #endregion
 
         #region Helper methods
@@ -666,6 +694,117 @@ namespace mj_2
 
     public static class Utils
     {
+        #region 复制
+
+        /// <summary>
+        /// 返回一个 牌[] 的复制体
+        /// </summary>
+        public static 牌[] 复制(this 牌[] ps)
+        {
+            var ps2 = new 牌[ps.Length];
+            Array.Copy(ps, ps2, ps.Length);
+            return ps2;
+        }
+
+        #endregion
+
+        #region 标, 花 分组 堆叠 排序
+
+        /// <summary>
+        /// 按 牌.标 分组, 合并 相同 牌.花点 的张数到 牌.张, 按 标, 花点 排序
+        /// </summary>
+        public static 牌[][] 标分组堆叠排序(this 牌[] ps)
+        {
+            var tmp = from p in ps
+                      group p by p.花点 into pg
+                      orderby pg.Key
+                      select new 牌 { 数据 = pg.First(), 张 = (byte)pg.Count() };
+            var tmp2 = from p in tmp
+                       group p by p.标 into pg
+                       orderby pg.Key
+                       select pg.ToArray();
+            return tmp2.ToArray();
+        }
+
+        /// <summary>
+        /// 按 牌.花 分组
+        /// </summary>
+        public static 牌[][] 花分组(this 牌[] ps)
+        {
+            var tmp = from p in ps
+                      group p by p.花 into pg
+                      orderby pg.Key
+                      select pg.ToArray();
+            return tmp.ToArray();
+        }
+
+        #endregion
+
+        #region 获取对子数量
+
+        public static int 获取对子数量(this 牌[] cps)
+        {
+            return cps.Sum(o => o.张 >> 1);
+        }
+
+        #endregion
+
+        #region 牌s
+
+        /// <summary>
+        /// 成都麻将的 108 张牌的所有数据
+        /// </summary>
+        public static 牌[] 牌s = new 牌[] {
+            // 1 ~ 9 筒 x 4 张
+            0x0101u, 0x0102u, 0x0103u, 0x0104u, 0x0105u, 0x0106u, 0x0107u, 0x0108u, 0x0109u,
+            0x0101u, 0x0102u, 0x0103u, 0x0104u, 0x0105u, 0x0106u, 0x0107u, 0x0108u, 0x0109u,
+            0x0101u, 0x0102u, 0x0103u, 0x0104u, 0x0105u, 0x0106u, 0x0107u, 0x0108u, 0x0109u,
+            0x0101u, 0x0102u, 0x0103u, 0x0104u, 0x0105u, 0x0106u, 0x0107u, 0x0108u, 0x0109u,
+            // 1 ~ 9 条 x 4 张
+            0x0201u, 0x0202u, 0x0203u, 0x0204u, 0x0205u, 0x0206u, 0x0207u, 0x0208u, 0x0209u,
+            0x0201u, 0x0202u, 0x0203u, 0x0204u, 0x0205u, 0x0206u, 0x0207u, 0x0208u, 0x0209u,
+            0x0201u, 0x0202u, 0x0203u, 0x0204u, 0x0205u, 0x0206u, 0x0207u, 0x0208u, 0x0209u,
+            0x0201u, 0x0202u, 0x0203u, 0x0204u, 0x0205u, 0x0206u, 0x0207u, 0x0208u, 0x0209u,
+            // 1 ~ 9 万 x 4 张
+            0x0301u, 0x0302u, 0x0303u, 0x0304u, 0x0305u, 0x0306u, 0x0307u, 0x0308u, 0x0309u,
+            0x0301u, 0x0302u, 0x0303u, 0x0304u, 0x0305u, 0x0306u, 0x0307u, 0x0308u, 0x0309u,
+            0x0301u, 0x0302u, 0x0303u, 0x0304u, 0x0305u, 0x0306u, 0x0307u, 0x0308u, 0x0309u,
+            0x0301u, 0x0302u, 0x0303u, 0x0304u, 0x0305u, 0x0306u, 0x0307u, 0x0308u, 0x0309u,
+        };
+
+        #endregion
+
+        #region Dump
+
+
+        public static string[] 花s = new string[] {
+            "","筒","条","万"
+        };
+        public static string[] 点s = new string[] {
+            "","一","二","三","四","五","六","七","八","九"
+        };
+        /// <summary>
+        /// 往控制台输出 牌 的数据
+        /// </summary>
+        public static void Dump(this 牌 o, bool isContain张 = false, bool isContain标 = false)
+        {
+            W(点s[o.点] + 花s[o.花]);
+            if (isContain张) W("x" + o.张);
+            var tmp = Convert.ToString(o.标, 2);
+            if (isContain标) W("[" + new string('0', 8 - tmp.Length) + tmp + "]");
+        }
+        /// <summary>
+        /// 往控制台输出 牌IEnum 的数据
+        /// </summary>
+        public static void Dump(this IEnumerable<牌> os, bool isContain张 = false, bool isContain标 = false)
+        {
+            foreach (var o in os)
+            {
+                Dump(o, isContain张, isContain标);
+                W(" ");
+            }
+        }
+
         /// <summary>
         /// 往控制台输出 牌IList 的指定范围数据
         /// </summary>
@@ -694,7 +833,7 @@ namespace mj_2
                         W("[" + 点s[o.点] + " " + 点s[o.点] + 花s[o.花] + "]");
                         break;
                     case 坎型.刻:
-                        W("[" + 点s[o.点] + " " + 点s[o.点] + " " + 点s[o.点] + " " +  花s[o.花] + "]");
+                        W("[" + 点s[o.点] + " " + 点s[o.点] + " " + 点s[o.点] + " " + 花s[o.花] + "]");
                         break;
                     case 坎型.顺:
                         W("[" + 点s[o.点] + " " + 点s[o.点 + 1] + " " + 点s[o.点 + 2] + " " + 花s[o.花] + "]");
@@ -704,63 +843,9 @@ namespace mj_2
             }
         }
 
+        #endregion
 
-        ///// <summary>
-        ///// 用于找对子,刻子,杠
-        ///// </summary>
-        //public int[] 获取所有大于等于指定张数牌的索引(牌[] cps, byte c)
-        //{
-        //    var result = new int[cps.Length];
-        //    var length = 0;
-        //    for (byte i = 0; i < cps.Length; i++)
-        //        if (cps[i].张 >= c) result[length++] = i;
-        //    Array.Resize<int>(ref result, length);
-        //    return result;
-        //}
-
-
-
-
-        // 108 张
-        public static 牌[] 牌s = new 牌[] {
-            // 1 ~ 9 筒 x 4 张
-            0x0101u, 0x0102u, 0x0103u, 0x0104u, 0x0105u, 0x0106u, 0x0107u, 0x0108u, 0x0109u,
-            0x0101u, 0x0102u, 0x0103u, 0x0104u, 0x0105u, 0x0106u, 0x0107u, 0x0108u, 0x0109u,
-            0x0101u, 0x0102u, 0x0103u, 0x0104u, 0x0105u, 0x0106u, 0x0107u, 0x0108u, 0x0109u,
-            0x0101u, 0x0102u, 0x0103u, 0x0104u, 0x0105u, 0x0106u, 0x0107u, 0x0108u, 0x0109u,
-            // 1 ~ 9 条 x 4 张
-            0x0201u, 0x0202u, 0x0203u, 0x0204u, 0x0205u, 0x0206u, 0x0207u, 0x0208u, 0x0209u,
-            0x0201u, 0x0202u, 0x0203u, 0x0204u, 0x0205u, 0x0206u, 0x0207u, 0x0208u, 0x0209u,
-            0x0201u, 0x0202u, 0x0203u, 0x0204u, 0x0205u, 0x0206u, 0x0207u, 0x0208u, 0x0209u,
-            0x0201u, 0x0202u, 0x0203u, 0x0204u, 0x0205u, 0x0206u, 0x0207u, 0x0208u, 0x0209u,
-            // 1 ~ 9 万 x 4 张
-            0x0301u, 0x0302u, 0x0303u, 0x0304u, 0x0305u, 0x0306u, 0x0307u, 0x0308u, 0x0309u,
-            0x0301u, 0x0302u, 0x0303u, 0x0304u, 0x0305u, 0x0306u, 0x0307u, 0x0308u, 0x0309u,
-            0x0301u, 0x0302u, 0x0303u, 0x0304u, 0x0305u, 0x0306u, 0x0307u, 0x0308u, 0x0309u,
-            0x0301u, 0x0302u, 0x0303u, 0x0304u, 0x0305u, 0x0306u, 0x0307u, 0x0308u, 0x0309u,
-        };
-        public static string[] 花s = new string[] {
-            "","筒","条","万"
-        };
-        public static string[] 点s = new string[] {
-            "","一","二","三","四","五","六","七","八","九"
-        };
-        public static void Dump(this 牌 o, bool isContain张 = false, bool isContain标 = false)
-        {
-            W(点s[o.点] + 花s[o.花]);
-            if (isContain张) W("x" + o.张);
-            var tmp = Convert.ToString(o.标, 2);
-            if (isContain标) W("[" + new string('0', 8 - tmp.Length) + tmp + "]");
-        }
-        public static void Dump(this IEnumerable<牌> os, bool isContain张 = false, bool isContain标 = false)
-        {
-            foreach (var o in os)
-            {
-                Dump(o, isContain张, isContain标);
-                W(" ");
-            }
-        }
-
+        #region 随机 发牌
 
         /// <summary>
         /// 随机发 c 张牌(C不可以超过 108 张)
@@ -788,6 +873,9 @@ namespace mj_2
             return Math.Abs(rand % m);
         }
 
+        #endregion
+
+        #region Converters
 
         public static 牌 To牌(this string s)
         {
@@ -795,190 +883,184 @@ namespace mj_2
             return new 牌 { 数据 = (uint)(global::mj_2.牌s)o };
         }
 
-        public static 牌[][] 花分组(this 牌[] ps)
-        {
-            var tmp = from p in ps
-                      group p by p.花 into pg
-                      orderby pg.Key
-                      select pg.ToArray();
-            return tmp.ToArray();
-        }
 
-        public static 牌[][] 标分组堆叠排序(this 牌[] ps)
-        {
-            var tmp = from p in ps
-                      group p by p.花点 into pg
-                      orderby pg.Key
-                      select new 牌 { 数据 = pg.First(), 张 = (byte)pg.Count() };
-            var tmp2 = from p in tmp
-                       group p by p.标 into pg
-                       orderby pg.Key
-                       select pg.ToArray();
-            return tmp2.ToArray();
-        }
+        #endregion
 
-        public static 牌[] 复制(this 牌[] ps)
-        {
-            var ps2 = new 牌[ps.Length];
-            Array.Copy(ps, ps2, ps.Length);
-            return ps2;
-        }
+        #region 废弃代码
 
-        /// <summary>
-        /// 从牌数组1 中减去指定位置的 牌数组2  并返回一个新数组
-        /// </summary>
-        public static 牌[] 减去(this 牌[] cps1, 牌[] cps2, int startIndex = 0)
-        {
-            for (int i = startIndex; i < startIndex + cps2.Length; i++)
-            {
-#if DEBUG
-                if (cps1[i].花点 != cps2[i].花点)
-                    throw new Exception("different 花点");
-#endif
-                cps1[i] = new 牌 { 数据 = cps1[i], 张 = (byte)(cps1[i].张 - cps2[i].张) };
-            }
-            return cps1.Where(o => o.张 > (byte)0).ToArray();
-        }
 
-        /// <summary>
-        /// 从牌数组中减去指定位置的指定牌型 并返回牌数组的引用
-        /// </summary>
-        public static 牌[] 减去(this 牌[] cps, 坎型 t, int startIndex)
-        {
-            switch (t)
-            {
-                case 坎型.对:
-                    {
-                        var p = cps[startIndex];
-                        if (p.张 == (byte)2) 移除(ref cps, startIndex);
-                        else
-                        {
-                            p.张 -= (byte)2;
-                            cps[startIndex] = p;
-                        }
-                    }
-                    break;
-                case 坎型.刻:
-                    {
-                        var p = cps[startIndex];
-                        if (p.张 == (byte)3) 移除(ref cps, startIndex);
-                        else
-                        {
-                            p.张 -= (byte)3;
-                            cps[startIndex] = p;
-                        }
-                    }
-                    break;
-                case 坎型.顺:
-                    {
-                        var p = cps[startIndex];
-                        if (p.张 == (byte)1) 移除(ref cps, startIndex);
-                        else
-                        {
-                            p.张 -= (byte)1;
-                            cps[startIndex] = p;
-                            startIndex++;
-                        }
-                        p = cps[startIndex];
-                        if (p.张 == (byte)1) 移除(ref cps, startIndex);
-                        else
-                        {
-                            p.张 -= (byte)1;
-                            cps[startIndex] = p;
-                            startIndex++;
-                        }
-                        p = cps[startIndex];
-                        if (p.张 == (byte)1) 移除(ref cps, startIndex);
-                        else
-                        {
-                            p.张 -= (byte)1;
-                            cps[startIndex] = p;
-                        }
-                    }
-                    break;
-            }
-            return cps;
-        }
-
-        /// <summary>
-        /// 从牌数组中"移除"指定位置的元素, 并 resize
-        /// </summary>
-        public static 牌[] 移除(ref 牌[] cps, int index)
-        {
-            var len = cps.Length - 1;
-            if (index == 0 && cps.Length == 0)
-                return cps;
-            else if (index == 0 && len == 0)
-            {
-                Array.Resize<牌>(ref cps, len);
-            }
-            else if (index == 0)
-            {
-                Array.Copy(cps, index + 1, cps, index, len);
-                Array.Resize<牌>(ref cps, len);
-            }
-            else if (index == len)
-                Array.Resize<牌>(ref cps, len);
-            else
-            {
-                Array.Copy(cps, index, cps, index - 1, len - index);
-                Array.Resize<牌>(ref cps, len);
-            }
-            return cps;
-        }
-
-        /// <summary>
-        /// 用于找对子,刻子,杠
-        /// </summary>
-        public static int[] 获取所有大于等于指定张数牌的索引(this 牌[] cps, byte c)
-        {
-            var result = new int[cps.Length];
-            var length = 0;
-            for (byte i = 0; i < cps.Length; i++)
-                if (cps[i].张 >= c) result[length++] = i;
-            Array.Resize<int>(ref result, length);
-            return result;
-        }
-
-        /// <summary>
-        /// 找到并返回 牌[] 中所有 顺子牌 的起始索引
-        /// </summary>
-        public static List<KeyValuePair<int, 牌[]>> 找所有顺子(牌[] cps)
-        {
-            var result = new List<KeyValuePair<int, 牌[]>>();
-            for (int i = 0; i < cps.Length - 2; i++)
-            {
-                if (cps[i].花点 == cps[i + 1].花点 &&
-                    cps[i].花点 == cps[i + 2].花点
-                    ) result.Add(new KeyValuePair<int, 牌[]>(i, new 牌[] {
-                        new 牌 { 数据 = cps[i].数据, 张 = (byte)1 },
-                        new 牌 { 数据 = cps[i].数据, 张 = (byte)1 },
-                        new 牌 { 数据 = cps[i].数据, 张 = (byte)1 }
-                    }));
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 将牌(型)组按 数据 从小到大排序
-        /// </summary>
-        public static 牌[] 排序(this 牌[] tps)
-        {
-            Array.Sort<牌>(tps);
-            return tps;
-        }
-
-        public static 牌 To坎牌(this 牌 p, 坎型 t)
-        {
-            p.张 = (byte)t;
-            return p;
-        }
-
-        //public static 牌[] To散牌(this 牌 tp)
+        ///// <summary>
+        ///// 用于找对子,刻子,杠
+        ///// </summary>
+        //public int[] 获取所有大于等于指定张数牌的索引(牌[] cps, byte c)
         //{
-
+        //    var result = new int[cps.Length];
+        //    var length = 0;
+        //    for (byte i = 0; i < cps.Length; i++)
+        //        if (cps[i].张 >= c) result[length++] = i;
+        //    Array.Resize<int>(ref result, length);
+        //    return result;
         //}
 
+
+
+
+        //        /// <summary>
+        //        /// 从牌数组1 中减去指定位置的 牌数组2  并返回一个新数组
+        //        /// </summary>
+        //        public static 牌[] 减去(this 牌[] cps1, 牌[] cps2, int startIndex = 0)
+        //        {
+        //            for (int i = startIndex; i < startIndex + cps2.Length; i++)
+        //            {
+        //#if DEBUG
+        //                if (cps1[i].花点 != cps2[i].花点)
+        //                    throw new Exception("different 花点");
+        //#endif
+        //                cps1[i] = new 牌 { 数据 = cps1[i], 张 = (byte)(cps1[i].张 - cps2[i].张) };
+        //            }
+        //            return cps1.Where(o => o.张 > (byte)0).ToArray();
+        //        }
+
+        //        /// <summary>
+        //        /// 从牌数组中减去指定位置的指定牌型 并返回牌数组的引用
+        //        /// </summary>
+        //        public static 牌[] 减去(this 牌[] cps, 坎型 t, int startIndex)
+        //        {
+        //            switch (t)
+        //            {
+        //                case 坎型.对:
+        //                    {
+        //                        var p = cps[startIndex];
+        //                        if (p.张 == (byte)2) 移除(ref cps, startIndex);
+        //                        else
+        //                        {
+        //                            p.张 -= (byte)2;
+        //                            cps[startIndex] = p;
+        //                        }
+        //                    }
+        //                    break;
+        //                case 坎型.刻:
+        //                    {
+        //                        var p = cps[startIndex];
+        //                        if (p.张 == (byte)3) 移除(ref cps, startIndex);
+        //                        else
+        //                        {
+        //                            p.张 -= (byte)3;
+        //                            cps[startIndex] = p;
+        //                        }
+        //                    }
+        //                    break;
+        //                case 坎型.顺:
+        //                    {
+        //                        var p = cps[startIndex];
+        //                        if (p.张 == (byte)1) 移除(ref cps, startIndex);
+        //                        else
+        //                        {
+        //                            p.张 -= (byte)1;
+        //                            cps[startIndex] = p;
+        //                            startIndex++;
+        //                        }
+        //                        p = cps[startIndex];
+        //                        if (p.张 == (byte)1) 移除(ref cps, startIndex);
+        //                        else
+        //                        {
+        //                            p.张 -= (byte)1;
+        //                            cps[startIndex] = p;
+        //                            startIndex++;
+        //                        }
+        //                        p = cps[startIndex];
+        //                        if (p.张 == (byte)1) 移除(ref cps, startIndex);
+        //                        else
+        //                        {
+        //                            p.张 -= (byte)1;
+        //                            cps[startIndex] = p;
+        //                        }
+        //                    }
+        //                    break;
+        //            }
+        //            return cps;
+        //        }
+
+        //        /// <summary>
+        //        /// 从牌数组中"移除"指定位置的元素, 并 resize
+        //        /// </summary>
+        //        public static 牌[] 移除(ref 牌[] cps, int index)
+        //        {
+        //            var len = cps.Length - 1;
+        //            if (index == 0 && cps.Length == 0)
+        //                return cps;
+        //            else if (index == 0 && len == 0)
+        //            {
+        //                Array.Resize<牌>(ref cps, len);
+        //            }
+        //            else if (index == 0)
+        //            {
+        //                Array.Copy(cps, index + 1, cps, index, len);
+        //                Array.Resize<牌>(ref cps, len);
+        //            }
+        //            else if (index == len)
+        //                Array.Resize<牌>(ref cps, len);
+        //            else
+        //            {
+        //                Array.Copy(cps, index, cps, index - 1, len - index);
+        //                Array.Resize<牌>(ref cps, len);
+        //            }
+        //            return cps;
+        //        }
+
+        //        /// <summary>
+        //        /// 用于找对子,刻子,杠
+        //        /// </summary>
+        //        public static int[] 获取所有大于等于指定张数牌的索引(this 牌[] cps, byte c)
+        //        {
+        //            var result = new int[cps.Length];
+        //            var length = 0;
+        //            for (byte i = 0; i < cps.Length; i++)
+        //                if (cps[i].张 >= c) result[length++] = i;
+        //            Array.Resize<int>(ref result, length);
+        //            return result;
+        //        }
+
+        //        /// <summary>
+        //        /// 找到并返回 牌[] 中所有 顺子牌 的起始索引
+        //        /// </summary>
+        //        public static List<KeyValuePair<int, 牌[]>> 找所有顺子(牌[] cps)
+        //        {
+        //            var result = new List<KeyValuePair<int, 牌[]>>();
+        //            for (int i = 0; i < cps.Length - 2; i++)
+        //            {
+        //                if (cps[i].花点 == cps[i + 1].花点 &&
+        //                    cps[i].花点 == cps[i + 2].花点
+        //                    ) result.Add(new KeyValuePair<int, 牌[]>(i, new 牌[] {
+        //                        new 牌 { 数据 = cps[i].数据, 张 = (byte)1 },
+        //                        new 牌 { 数据 = cps[i].数据, 张 = (byte)1 },
+        //                        new 牌 { 数据 = cps[i].数据, 张 = (byte)1 }
+        //                    }));
+        //            }
+        //            return result;
+        //        }
+
+        //        /// <summary>
+        //        /// 将牌(型)组按 数据 从小到大排序
+        //        /// </summary>
+        //        public static 牌[] 排序(this 牌[] tps)
+        //        {
+        //            Array.Sort<牌>(tps);
+        //            return tps;
+        //        }
+
+        //        public static 牌 To坎牌(this 牌 p, 坎型 t)
+        //        {
+        //            p.张 = (byte)t;
+        //            return p;
+        //        }
+
+        //        //public static 牌[] To散牌(this 牌 tp)
+        //        //{
+
+        //        //}
+
+        #endregion
 
         #region Helper methods
         private static void W(object text, params object[] args)
