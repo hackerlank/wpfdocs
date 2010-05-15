@@ -43,6 +43,26 @@ namespace mj_2
             return new 牌 { 花点 = i };
         }
 
+        public static implicit operator string(牌 p)
+        {
+            return Utils.点s[p.点] + Utils.花s[p.花];
+        }
+        public static implicit operator 牌(string s)
+        {
+            var o = Enum.Parse(typeof(牌s), s.Substring(0, 2));
+            return new 牌 { 数据 = (uint)(牌s)o };
+        }
+
+        public static implicit operator 牌s(牌 p)
+        {
+            string s = p;
+            return (牌s)Enum.Parse(typeof(牌s), s);
+        }
+        public static implicit operator 牌(牌s pe)
+        {
+            return pe.ToString();
+        }
+
         public override string ToString()
         {
             var s = Utils.点s[this.点] + Utils.花s[this.花] + "x" + this.张;
