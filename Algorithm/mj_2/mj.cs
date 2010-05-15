@@ -251,18 +251,6 @@ namespace mj_2
 
         #endregion
 
-        #region 判断是否有对子
-
-        protected bool 判断是否有对子(int gidx)
-        {
-            var ps = _手牌组[gidx];
-            var count = ps.Length;
-            for (int i = 0; i < count; i++) if (ps[i].张 >= 2) return true;
-            return false;
-        }
-
-        #endregion
-
         #region 匹配手牌对
 
         /// <summary>
@@ -658,6 +646,17 @@ namespace mj_2
 
         #endregion
 
+        #region 判断是否有对子
+
+        protected bool 判断是否有对子(int gidx)
+        {
+            var ps = _手牌组[gidx];
+            var count = ps.Length;
+            for (int i = 0; i < count; i++) if (ps[i].张 >= 2) return true;
+            return false;
+        }
+
+        #endregion
 
 
 
