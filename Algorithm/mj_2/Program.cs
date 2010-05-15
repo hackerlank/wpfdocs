@@ -15,17 +15,14 @@ namespace mj_2
         {
             var ps = new 牌[] {
                 牌s.一条, 牌s.二条, 牌s.三条, 牌s.八条, 牌s.五万, 牌s.六万, 牌s.七万,
-                牌s.二条, 牌s.二条, 牌s.三条, 牌s.八条,
-                牌s.三条, 牌s.二条, 牌s.三条,
+                牌s.一条, 牌s.二条, 牌s.三条, 牌s.八条,
+                牌s.一条, 牌s.二条, 牌s.三条,
             };
             ps.Dump();
 
             var mj = new 成都麻将(ps);
             WL();
-            WL(mj.判胡());
-
-            return;
-
+            WL(mj.判胡2());
 
 
 
@@ -33,8 +30,9 @@ namespace mj_2
             sw.Restart();
             for (int i = 0; i < 1000000; i++)
             {
-                mj.初始化(Utils.随机发牌(14));
-                mj.判胡();
+                //mj.初始化(Utils.随机发牌(14));
+                mj.初始化();
+                mj.判胡2();
             }
             sw.Stop();
             WL(sw.ElapsedMilliseconds);

@@ -88,6 +88,7 @@ namespace mj_2
         private 牌[] _原始手牌 = null;
         private 牌[][] _手牌组 = null;
         private 牌[] _手牌 = null;
+        private int[] _张数组 = new int[10];
 
         #endregion
 
@@ -141,13 +142,79 @@ namespace mj_2
 
         #endregion
 
-        #region 判胡
+        #region 判胡2
 
-        public bool 判胡()
+        protected bool 匹配手牌对2(int gIdx)
         {
+            var ps = _手牌组[gIdx];
+            var psLen = ps.Length;
+            for (int j = 0; j < psLen; j++)
+            {
+                if (ps[j].张 < 2) continue;
+                for (int i = 0; i < psLen; i++)
+                {
+                    var p = ps[i];
+                    if (i == j)
+                        _张数组[p.点] = p.张 - 2;
+                    else
+                        _张数组[p.点] = p.张;
+                }
+                var b = 扫描牌张(_张数组);
+                _张数组[1] = 0; _张数组[2] = 0; _张数组[3] = 0;
+                _张数组[4] = 0; _张数组[5] = 0; _张数组[6] = 0;
+                _张数组[7] = 0; _张数组[8] = 0; _张数组[9] = 0;
+                if (b) return true;
+            }
+            return false;
+        }
+
+        protected bool 匹配手牌坎2(int gIdx)
+        {
+            var ps = _手牌组[gIdx];
+            var psLen = ps.Length;
+            for (int i = 0; i < psLen; i++)
+            {
+                var p = ps[i];
+                _张数组[p.点] = p.张;
+            }
+            var b = 扫描牌张(_张数组);
+            _张数组[1] = 0; _张数组[2] = 0; _张数组[3] = 0;
+            _张数组[4] = 0; _张数组[5] = 0; _张数组[6] = 0;
+            _张数组[7] = 0; _张数组[8] = 0; _张数组[9] = 0;
+            return b;
+        }
+
+        protected bool 扫描牌张(int[] ns)
+        {
+            for (int i = 1; i <= 7; i++)
+            {
+                var n = ns[i];
+                if (n == -1) return false;
+                else if (n == 0 || n == 3) continue;
+                else if (n == 1 || n == 4)
+                {
+                    ns[i + 1]--;
+                    ns[i + 2]--;
+                }
+                else  // n == 2
+                {
+                    ns[i + 1] -= 2;
+                    ns[i + 2] -= 2;
+                }
+            }
+            if ((ns[8] == 0 || ns[8] == 3) && (ns[9] == 0 || ns[9] == 3)) return true;
+            return false;
+        }
+
+        public bool 判胡2()
+        {
+            #region 运算的基本条件判断
+
             if (_原始手牌 == null) throw new Exception("请先设置 原始手牌 的数据");
 
-            #region 简单的不胡判断
+            #endregion
+
+            #region 简单的不胡/胡判断
 
             // 非以下的手牌张数胡不了
             if (!(_原始手牌.Length == 14 ||
@@ -156,10 +223,10 @@ namespace mj_2
                 _原始手牌.Length == 5 ||
                 _原始手牌.Length == 2)) return false;
 
-            // 三门牌: 三花 胡不了
+            // 3 门牌: 三花 胡不了
             if (_手牌组.Length == 3) return false;
 
-            // 两门牌: 
+            // 2 门牌: 
             else if (_手牌组.Length == 2)
             {
                 // 其中一门有 1 种花点 且只有 1 张 胡不了
@@ -173,12 +240,11 @@ namespace mj_2
                     return false;
             }
 
-            // 一门牌:
+            // 1 门牌:
             else if (_手牌组.Length == 1)
             {
-                // 有 1 种花点, 不是对子 胡不了
-                if (_手牌组[0].Length == 1 && _手牌组[0][0].张 != 2)
-                    return false;
+                // 有 1 种花点, 不是对子 胡不了, 是对子，　胡
+                if (_手牌组[0].Length == 1) return _手牌组[0][0].张 == 2;
 
                 // 有 2 种花点 但其中一种是 1 张 胡不了
                 if (_手牌组[0].Length == 2 && (_手牌组[0][0].张 == 1 || _手牌组[0][1].张 == 1))
@@ -190,14 +256,131 @@ namespace mj_2
             // 没对子, 胡不了
             if (对数 == 0) return false;
 
-            #endregion
-
-            #region ７对子判断
 
             // 如果牌有 7 对, 胡了
             if (对数 == 7) return true;
 
             // todo: 5 对子， 3 对子
+
+
+            #endregion
+
+            if (_手牌组.Length == 1)       // 如果只有一门牌:
+            {
+                // 算法：
+                // 扫出所有对子，　拿掉之后，继续：
+                // 将每门牌 排列为
+                // 123456789
+                // nnnnnnnnn
+                // 固定的 9 个元素，n 为张数  空缺则 n = 0
+                // 从 1 ~ 9 扫描
+                // n == -1 则失败
+                // n == 3　则 n = 0, 继续扫下一个
+                // n == 4 则 n = 0 ( -3 , -1 ) , 后面两个元素的 n--
+                // n == 1 || 2 则 后面两个元素的 n-= 1 || 2
+
+                return 匹配手牌对2(0);
+            }
+            else
+            {
+                // 如果手上有两门牌:
+                // 扫这两门牌的所有对子
+                // 如果: 1 有对, 2 无对, 但 1 剩下的牌 无法匹配, 胡不了
+                // 如果: 2 有对, 1 无对, 但 2 剩下的牌 无法匹配, 胡不了
+                // 如果: 1, 2 均有对, 
+                //     则: 首先看 1, 2 分别在拿掉对子之后能否匹配. 
+                //     如果 1 在拿掉对子之后无法匹配, 则继续判断:
+                //          2 在拿掉对子之后匹配, 1 则不用拿对子, 如果匹配则 胡了 不匹配则 不胡
+                //     如果 1 在拿掉对子之后匹配, 2 则不用拿对子, 如果匹配则 胡了 不匹配则 不胡
+                // todo
+
+                var has对1 = 判断是否有对子(0);
+                var has对2 = 判断是否有对子(1);
+
+                if (has对1 && !has对2)
+                {
+                    if (!匹配手牌对2(0)) return false;
+                    return 匹配手牌坎2(1);
+                }
+                else if (has对2 && !has对1)
+                {
+                    if (!匹配手牌对2(1)) return false;
+                    return 匹配手牌坎2(0);
+                }
+                else
+                {
+                    if (匹配手牌对2(0))
+                        return 匹配手牌坎2(1);
+                    else
+                    {
+                        if (匹配手牌对2(1)) return 匹配手牌坎2(0);
+                        return false;
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region 判胡
+
+
+        public bool 判胡()
+        {
+            #region 运算的基本条件判断
+
+            if (_原始手牌 == null) throw new Exception("请先设置 原始手牌 的数据");
+
+            #endregion
+
+            #region 简单的不胡/胡判断
+
+            // 非以下的手牌张数胡不了
+            if (!(_原始手牌.Length == 14 ||
+                _原始手牌.Length == 11 ||
+                _原始手牌.Length == 8 ||
+                _原始手牌.Length == 5 ||
+                _原始手牌.Length == 2)) return false;
+
+            // 3 门牌: 三花 胡不了
+            if (_手牌组.Length == 3) return false;
+
+            // 2 门牌: 
+            else if (_手牌组.Length == 2)
+            {
+                // 其中一门有 1 种花点 且只有 1 张 胡不了
+                if (_手牌组[0].Length == 1 && _手牌组[0][0].张 == 1 ||
+                    _手牌组[1].Length == 1 && _手牌组[1][0].张 == 1)
+                    return false;
+
+                // 其中一门有 2 种花点 但其中一种是 1 张 胡不了
+                if (_手牌组[0].Length == 2 && (_手牌组[0][0].张 == 1 || _手牌组[0][1].张 == 1) ||
+                    _手牌组[1].Length == 2 && (_手牌组[1][0].张 == 1 || _手牌组[1][1].张 == 1))
+                    return false;
+            }
+
+            // 1 门牌:
+            else if (_手牌组.Length == 1)
+            {
+                // 有 1 种花点, 不是对子 胡不了, 是对子，　胡
+                if (_手牌组[0].Length == 1) return _手牌组[0][0].张 == 2;
+
+                // 有 2 种花点 但其中一种是 1 张 胡不了
+                if (_手牌组[0].Length == 2 && (_手牌组[0][0].张 == 1 || _手牌组[0][1].张 == 1))
+                    return false;
+            }
+
+            var 对数 = _手牌.获取对子数量();
+
+            // 没对子, 胡不了
+            if (对数 == 0) return false;
+
+
+            // 如果牌有 7 对, 胡了
+            if (对数 == 7) return true;
+
+            // todo: 5 对子， 3 对子
+
 
             #endregion
 
@@ -246,9 +429,6 @@ namespace mj_2
             }
         }
 
-
-
-
         #endregion
 
         #region 匹配手牌对
@@ -256,9 +436,9 @@ namespace mj_2
         /// <summary>
         /// 提取对子并判断剩下的牌是否能完全成坎
         /// </summary>
-        protected bool 匹配手牌对(int gidx)
+        protected bool 匹配手牌对(int gIdx)
         {
-            var ps = _手牌组[gidx];
+            var ps = _手牌组[gIdx];
             var len = ps.Length;
             for (int i = 0; i < len; i++)
             {
@@ -338,9 +518,9 @@ namespace mj_2
 
         #region 匹配手牌坎
 
-        protected bool 匹配手牌坎(int gidx)
+        protected bool 匹配手牌坎(int gIdx)
         {
-            var ps = _手牌组[gidx];
+            var ps = _手牌组[gIdx];
             var preIdx1 = 0;
             var len = ps.Length;
             var len2 = len - 2;
