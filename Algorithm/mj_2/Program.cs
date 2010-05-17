@@ -27,25 +27,26 @@ namespace mj_2
 
             var sw = new Stopwatch();
             sw.Restart();
-            var pss = new List<牌[]>();
+            //var pss = new List<牌[]>();
             for (int i = 0; i < 1000000; i++)
             {
-                ps = Utils.随机发牌(14);
-                mj.初始化(ps);
-                if (mj.判胡2())
-                {
-                    pss.Add(ps.复制());
-                }
+                //ps = Utils.随机发牌(14);
+                //mj.初始化(ps);
+                mj.判胡2();
+                //if (mj.判胡2())
+                //{
+                //    pss.Add(ps.复制());
+                //}
             }
             sw.Stop();
             WL(sw.ElapsedMilliseconds);
-            WL(pss.Count);
+            //WL(pss.Count);
 
-            foreach (var os in pss)
-            {
-                os.Dump();
-                WL();
-            }
+            //foreach (var os in pss)
+            //{
+            //    os.Dump();
+            //    WL();
+            //}
 
 
             //mj.test减去();
