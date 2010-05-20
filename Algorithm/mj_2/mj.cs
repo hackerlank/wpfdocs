@@ -830,9 +830,18 @@ namespace mj_2
 
         protected bool 判断是否有对子(int gidx)
         {
+            //return _手牌组[gidx].FirstOrDefault(o => o.张 >= 2).数据 > 0;
+
+            //var ps = _手牌组[gidx];
+            //var count = ps.Length;
+            //for (int i = 0; i < count; i++) if (ps[i].张 >= 2) return true;
+            //return false;
+
             var ps = _手牌组[gidx];
-            var count = ps.Length;
-            for (int i = 0; i < count; i++) if (ps[i].张 >= 2) return true;
+            var i = 0;
+        start:
+            if (ps[i++] >= 2) return true;
+            if (i < 9) goto start;
             return false;
         }
 
