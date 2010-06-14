@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace 娱乐
+namespace 娱乐.成都麻将
 {
-    // 枚举
-    partial struct 牌
+    partial class 成都麻将
     {
         /// <summary>
         /// 成都麻将的筒条万牌的枚举
         /// </summary>
-        public enum 牌_枚举_成都麻将 : uint
+        public enum 牌枚举 : uint
         {
             /// <summary>
             /// 0x0101u

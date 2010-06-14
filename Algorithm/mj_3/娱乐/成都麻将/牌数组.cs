@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace 娱乐
+namespace 娱乐.成都麻将
 {
-    // 数组
-    partial struct 牌
+    partial class 成都麻将
     {
         /// <summary>
         /// 成都麻将的 108 张牌的所有数据
@@ -28,10 +27,5 @@ namespace 娱乐
             0x0301u, 0x0302u, 0x0303u, 0x0304u, 0x0305u, 0x0306u, 0x0307u, 0x0308u, 0x0309u,
             0x0301u, 0x0302u, 0x0303u, 0x0304u, 0x0305u, 0x0306u, 0x0307u, 0x0308u, 0x0309u,
         };
-
-        // 其他麻将的 xxx 数据
-
-        // 1副扑克牌的 xxx 数据
     }
-
 }

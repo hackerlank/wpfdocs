@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace 娱乐.麻将
+namespace 娱乐.成都麻将
 {
-    public static partial class 牌_静态方法_麻将
+    public static partial class 牌_扩展方法
     {
         #region Dump
 
