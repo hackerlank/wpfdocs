@@ -5,7 +5,7 @@ using System.Text;
 
 namespace 娱乐.成都麻将
 {
-    public static partial class 牌_扩展方法
+    public static partial class 扩展方法
     {
         #region Dump
 
