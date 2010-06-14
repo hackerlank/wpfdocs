@@ -18,6 +18,7 @@ namespace 棋牌
             return new 牌 { 数据 = i };
         }
 
+
         // ushort(花点) <-> 牌
         public static implicit operator ushort(牌 p)
         {
@@ -27,5 +28,17 @@ namespace 棋牌
         {
             return new 牌 { 花点 = i };
         }
+
+
+        // 成都麻将.牌枚举 <-> 牌
+        public static implicit operator 成都麻将.牌枚举(牌 p)
+        {
+            return (成都麻将.牌枚举)p.花点;
+        }
+        public static implicit operator 牌(成都麻将.牌枚举 i)
+        {
+            return new 牌 { 花点 = (ushort)i };
+        }
+
     }
 }
