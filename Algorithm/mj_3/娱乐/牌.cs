@@ -124,7 +124,7 @@ namespace 娱乐
         /// <summary>
         /// 成都麻将的筒条万牌的枚举
         /// </summary>
-        public enum 牌枚举_成都麻将
+        public enum 牌枚举_成都麻将 : uint
         {
             一筒 = 0x0101u,
             二筒 = 0x0102u,
