@@ -5,8 +5,8 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-using 娱乐;
-using 娱乐.麻将;
+using 棋牌;
+using 棋牌.成都麻将;
 
 namespace mj_3
 {

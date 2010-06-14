@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace 娱乐
+namespace 棋牌
 {
     /// <summary>
     /// 针对 牌 以及相关对象的一些通用扩展方法

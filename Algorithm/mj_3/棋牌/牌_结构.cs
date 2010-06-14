@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
-namespace 娱乐
+namespace 棋牌
 {
     /// <summary>
     /// 用于代表麻将, 扑克的基本个体

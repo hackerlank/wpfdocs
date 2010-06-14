@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
-namespace 娱乐
+namespace 棋牌
 {
 
     partial struct 牌
