@@ -55,12 +55,14 @@ namespace 棋牌
         public ushort 标;
 
 
+        #region IComparable<牌>
 
         public int CompareTo(牌 other)
         {
             return this.数据.CompareTo(other.数据);
         }
 
+        #endregion
     }
 
 }
