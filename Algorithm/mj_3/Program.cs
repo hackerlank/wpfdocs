@@ -14,7 +14,7 @@ namespace mj_3
     {
         public static void Main(string[] args)
         {
-            var p = (牌)0x0101u;
+            var p = (牌)牌枚举.一万;
             p.Dump();
         }
 
