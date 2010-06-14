@@ -43,15 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="牌\成都麻将\成都麻将.cs" />
-    <Compile Include="牌\成都麻将\牌枚举.cs" />
-    <Compile Include="牌\牌_实例方法.cs" />
+    <Compile Include="棋牌\成都麻将\成都麻将.cs" />
+    <Compile Include="棋牌\成都麻将\牌枚举.cs" />
+    <Compile Include="棋牌\牌_实例方法.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="牌\牌_结构.cs" />
-    <Compile Include="牌\成都麻将\牌数组.cs" />
-    <Compile Include="牌\牌_静态方法.cs" />
-    <Compile Include="牌\成都麻将\扩展方法.cs" />
+    <Compile Include="棋牌\牌_结构.cs" />
+    <Compile Include="棋牌\成都麻将\牌数组.cs" />
+    <Compile Include="棋牌\牌_静态方法.cs" />
+    <Compile Include="棋牌\成都麻将\扩展方法.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
