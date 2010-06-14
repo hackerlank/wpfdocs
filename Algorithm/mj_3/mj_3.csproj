@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="娱乐\牌_枚举_成都麻将.cs" />
-    <Compile Include="娱乐\牌_实例方法.cs" />
+    <Compile Include="娱乐\牌_实例方法_通用.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="娱乐\牌.cs" />
