@@ -7,6 +7,7 @@ namespace 棋牌.成都麻将
 {
     partial class 成都麻将
     {
+        public static readonly int 牌数组张数 = 108;
         /// <summary>
         /// 成都麻将的 108 张牌的所有数据
         /// </summary>
