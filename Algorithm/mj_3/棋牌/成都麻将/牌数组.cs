@@ -10,7 +10,7 @@ namespace 棋牌.成都麻将
         /// <summary>
         /// 成都麻将的 108 张牌的所有数据
         /// </summary>
-        public static 牌[] 牌_数组_成都麻将 = new 牌[] {
+        public static 牌[] 牌数组 = new 牌[] {
             // 1 ~ 9 筒 x 4 张
             0x0101u, 0x0102u, 0x0103u, 0x0104u, 0x0105u, 0x0106u, 0x0107u, 0x0108u, 0x0109u,
             0x0101u, 0x0102u, 0x0103u, 0x0104u, 0x0105u, 0x0106u, 0x0107u, 0x0108u, 0x0109u,
