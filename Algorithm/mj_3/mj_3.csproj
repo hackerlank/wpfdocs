@@ -43,10 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="娱乐\牌_枚举_成都麻将.cs" />
     <Compile Include="娱乐\牌_实例方法.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="娱乐\牌.cs" />
+    <Compile Include="娱乐\牌_数组_成都麻将.cs" />
     <Compile Include="娱乐\牌_静态方法_通用.cs" />
     <Compile Include="娱乐\牌_静态方法_麻将.cs" />
   </ItemGroup>
