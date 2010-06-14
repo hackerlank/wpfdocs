@@ -22,7 +22,7 @@ namespace 娱乐.麻将
         /// </summary>
         public static void Dump(this 牌 o)
         {
-            W(点s[o.点] + 花s[o.花] + Convert.ToString(o.标, 2));
+            W(点s[o.点] + 花s[o.花]);
             var tmp = Convert.ToString(o.标L, 2);
             W("[" + new string('0', 8 - tmp.Length) + tmp);
             W(" ");
