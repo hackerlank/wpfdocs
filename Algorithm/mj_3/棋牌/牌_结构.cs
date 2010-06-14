@@ -10,7 +10,7 @@ namespace 棋牌
     /// 用于代表麻将, 扑克的基本个体
     /// </summary>
     [StructLayout(LayoutKind.Explicit, Size = 4, CharSet = CharSet.Ansi)]
-    public partial struct 牌
+    public partial struct 牌 : IComparable<牌>
     {
         /// <summary>
         /// 点数
@@ -53,41 +53,14 @@ namespace 棋牌
         /// </summary>
         [FieldOffset(2)]
         public ushort 标;
-    }
 
-    // 接口
-    partial struct 牌 : IComparable<牌>
-    {
+
+
         public int CompareTo(牌 other)
         {
             return this.数据.CompareTo(other.数据);
         }
+
     }
-
-    // 转换
-    partial struct 牌
-    {
-        // uint(数据) <-> 牌
-        public static implicit operator uint(牌 p)
-        {
-            return p.数据;
-        }
-        public static implicit operator 牌(uint i)
-        {
-            return new 牌 { 数据 = i };
-        }
-
-        // ushort(花点) <-> 牌
-        public static implicit operator ushort(牌 p)
-        {
-            return p.花点;
-        }
-        public static implicit operator 牌(ushort i)
-        {
-            return new 牌 { 花点 = i };
-        }
-    }
-
-
 
 }
