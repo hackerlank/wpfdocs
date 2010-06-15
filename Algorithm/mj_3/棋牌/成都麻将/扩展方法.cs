@@ -7,6 +7,12 @@ namespace 棋牌.成都麻将
 {
     public static partial class 扩展方法
     {
+
+
+
+
+
+
         #region Dump
 
         public static string[] 花s = new string[] {
@@ -58,10 +64,6 @@ namespace 棋牌.成都麻将
 
 
         #endregion
-
-
-
-
 
         #region Helper methods
         private static void W(object text, params object[] args)
