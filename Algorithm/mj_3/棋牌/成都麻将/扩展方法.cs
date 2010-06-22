@@ -8,10 +8,34 @@ namespace 棋牌.成都麻将
     public static partial class 扩展方法
     {
 
+        #region ToString
 
+        public enum OutputMode
+        {
+            Basic,
+            Simple,
+            Normal,
+            Detail
+        }
 
+        public static string ToString(this 牌 o, OutputMode om = OutputMode.Basic)
+        {
+            switch (om)
+            {
+                case OutputMode.Basic:
+                    return 点s[o.点] + 花s[o.花];
+                case OutputMode.Simple:
+                    return 点s[o.点] + 花s[o.花];
+                case OutputMode.Normal:
+                    return 点s[o.点] + 花s[o.花];
+                case OutputMode.Detail:
+                    return 点s[o.点] + 花s[o.花];
+                default:
+                    return 点s[o.点] + 花s[o.花];
+            }
+        }
 
-
+        #endregion
 
         #region Dump
 
