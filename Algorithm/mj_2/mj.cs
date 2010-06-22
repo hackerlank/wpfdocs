@@ -131,13 +131,6 @@ namespace mj_2
             var pss = _原始手牌.标分组堆叠排序();
             _手牌 = pss[0];
             _手牌组 = _手牌.花分组();
-
-
-            var ii = new int[10][];
-            for (int i = 0; i < 10; i++)
-            {
-                ii[i] = new int[] { };
-            }
         }
 
         #endregion
@@ -840,7 +833,7 @@ namespace mj_2
             var ps = _手牌组[gidx];
             var i = 0;
         start:
-            if (ps[i++] >= 2) return true;
+            if (ps[i++].张 >= 2) return true;
             if (i < 9) goto start;
             return false;
         }
