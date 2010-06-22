@@ -79,59 +79,6 @@ namespace 棋牌
         #endregion
 
 
-        #region 标, 花 分组 堆叠 排序（当 牌.标L 用于　张数时有效）
-
-        /// <summary>
-        /// 按 牌.标 分组, 合并 相同 牌.花点 的张数到 牌.张, 按 标, 花点 排序
-        /// </summary>
-        public static 牌[][] 标分组堆叠排序(this 牌[] ps)
-        {
-            var tmp = from p in ps
-                      group p by p.花点 into pg
-                      orderby pg.Key
-                      select new 牌 { 数据 = pg.First(), 标L = (byte)pg.Count() };
-            var tmp2 = from p in tmp
-                       group p by p.标 into pg
-                       orderby pg.Key
-                       select pg.ToArray();
-            return tmp2.ToArray();
-        }
-
-        /// <summary>
-        /// 按 牌.花 分组
-        /// </summary>
-        public static 牌[][] 花分组(this 牌[] ps)
-        {
-            var tmp = from p in ps
-                      group p by p.花 into pg
-                      orderby pg.Key
-                      select pg.ToArray();
-            return tmp.ToArray();
-        }
-
-        #endregion
-
-        #region 获取对子数量（当 牌.标L 用于　张数时有效）
-
-        public static int 获取对子数量(this 牌[] cps)
-        {
-            return cps.Sum(o => o.标L >> 1);
-        }
-
-        #endregion
-
-        #region 判断是否有对子（当 牌.标L 用于　张数时有效）
-
-        public static bool 判断是否有对子(this 牌[] cps)
-        {
-            var i = 0;
-        start:
-            if (cps[i++].标L >= 2) return true;
-            if (i < 9) goto start;
-            return false;
-        }
-
-        #endregion
 
     }
 }

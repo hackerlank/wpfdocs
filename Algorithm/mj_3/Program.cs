@@ -16,6 +16,9 @@ namespace mj_3
         {
             var p = (牌)牌枚举.一万;
             p.Dump();
+
+            var ps = new 牌[] { 牌枚举.一万, 牌枚举.一万, 牌枚举.二万, 牌枚举.三万, 牌枚举.四万 };
+            WL(ps.判胡().ToString());
         }
 
         #region Helper methods

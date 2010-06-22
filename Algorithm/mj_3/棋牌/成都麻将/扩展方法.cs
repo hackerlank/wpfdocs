@@ -111,69 +111,72 @@ namespace 棋牌.成都麻将
 
         #endregion
 
+
+
+        #region 标, 花 分组 堆叠 排序（当 牌.标L 用于　张数时有效）
+
+        /// <summary>
+        /// 按 牌.标 分组, 合并 相同 牌.花点 的张数到 牌.张, 按 标, 花点 排序
+        /// </summary>
+        public static 牌[][] 标分组堆叠排序(this 牌[] ps)
+        {
+            var tmp = from p in ps
+                      group p by p.花点 into pg
+                      orderby pg.Key
+                      select new 牌 { 数据 = pg.First(), 标L = (byte)pg.Count() };
+            var tmp2 = from p in tmp
+                       group p by p.标 into pg
+                       orderby pg.Key
+                       select pg.ToArray();
+            return tmp2.ToArray();
+        }
+
+        public static 牌[] 花点分组堆叠排序(this 牌[] ps)
+        {
+            var tmp = from p in ps
+                      group p by p.花点 into pg
+                      orderby pg.Key
+                      select new 牌 { 数据 = pg.First(), 标L = (byte)pg.Count() };
+            return tmp.ToArray();
+        }
+
+        /// <summary>
+        /// 按 牌.花 分组
+        /// </summary>
+        public static 牌[][] 花分组(this 牌[] ps)
+        {
+            var tmp = from p in ps
+                      group p by p.花 into pg
+                      orderby pg.Key
+                      select pg.ToArray();
+            return tmp.ToArray();
+        }
+
+        #endregion
+
+        #region 获取对子数量（当 牌.标L 用于　张数时有效）
+
+        public static int 获取对子数量(this 牌[] cps)
+        {
+            return cps.Sum(o => o.标L >> 1);
+        }
+
+        #endregion
+
+        #region 判断是否有对子（当 牌.标L 用于　张数时有效）
+
+        public static bool 判断是否有对子(this 牌[] cps)
+        {
+            var i = 0;
+        start:
+            if (cps[i++].标L >= 2) return true;
+            if (i < 9) goto start;
+            return false;
+        }
+
+        #endregion
+
         #region 判胡
-
-        static bool 匹配手牌对(牌[] ps)
-        {
-            int[] cs = new int[10];
-            var psLen = ps.Length;
-            for (int j = 0; j < psLen; j++)
-            {
-                if (ps[j].标L < 2) continue;
-                for (int i = 0; i < psLen; i++)
-                {
-                    var p = ps[i];
-                    if (i == j)
-                        cs[p.点] = p.标L - 2;
-                    else
-                        cs[p.点] = p.标L;
-                }
-                var b = 扫描牌张(cs);
-                cs[1] = 0; cs[2] = 0; cs[3] = 0;
-                cs[4] = 0; cs[5] = 0; cs[6] = 0;
-                cs[7] = 0; cs[8] = 0; cs[9] = 0;
-                if (b) return true;
-            }
-            return false;
-        }
-
-        static bool 匹配手牌坎(牌[] ps)
-        {
-            int[] cs = new int[10];
-            var psLen = ps.Length;
-            for (int i = 0; i < psLen; i++)
-            {
-                var p = ps[i];
-                cs[p.点] = p.标L;
-            }
-            var b = 扫描牌张(cs);
-            cs[1] = 0; cs[2] = 0; cs[3] = 0;
-            cs[4] = 0; cs[5] = 0; cs[6] = 0;
-            cs[7] = 0; cs[8] = 0; cs[9] = 0;
-            return b;
-        }
-
-        static bool 扫描牌张(int[] cs)
-        {
-            for (int i = 1; i <= 7; i++)
-            {
-                var n = cs[i];
-                if (n == -1) return false;
-                else if (n == 0 || n == 3) continue;
-                else if (n == 1 || n == 4)
-                {
-                    cs[i + 1]--;
-                    cs[i + 2]--;
-                }
-                else  // n == 2
-                {
-                    cs[i + 1] -= 2;
-                    cs[i + 2] -= 2;
-                }
-            }
-            if ((cs[8] == 0 || cs[8] == 3) && (cs[9] == 0 || cs[9] == 3)) return true;
-            return false;
-        }
 
         public static bool 判胡(this 牌[] ps)
         {
@@ -186,12 +189,6 @@ namespace 棋牌.成都麻将
 
             #region 预处理
 
-            // todo: 复制 ps 并整理牌状态，　清空　标 用于张数统计
-
-            #endregion
-
-            #region 简单的不胡/胡判断
-
             // 非以下的手牌张数胡不了
             if (!(ps.Length == 14 ||
                 ps.Length == 11 ||
@@ -199,7 +196,21 @@ namespace 棋牌.成都麻将
                 ps.Length == 5 ||
                 ps.Length == 2)) return false;
 
-            var pss = ps.花分组();
+            // todo: 复制 ps 并整理牌状态，　清空　标 用于张数统计
+            var ps_copy = ps.复制();
+            for (int i = 0; i < ps_copy.Length; i++)
+            {
+                var p = ps_copy[i];
+                p.标L = 0;
+                ps_copy[i] = p;
+            }
+
+            var cps = ps_copy.花点分组堆叠排序();
+            var pss = cps.花分组();
+
+            #endregion
+
+            #region 简单的不胡/胡判断
 
             // 3 门牌: 三花 胡不了
             if (pss.Length == 3) return false;
@@ -229,7 +240,7 @@ namespace 棋牌.成都麻将
                     return false;
             }
 
-            var 对数 = ps.获取对子数量();
+            var 对数 = cps.获取对子数量();
 
             // 没对子, 胡不了
             if (对数 == 0) return false;
@@ -298,7 +309,70 @@ namespace 棋牌.成都麻将
             }
         }
 
-        #endregion
 
+
+        static bool 匹配手牌对(牌[] cps)
+        {
+            int[] cs = new int[10];
+            var psLen = cps.Length;
+            for (int j = 0; j < psLen; j++)
+            {
+                if (cps[j].标L < 2) continue;
+                for (int i = 0; i < psLen; i++)
+                {
+                    var p = cps[i];
+                    if (i == j)
+                        cs[p.点] = p.标L - 2;
+                    else
+                        cs[p.点] = p.标L;
+                }
+                var b = 扫描牌张(cs);
+                cs[1] = 0; cs[2] = 0; cs[3] = 0;
+                cs[4] = 0; cs[5] = 0; cs[6] = 0;
+                cs[7] = 0; cs[8] = 0; cs[9] = 0;
+                if (b) return true;
+            }
+            return false;
+        }
+
+        static bool 匹配手牌坎(牌[] cps)
+        {
+            int[] cs = new int[10];
+            var psLen = cps.Length;
+            for (int i = 0; i < psLen; i++)
+            {
+                var p = cps[i];
+                cs[p.点] = p.标L;
+            }
+            var b = 扫描牌张(cs);
+            cs[1] = 0; cs[2] = 0; cs[3] = 0;
+            cs[4] = 0; cs[5] = 0; cs[6] = 0;
+            cs[7] = 0; cs[8] = 0; cs[9] = 0;
+            return b;
+        }
+
+        static bool 扫描牌张(int[] cs)
+        {
+            for (int i = 1; i <= 7; i++)
+            {
+                var n = cs[i];
+                if (n == -1) return false;
+                else if (n == 0 || n == 3) continue;
+                else if (n == 1 || n == 4)
+                {
+                    cs[i + 1]--;
+                    cs[i + 2]--;
+                }
+                else  // n == 2
+                {
+                    cs[i + 1] -= 2;
+                    cs[i + 2] -= 2;
+                }
+            }
+            if ((cs[8] == 0 || cs[8] == 3) && (cs[9] == 0 || cs[9] == 3)) return true;
+            return false;
+        }
+
+        #endregion
     }
 }
