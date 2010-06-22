@@ -115,7 +115,7 @@ namespace 棋牌.成都麻将
 
         static bool 匹配手牌对(牌[] ps)
         {
-            int[] _张数组 = new int[10];
+            int[] cs = new int[10];
             var psLen = ps.Length;
             for (int j = 0; j < psLen; j++)
             {
@@ -124,14 +124,14 @@ namespace 棋牌.成都麻将
                 {
                     var p = ps[i];
                     if (i == j)
-                        _张数组[p.点] = p.标L - 2;
+                        cs[p.点] = p.标L - 2;
                     else
-                        _张数组[p.点] = p.标L;
+                        cs[p.点] = p.标L;
                 }
-                var b = 扫描牌张(_张数组);
-                _张数组[1] = 0; _张数组[2] = 0; _张数组[3] = 0;
-                _张数组[4] = 0; _张数组[5] = 0; _张数组[6] = 0;
-                _张数组[7] = 0; _张数组[8] = 0; _张数组[9] = 0;
+                var b = 扫描牌张(cs);
+                cs[1] = 0; cs[2] = 0; cs[3] = 0;
+                cs[4] = 0; cs[5] = 0; cs[6] = 0;
+                cs[7] = 0; cs[8] = 0; cs[9] = 0;
                 if (b) return true;
             }
             return false;
@@ -139,39 +139,39 @@ namespace 棋牌.成都麻将
 
         static bool 匹配手牌坎(牌[] ps)
         {
-            int[] _张数组 = new int[10];
+            int[] cs = new int[10];
             var psLen = ps.Length;
             for (int i = 0; i < psLen; i++)
             {
                 var p = ps[i];
-                _张数组[p.点] = p.标L;
+                cs[p.点] = p.标L;
             }
-            var b = 扫描牌张(_张数组);
-            _张数组[1] = 0; _张数组[2] = 0; _张数组[3] = 0;
-            _张数组[4] = 0; _张数组[5] = 0; _张数组[6] = 0;
-            _张数组[7] = 0; _张数组[8] = 0; _张数组[9] = 0;
+            var b = 扫描牌张(cs);
+            cs[1] = 0; cs[2] = 0; cs[3] = 0;
+            cs[4] = 0; cs[5] = 0; cs[6] = 0;
+            cs[7] = 0; cs[8] = 0; cs[9] = 0;
             return b;
         }
 
-        static bool 扫描牌张(int[] ns)
+        static bool 扫描牌张(int[] cs)
         {
             for (int i = 1; i <= 7; i++)
             {
-                var n = ns[i];
+                var n = cs[i];
                 if (n == -1) return false;
                 else if (n == 0 || n == 3) continue;
                 else if (n == 1 || n == 4)
                 {
-                    ns[i + 1]--;
-                    ns[i + 2]--;
+                    cs[i + 1]--;
+                    cs[i + 2]--;
                 }
                 else  // n == 2
                 {
-                    ns[i + 1] -= 2;
-                    ns[i + 2] -= 2;
+                    cs[i + 1] -= 2;
+                    cs[i + 2] -= 2;
                 }
             }
-            if ((ns[8] == 0 || ns[8] == 3) && (ns[9] == 0 || ns[9] == 3)) return true;
+            if ((cs[8] == 0 || cs[8] == 3) && (cs[9] == 0 || cs[9] == 3)) return true;
             return false;
         }
 
