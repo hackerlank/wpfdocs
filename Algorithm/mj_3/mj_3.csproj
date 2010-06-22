@@ -54,7 +54,6 @@
     <Compile Include="棋牌\牌_结构.cs" />
     <Compile Include="棋牌\成都麻将\牌数组.cs" />
     <Compile Include="棋牌\牌_静态方法.cs" />
-    <Compile Include="棋牌\成都麻将\扩展方法.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
