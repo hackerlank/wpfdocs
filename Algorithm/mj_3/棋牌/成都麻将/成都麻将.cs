@@ -100,8 +100,7 @@ namespace 棋牌.成都麻将
             return (string)this;
         }
 
-        // todo: ToString  To麻将牌
-        // uint(数据) <-> 牌
+
         public static implicit operator string(麻将牌 p)
         {
             return p.索引.ToString() + "|" + 扩展方法.点s[p.牌.点] + 扩展方法.花s[p.牌.花];
