@@ -11,7 +11,10 @@ namespace 棋牌.成都麻将
     /// </summary>
     public partial class 麻将牌
     {
-
+        /// <summary>
+        /// 表示该牌于容器中的 index （使用者自己填充）
+        /// </summary>
+        public int 索引;
 
         /// <summary>
         /// 是谁首先摸起来这张牌的（单人）
