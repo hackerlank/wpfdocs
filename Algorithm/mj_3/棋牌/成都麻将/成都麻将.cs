@@ -7,10 +7,75 @@ using System.Security.Cryptography;
 namespace 棋牌.成都麻将
 {
     /// <summary>
+    /// 参与打麻将的２～６个玩家
+    /// </summary>
+    [Flags]
+    public enum 玩家 : int
+    {
+        A = 1, B = 2, C = 4, D = 8, E = 16, F = 32//, G = 64, H = 64
+    }
+
+    /// <summary>
+    /// 麻将牌于牌桌上的状态
+    /// </summary>
+    public enum 状态 : byte
+    {
+        /// <summary>
+        /// 牌桌上码好的待摸牌
+        /// </summary>
+        扣 = 1,
+        /// <summary>
+        /// 玩家打出的，放到桌上的舍牌
+        /// </summary>
+        桌,
+        /// <summary>
+        /// 玩家手上的，未吃碰杠的，可自由组合成听的牌（刚摸到的那张）
+        /// </summary>
+        摸,
+        /// <summary>
+        /// 玩家手上的，未吃碰杠的，可自由组合成听的牌
+        /// </summary>
+        手,
+        ///// <summary>
+        ///// 玩家吃别人的牌
+        ///// </summary>
+        //吃,
+        /// <summary>
+        /// 碰牌
+        /// </summary>
+        碰,
+        /// <summary>
+        /// 弯杠
+        /// </summary>
+        弯,
+        /// <summary>
+        /// 直杠
+        /// </summary>
+        直,
+        /// <summary>
+        /// 暗杠
+        /// </summary>
+        暗,
+        ///// <summary>
+        ///// 补花
+        ///// </summary>
+        //补
+        /// <summary>
+        /// 胡牌
+        /// </summary>
+        胡,
+    }
+
+    /// <summary>
     /// 含状态属性的单张麻将牌元素
     /// </summary>
     public partial class 麻将牌
     {
+        /// <summary>
+        /// 麻将牌本身
+        /// </summary>
+        public 牌 牌;
+
         /// <summary>
         /// 表示该牌于容器中的 index （使用者自己填充）
         /// </summary>
@@ -27,68 +92,16 @@ namespace 棋牌.成都麻将
         /// <summary>
         /// 扣，桌，摸，手，碰，弯，直，暗，胡
         /// </summary>
-        public 状态 牌状态;
+        public 状态 状态;
 
 
-        /// <summary>
-        /// 参与打麻将的２～６个玩家
-        /// </summary>
-        [Flags]
-        public enum 玩家 : int
+        public override string ToString()
         {
-            A = 1, B = 2, C = 4, D = 8, E = 16, F = 32//, G = 64, H = 64
+            return 索引.ToString() + "|" + 扩展方法.点s[this.牌.点] + 扩展方法.花s[this.牌.花];
         }
 
-        /// <summary>
-        /// 麻将牌于牌桌上的状态
-        /// </summary>
-        public enum 状态 : byte
-        {
-            /// <summary>
-            /// 牌桌上码好的待摸牌
-            /// </summary>
-            扣 = 1,
-            /// <summary>
-            /// 玩家打出的，放到桌上的舍牌
-            /// </summary>
-            桌,
-            /// <summary>
-            /// 玩家手上的，未吃碰杠的，可自由组合成听的牌（刚摸到的那张）
-            /// </summary>
-            摸,
-            /// <summary>
-            /// 玩家手上的，未吃碰杠的，可自由组合成听的牌
-            /// </summary>
-            手,
-            ///// <summary>
-            ///// 玩家吃别人的牌
-            ///// </summary>
-            //吃,
-            /// <summary>
-            /// 碰牌
-            /// </summary>
-            碰,
-            /// <summary>
-            /// 弯杠
-            /// </summary>
-            弯,
-            /// <summary>
-            /// 直杠
-            /// </summary>
-            直,
-            /// <summary>
-            /// 暗杠
-            /// </summary>
-            暗,
-            ///// <summary>
-            ///// 补花
-            ///// </summary>
-            //补
-            /// <summary>
-            /// 胡牌
-            /// </summary>
-            胡,
-        }
+        // todo: ToString  To麻将牌
+
 
     }
 
