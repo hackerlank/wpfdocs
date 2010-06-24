@@ -97,11 +97,27 @@ namespace 棋牌.成都麻将
 
         public override string ToString()
         {
-            return 索引.ToString() + "|" + 扩展方法.点s[this.牌.点] + 扩展方法.花s[this.牌.花];
+            return (string)this;
         }
 
         // todo: ToString  To麻将牌
-
+        // uint(数据) <-> 牌
+        public static implicit operator string(麻将牌 p)
+        {
+            return p.索引.ToString() + "|" + 扩展方法.点s[p.牌.点] + 扩展方法.花s[p.牌.花];
+        }
+        public static implicit operator 麻将牌(string s)
+        {
+            var ss = s.Split('|');
+            牌枚举 p;
+            if (Enum.TryParse<牌枚举>(ss[1], out p))
+                return new 麻将牌
+                {
+                    索引 = int.Parse(ss[0]),
+                    牌 = p
+                };
+            return null;
+        }
 
     }
 
