@@ -374,5 +374,74 @@ namespace 棋牌.成都麻将
         }
 
         #endregion
+
+        #region 类型转换
+        public static 棋牌.成都麻将.玩家 To玩家(this int tar)
+        {
+            switch (tar)
+            {
+                case -1: return 棋牌.成都麻将.玩家.None;
+                case 0: return 棋牌.成都麻将.玩家.A;
+                case 1: return 棋牌.成都麻将.玩家.B;
+                case 2: return 棋牌.成都麻将.玩家.C;
+                case 3: return 棋牌.成都麻将.玩家.D;
+                case 4: return 棋牌.成都麻将.玩家.E;
+                case 5: return 棋牌.成都麻将.玩家.F;
+                case 6: return 棋牌.成都麻将.玩家.G;
+                case 7: return 棋牌.成都麻将.玩家.H;
+                default: throw new Exception("我艹,位数不够用了!想别的办法吧!");
+            }
+        }
+
+        public static int ToInt32(this 棋牌.成都麻将.玩家 tar)
+        {
+            switch (tar)
+            {
+                case 棋牌.成都麻将.玩家.None: return -1;
+                case 棋牌.成都麻将.玩家.A: return 0;
+                case 棋牌.成都麻将.玩家.B: return 1;
+                case 棋牌.成都麻将.玩家.C: return 2;
+                case 棋牌.成都麻将.玩家.D: return 3;
+                case 棋牌.成都麻将.玩家.E: return 4;
+                case 棋牌.成都麻将.玩家.F: return 5;
+                case 棋牌.成都麻将.玩家.G: return 6;
+                case 棋牌.成都麻将.玩家.H: return 7;
+                default: throw new Exception("给出的枚举不对,或者代码不同步");
+            }
+        }
+
+        public static 棋牌.成都麻将.麻将牌 To麻将牌(this 棋牌.牌 pai)
+        {
+            棋牌.成都麻将.麻将牌 mjpai = new 麻将牌();
+            mjpai.归属 = 玩家.None;
+            mjpai.摸牌者 = 玩家.None;
+            mjpai.状态 = 状态.扣;
+            mjpai.索引 = -1;
+            mjpai.牌.花 = pai.花;
+            mjpai.牌.点 = pai.点;
+            return mjpai;
+        }
+        public static 棋牌.成都麻将.麻将牌 To麻将牌(this 棋牌.牌 pai,int index)
+        {
+            棋牌.成都麻将.麻将牌 mjpai = new 麻将牌();
+            mjpai.归属 = 玩家.None;
+            mjpai.摸牌者 = 玩家.None;
+            mjpai.状态 = 状态.扣;
+            mjpai.索引 = index;
+            mjpai.牌.花 = pai.花;
+            mjpai.牌.点 = pai.点;
+            return mjpai;
+        }
+        public static 棋牌.牌 To牌(this 棋牌.成都麻将.麻将牌 mjpai)
+        {
+            牌 ret = new 牌();
+            ret.点 = mjpai.牌.点;
+            ret.花 = mjpai.牌.花;
+            ret.标L = (byte)mjpai.索引;
+            return ret;
+        }
+
+        #endregion
     }
+
 }

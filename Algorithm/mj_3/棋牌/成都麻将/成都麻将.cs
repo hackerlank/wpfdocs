@@ -12,7 +12,7 @@ namespace 棋牌.成都麻将
     [Flags]
     public enum 玩家 : int
     {
-        A = 1, B = 2, C = 4, D = 8, E = 16, F = 32//, G = 64, H = 64
+        None = 0, A = 1, B = 2, C = 4, D = 8, E = 16, F = 32, G = 64, H = 128
     }
 
     /// <summary>
@@ -95,27 +95,31 @@ namespace 棋牌.成都麻将
         public 状态 状态;
 
 
-        public override string ToString()
+        public string ToString(bool mask)
         {
-            return (string)this;
+            if (mask)
+            {
+                return this.索引.ToString() + "|0|0";
+            }
+            return this.索引.ToString() + "|" + this.牌.点 + "|" + this.牌.花;
         }
-
-
-        public static implicit operator string(麻将牌 p)
+        public static 麻将牌 FromString(string s)
         {
-            return p.索引.ToString() + "|" + 扩展方法.点s[p.牌.点] + 扩展方法.花s[p.牌.花];
-        }
-        public static implicit operator 麻将牌(string s)
-        {
-            var ss = s.Split('|');
-            牌枚举 p;
-            if (Enum.TryParse<牌枚举>(ss[1], out p))
-                return new 麻将牌
-                {
-                    索引 = int.Parse(ss[0]),
-                    牌 = p
-                };
-            return null;
+            麻将牌 ret = new 麻将牌();
+            try
+            {
+                var arr = s.Split(new char[] { '|' });
+                ret.索引 = int.Parse(arr[0]);
+                ret.牌.点 = byte.Parse(arr[1]);
+                ret.牌.花 = byte.Parse(arr[2]);
+                return ret;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("给出的字符串不能还原为麻将牌:" + ex.Message);
+            }
+
         }
 
     }
