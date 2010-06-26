@@ -20,7 +20,11 @@ namespace mj_3
             var ps = new 牌[] { 牌枚举.一万, 牌枚举.一万, 牌枚举.二万, 牌枚举.三万, 牌枚举.四万 };
             WL(ps.判胡().ToString());
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="args"></param>
         #region Helper methods
         private static void W(object text, params object[] args)
         {
