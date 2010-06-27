@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="棋牌\成都麻将\一桌成都麻将.cs" />
     <Compile Include="棋牌\成都麻将\实例方法.cs" />
     <Compile Include="棋牌\成都麻将\成都麻将.cs" />
     <Compile Include="棋牌\成都麻将\扩展方法.cs" />
