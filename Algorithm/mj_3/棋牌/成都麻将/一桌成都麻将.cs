@@ -5,6 +5,9 @@ using System.Text;
 
 namespace 棋牌.成都麻将
 {
+    /// <summary>
+    /// 原则: 所有麻将牌 只有 1 个实例, 首先存在于 桌麻将容器.麻将牌集合 之中
+    /// </summary>
     public partial class 桌麻将容器
     {
         /// <summary>
@@ -18,13 +21,17 @@ namespace 棋牌.成都麻将
         public Dictionary<玩家, 玩家麻将牌容器> 玩家麻将牌容器字典;
 
         /// <summary>
-        /// 缓存性质, 当前牌桌上的可见牌 (标L = 张)
+        /// 当前牌桌上的可见牌 (牌局进行过程中, 一但出现可见牌, 便加入到该数组)
         /// </summary>
-        public 牌[] 明牌集合;
+        public List<麻将牌> 明牌集合;
     }
 
     public partial class 玩家麻将牌容器
     {
+        public 玩家 玩家;
+
+        //public 方位
+
         /// <summary>
         /// 归属于当前玩家的麻将牌集合
         /// </summary>
