@@ -33,28 +33,28 @@ namespace 棋牌.成都麻将
         /// <summary>
         /// 玩家 吃的 牌坎 集合
         /// </summary>
-        public 麻将牌[][] 吃;
+        public 麻将牌[][] 吃坎集合;
         /// <summary>
         /// 玩家 碰的 牌坎 集合
         /// </summary>
-        public 麻将牌[][] 碰;
+        public 麻将牌[][] 碰坎集合;
         /// <summary>
         /// 玩家 杠的 牌坎 集合
         /// </summary>
-        public 麻将牌[][] 杠;
+        public 麻将牌[][] 杠坎集合;
         /// <summary>
         /// 玩家 手牌 集合 (可用于自由组合打出/判胡的牌张)
         /// </summary>
-        public 麻将牌[] 手;
+        public 麻将牌[] 手牌集合;
         
         /// <summary>
         /// 已胡牌牌张
         /// </summary>
-        public 麻将牌 胡;
+        public 麻将牌 胡牌;
 
         /// <summary>
         /// 对于需要 吃碰杠胡判断 的情况, 将 自己刚摸到的牌, 或其他玩家打出的牌, 放在这里
         /// </summary>
-        public 麻将牌 目标;
+        public 麻将牌 目标牌;
     }
 }
