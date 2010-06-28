@@ -178,6 +178,28 @@ namespace 棋牌.成都麻将
 
         #region 判胡
 
+        /// <summary>
+        /// 如果传 p 参数, 则是判
+        /// </summary>
+        /// <param name="ps"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public static bool 判胡(this 桌麻将容器 ps, 麻将牌 p)
+        {
+            // todo: 因历史问题导致胡牌不能
+
+            //ps.玩家麻将牌容器字典
+
+            return true;
+        }
+
+        public static bool 判胡(this 麻将牌[] ps)
+        {
+            var a = from p in ps select new 牌 { 花点 = p.牌.花点 };
+            return 判胡(a.ToArray());
+        }
+
+
         public static bool 判胡(this 牌[] ps)
         {
             #region 运算的基本条件判断
@@ -415,7 +437,7 @@ namespace 棋牌.成都麻将
             棋牌.成都麻将.麻将牌 mjpai = new 麻将牌();
             mjpai.归属 = 玩家.None;
             mjpai.摸牌者 = 玩家.None;
-            mjpai.状态 = 状态.扣;
+            mjpai.状态 = 状态.砖;
             mjpai.索引 = -1;
             mjpai.牌.花 = pai.花;
             mjpai.牌.点 = pai.点;
@@ -426,7 +448,7 @@ namespace 棋牌.成都麻将
             棋牌.成都麻将.麻将牌 mjpai = new 麻将牌();
             mjpai.归属 = 玩家.None;
             mjpai.摸牌者 = 玩家.None;
-            mjpai.状态 = 状态.扣;
+            mjpai.状态 = 状态.砖;
             mjpai.索引 = index;
             mjpai.牌.花 = pai.花;
             mjpai.牌.点 = pai.点;

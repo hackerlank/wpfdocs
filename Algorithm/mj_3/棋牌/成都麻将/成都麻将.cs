@@ -10,7 +10,7 @@ namespace 棋牌.成都麻将
     /// 参与打麻将的２～６个玩家
     /// </summary>
     [Flags]
-    public enum 玩家 : int
+    public enum 玩家 : byte
     {
         None = 0, A = 1, B = 2, C = 4, D = 8, E = 16, F = 32, G = 64, H = 128
     }
@@ -23,7 +23,7 @@ namespace 棋牌.成都麻将
         /// <summary>
         /// 牌桌上码好的待摸牌
         /// </summary>
-        扣 = 1,
+        砖 = 1,
         /// <summary>
         /// 玩家打出的，放到桌上的舍牌
         /// </summary>
