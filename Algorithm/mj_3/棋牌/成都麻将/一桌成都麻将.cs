@@ -26,20 +26,28 @@ namespace 棋牌.成都麻将
         public List<麻将牌> 明牌集合;
 
         /// <summary>
-        /// todo
+        /// 游戏从第一个人进入到游戏结束的所有行为数据
         /// </summary>
         public List<行为数据> 行为日志;
     }
 
     public enum 座次枚举 : byte
     {
-        东 = 1, 南, 西, 北
+        A = 1, B, C, D, E, F, G, H
     }
 
     public enum 行为枚举 : byte
     {
-        // todo: 进场
-        // todo: 准备
+        /// <summary>
+        /// 玩家从大厅导航到了游戏服务器, 服务器为玩家分配初始座位
+        /// 存储：
+        /// 玩家编号：玩家编号
+        /// 行为发起者：玩家
+        /// </summary>
+        进场就坐,
+        // 准备
+
+        // todo:
 
         /// <summary>
         /// 存储结构: 相关麻将牌数据 存洗好的 108 张
@@ -135,6 +143,10 @@ namespace 棋牌.成都麻将
         /// 牌局刚开始的时间 到 行为时间 的时间间隔 (相对时间), 每个行为都要填写
         /// </summary>
         public TimeSpan 发生时间;
+        /// <summary>
+        /// 行为主导者（的编号）
+        /// </summary>
+        public int 玩家编号;
         /// <summary>
         /// 行为主导者
         /// </summary>

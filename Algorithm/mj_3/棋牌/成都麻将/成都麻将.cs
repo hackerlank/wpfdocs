@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 namespace 棋牌.成都麻将
 {
     /// <summary>
-    /// 参与打麻将的２～６个玩家
+    /// 参与打麻将的1 到 8个玩家 ( 等同于 方位　座次 ）
     /// </summary>
     [Flags]
     public enum 玩家 : byte

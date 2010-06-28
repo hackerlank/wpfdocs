@@ -184,12 +184,18 @@ namespace 棋牌.成都麻将
         /// <param name="ps"></param>
         /// <param name="p"></param>
         /// <returns></returns>
-        public static bool 判胡(this 桌麻将容器 ps, 麻将牌 p)
+        public static bool 判胡(this 桌麻将容器 ps)
         {
             // todo: 因历史问题导致胡牌不能
 
             //ps.玩家麻将牌容器字典
 
+            var ppp = new 桌麻将容器();
+            ppp.行为日志 = new List<行为数据>();
+            ppp.行为日志.Add(new 行为数据 { 发起玩家 = 玩家.A, 目标麻将牌数据 = ppp.麻将牌集合[1], 行为 = 行为枚举.打 });
+            ppp.行为日志.Add(new 行为数据 { 发起玩家 = 玩家.A, 目标麻将牌数据 = ppp.麻将牌集合[1], 行为 = 行为枚举.打 });
+            ppp.行为日志.Add(new 行为数据 { 发起玩家 = 玩家.A, 目标麻将牌数据 = ppp.麻将牌集合[1], 行为 = 行为枚举.打 });
+            ppp.行为日志.Add(new 行为数据 { 发起玩家 = 玩家.A, 目标麻将牌数据 = ppp.麻将牌集合[1], 行为 = 行为枚举.打 });
             return true;
         }
 
