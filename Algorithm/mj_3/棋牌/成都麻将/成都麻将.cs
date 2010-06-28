@@ -27,49 +27,49 @@ namespace 棋牌.成都麻将
         /// <summary>
         /// 玩家打出的，放到桌上的舍牌
         /// </summary>
-        桌,
+        桌 = 2,
         /// <summary>
         /// 玩家手上的，未吃碰杠的，可自由组合成听的牌（刚摸到的那张）
         /// </summary>
-        摸,
+        摸 = 3,
         /// <summary>
         /// 玩家手上的，未吃碰杠的，可自由组合成听的牌
         /// </summary>
-        手,
+        手 = 4,
         ///// <summary>
         ///// 玩家吃别人的牌
         ///// </summary>
-        //吃,
+        吃 = 5,
         /// <summary>
         /// 碰牌
         /// </summary>
-        碰,
+        碰 = 6,
         /// <summary>
         /// 弯杠
         /// </summary>
-        弯,
+        弯 = 7,
         /// <summary>
         /// 直杠
         /// </summary>
-        直,
+        直 = 8,
         /// <summary>
         /// 暗杠
         /// </summary>
-        暗,
+        暗 = 9,
         ///// <summary>
         ///// 补花
         ///// </summary>
-        //补
+        补 = 10,
         /// <summary>
         /// 胡牌
         /// </summary>
-        胡,
+        胡 = 11,
     }
 
     /// <summary>
     /// 含状态属性的单张麻将牌元素
     /// </summary>
-    public partial class 麻将牌
+    public partial class 麻将牌 : IEquatable<麻将牌>
     {
         /// <summary>
         /// 麻将牌本身
@@ -120,8 +120,16 @@ namespace 棋牌.成都麻将
                 throw new Exception("给出的字符串不能还原为麻将牌:" + ex.Message);
             }
 
+        }        
+
+        #region IEquatable<麻将牌> Members
+
+        public bool Equals(麻将牌 other)
+        {
+            return this.索引.Equals(other.索引);
         }
 
+        #endregion
     }
 
 
