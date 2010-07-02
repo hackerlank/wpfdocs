@@ -32,6 +32,11 @@ namespace 棋牌.成都麻将
         /// 游戏从第一个人进入到游戏结束的所有行为数据
         /// </summary>
         public List<行为数据> 行为日志;
+
+        public TimeSpan 得到相对时间(DateTime 事发时间)
+        {
+            return 事发时间.Subtract(参照时间);
+        }
     }
 
     public enum 座次枚举 : byte
@@ -41,6 +46,10 @@ namespace 棋牌.成都麻将
 
     public enum 行为枚举 : byte
     {
+        /// <summary>
+        /// 通过构造参数,创建,并且从数据库返回了构造所需的信息
+        /// </summary>
+        房间创建,
         /// <summary>
         /// Agent启动这个房间之后,或者打完一局重新初始化的时候. 也是所有时间的参考起始时间.
         /// 相关数据1 存放这个时间
@@ -64,6 +73,12 @@ namespace 棋牌.成都麻将
         /// 其他信息1:准备状态 准备好了=1,取消准备=0
         /// </summary>
         玩家准备,
+        定座位,
+        玩家断线,
+        断线恢复,
+        托管状态切换,
+        设置庄家,
+        聊天,
         /// <summary>
         /// 在房主开始或者比赛局时管理员开始的情况下,不会有准备事件,会有房主开始事件
         /// 存储:
@@ -120,7 +135,7 @@ namespace 棋牌.成都麻将
         /// 存储结构: 
         /// 
         /// </summary>
-        定,
+        定张,
         /// <summary>
         /// (玩家行为)
         /// 两种情况:
@@ -219,6 +234,8 @@ namespace 棋牌.成都麻将
         /// todo (存放非麻将数据)
         /// </summary>
         public string[] 相关数据;
+
+        public EventArgs 事件参数;
     }
 
     public partial class 玩家麻将牌容器

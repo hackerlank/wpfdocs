@@ -121,4 +121,11 @@ namespace 棋牌.成都麻将
         /// </summary>
         九万 = (ushort)0x0309u,
     }
+    public enum 花色枚举
+    {
+        未知=0,
+        筒=1,
+        条=2,
+        万=3
+    }
 }
