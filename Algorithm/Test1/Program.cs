@@ -75,76 +75,75 @@ namespace Test1
             Score(1, 0);
             return _maxPoint;
         }
-        static void Score(int idx, int point)
+        static void Score(int i, int point)
         {
-            for (int i = idx; i <= 9; i++)
+            // 判杠
+            if (_cs[i] == 4)
             {
-                // 判杠
-                if (_cs[i] == 4)
-                {
-                    _cs[i] = 0;
-                    Score(i + 1, point + 150);
-                    _cs[i] = 4;
-                }
-
-                // 判刻
-                if (_cs[i] >= 3)
-                {
-                    _cs[i] -= 3;
-                    Score(i + 1, point + 70);
-                    _cs[i] += 3;
-                }
-
-                // 判对
-                if (_cs[i] >= 2)
-                {
-                    _cs[i] -= 2;
-                    Score(i, point + 30);
-                    _cs[i] += 2;
-                }
-
-                // 判单
-                if (_cs[i] >= 1)
-                {
-                    _cs[i] -= 1;
-                    Score(i, point + ((i == 1 || i == 9) ? 2 : 5));
-                    _cs[i] += 1;
-                }
-
-                // 判靠
-                if (i > 8) continue;
-                // 靠有 12, 13, 23 三种方式
-                if (_cs[i] >= 1 && _cs[i + 1] >= 1 && i < 8) //12
-                {
-                    _cs[i] -= 1; _cs[i + 1] -= 1;
-                    Score(i, point + (i == 1 ? 10 : 20));
-                    _cs[i] += 1; _cs[i + 1] += 1;
-                }
-
-                if (_cs[i] >= 1 && _cs[i + 2] >= 1 && i < 8) //13
-                {
-                    _cs[i] -= 1; _cs[i + 2] -= 1;
-                    Score(i, point + 10);
-                    _cs[i] += 1; _cs[i + 2] += 1;
-                }
-
-                if (_cs[i + 1] >= 1 && _cs[i + 2] >= 1) //23
-                {
-                    _cs[i + 1] -= 1; _cs[i + 2] -= 1;
-                    Score(i, point + (i == 8 ? 10 : 20));
-                    _cs[i + 1] += 1; _cs[i + 2] += 1;
-                }
-
-                // 判顺
-                if (i > 7) continue;
-                if (_cs[i] >= 1 && _cs[i + 1] >= 1 && _cs[i + 2] >= 1) //23
-                {
-                    _cs[i] -= 1; _cs[i + 1] -= 1; _cs[i + 2] -= 1;
-                    Score(i, point + 30);
-                    _cs[i] += 1; _cs[i + 1] += 1; _cs[i + 2] += 1;
-                }
+                _cs[i] = 0;
+                Score(i + 1, point + 150);
+                _cs[i] = 4;
             }
-            if (point > _maxPoint) _maxPoint = point;
+
+            // 判刻
+            if (_cs[i] >= 3)
+            {
+                _cs[i] -= 3;
+                Score(i + 1, point + 70);
+                _cs[i] += 3;
+            }
+
+            // 判对
+            if (_cs[i] >= 2)
+            {
+                _cs[i] -= 2;
+                Score(i, point + 30);
+                _cs[i] += 2;
+            }
+
+            // 判单
+            if (_cs[i] >= 1)
+            {
+                _cs[i] -= 1;
+                Score(i, point + ((i == 1 || i == 9) ? 2 : 5));
+                _cs[i] += 1;
+            }
+
+            // 判靠
+            if (i > 8) goto end;
+            // 靠有 12, 13, 23 三种方式
+            if (_cs[i] >= 1 && _cs[i + 1] >= 1 && i < 8) //12
+            {
+                _cs[i] -= 1; _cs[i + 1] -= 1;
+                Score(i, point + (i == 1 ? 10 : 20));
+                _cs[i] += 1; _cs[i + 1] += 1;
+            }
+
+            if (_cs[i] >= 1 && _cs[i + 2] >= 1 && i < 8) //13
+            {
+                _cs[i] -= 1; _cs[i + 2] -= 1;
+                Score(i, point + 10);
+                _cs[i] += 1; _cs[i + 2] += 1;
+            }
+
+            if (_cs[i + 1] >= 1 && _cs[i + 2] >= 1) //23
+            {
+                _cs[i + 1] -= 1; _cs[i + 2] -= 1;
+                Score(i, point + (i == 8 ? 10 : 20));
+                _cs[i + 1] += 1; _cs[i + 2] += 1;
+            }
+
+            // 判顺
+            if (i > 7) goto end;
+            if (_cs[i] >= 1 && _cs[i + 1] >= 1 && _cs[i + 2] >= 1)
+            {
+                _cs[i] -= 1; _cs[i + 1] -= 1; _cs[i + 2] -= 1;
+                Score(i, point + 30);
+                _cs[i] += 1; _cs[i + 1] += 1; _cs[i + 2] += 1;
+            }
+        end:
+            if (i < 9) Score(i + 1, point);
+            else if (point > _maxPoint) _maxPoint = point;
         }
 
 
