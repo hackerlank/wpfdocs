@@ -12,21 +12,26 @@ namespace Test1
         static void Main(string[] args)
         {
             var cps = new 牌[]{
+                //张花点
                 0x010101,
-                0x010202,
-                0x010303,
-                0x010404,
+                0x010102,
+                0x040109,
             };
 
             FillCS(cps);
 
             DumpCS();
+
+            var p = Score();
+            Console.WriteLine(p);
+
         }
 
         /// <summary>
-        /// 张数组（使用其中 1 ~ 9 的元素）
+        /// 张数组（使用其中 1 ~ 9 的元素存张数）
         /// </summary>
-        static int[] _cs = new int[10];
+        static int[] _cs = new int[12];
+        static int _maxPoint = 0;
 
         static void DumpCS()
         {
@@ -50,6 +55,91 @@ namespace Test1
                 var p = cps[i];
                 _cs[p.点] = p.标L;
             }
+        }
+
+        // 打分细则如下：
+        // 1 杠 = 150 分
+        // 1 刻 = 70 分
+        // 1 对 = 30 分
+        // 1 顺 = 30 分
+        // 2 张：靠边，掐张 = 10 分， 靠两边 = 20 分
+        // 单张：边张 2 分，中张 5 分
+        static int Score()
+        {
+            _maxPoint = 0;
+            Score(1, 0);
+            return _maxPoint;
+        }
+        static void Score(int idx, int point)
+        {
+            for (int i = idx; i <= 9; i++)
+            {
+                // 判杠
+                if (_cs[i] == 4)
+                {
+                    _cs[i] = 0;
+                    Score(i + 1, point + 150);
+                    _cs[i] = 4;
+                }
+
+                // 判刻
+                if (_cs[i] >= 3)
+                {
+                    _cs[i] -= 3;
+                    Score(i + 1, point + 70);
+                    _cs[i] += 3;
+                }
+
+                // 判对
+                if (_cs[i] >= 2)
+                {
+                    _cs[i] -= 2;
+                    Score(i, point + 30);
+                    _cs[i] += 2;
+                }
+
+                // 判单
+                if (_cs[i] >= 1)
+                {
+                    _cs[i] -= 1;
+                    Score(i, point + ((i == 1 || i == 9) ? 2 : 5));
+                    _cs[i] += 1;
+                }
+
+                // 判靠
+                if (i > 8) continue;
+                // 靠有 12, 13, 23 三种方式
+                if (_cs[i] >= 1 && _cs[i + 1] >= 1 && i < 8) //12
+                {
+                    _cs[i] -= 1; _cs[i + 1] -= 1;
+                    Score(i, point + (i == 1 ? 10 : 20));
+                    _cs[i] += 1; _cs[i + 1] += 1;
+                }
+
+                if (_cs[i] >= 1 && _cs[i + 2] >= 1 && i < 8) //13
+                {
+                    _cs[i] -= 1; _cs[i + 2] -= 1;
+                    Score(i, point + 10);
+                    _cs[i] += 1; _cs[i + 2] += 1;
+                }
+
+                if (_cs[i + 1] >= 1 && _cs[i + 2] >= 1) //23
+                {
+                    _cs[i + 1] -= 1; _cs[i + 2] -= 1;
+                    Score(i, point + (i == 8 ? 10 : 20));
+                    _cs[i + 1] += 1; _cs[i + 2] += 1;
+                }
+
+                // 判顺
+                if (i > 7) continue;
+                if (_cs[i] >= 1 && _cs[i + 1] >= 1 && _cs[i + 2] >= 1) //23
+                {
+                    _cs[i] -= 1; _cs[i + 1] -= 1; _cs[i + 2] -= 1;
+                    Score(i, point + 30);
+                    _cs[i] += 1; _cs[i + 1] += 1; _cs[i + 2] += 1;
+                }
+            }
+            if (point > _maxPoint) _maxPoint = point;
         }
 
 
