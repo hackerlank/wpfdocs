@@ -11,59 +11,17 @@ namespace Test1
     {
         static void Main(string[] args)
         {
-            var cps = new 牌[]{
-                //张花点
-                0x010101,
-                0x010102,
-                0x010103,
-
-                0x010104,
-                0x010105,
-
-                0x040109,
-            };
-
-            FillCS(cps);
-
-            DumpCS();
-
-            var p = Score();
-            Console.WriteLine(p);
 
         }
 
-        /// <summary>
-        /// 张数组（使用其中 1 ~ 9 的元素存张数）
-        /// </summary>
-        static int[] _cs = new int[12];
-        static int _maxPoint = 0;
-
-        static void DumpCS()
-        {
-            for (int i = 1; i < 10; i++)
-            {
-                Console.WriteLine("_cs[{0}] = {1}", i, _cs[i]);
-            }
-        }
-
-        // 将 牌[] 整理为 张数组
-        static void FillCS(牌[] cps)
-        {
-            // 清数据
-            _cs[1] = 0; _cs[2] = 0; _cs[3] = 0;
-            _cs[4] = 0; _cs[5] = 0; _cs[6] = 0;
-            _cs[7] = 0; _cs[8] = 0; _cs[9] = 0;
-
-            // 填充
-            for (int i = 0; i < cps.Length; i++)
-            {
-                var p = cps[i];
-                _cs[p.点] = p.标L;
-            }
-        }
-
-        // 同花点（33），临张（34），嵌张（3 5），可胡人数，未现张，现一张，现二张
-
+        // 短语说明：
+        // 同：相同花点（33）
+        // 临：临张（34）
+        // 跳：跳张（3 5）
+        // 人：可胡/碰/杠人数
+        // 未现：未在牌桌上出现过
+        // 现一：出现过一张
+        // 现二：出现过二张
         // 单：手牌 单张
         // 根：手牌 单张 同时有相同花点碰牌
         // 靠：手牌 两张 相临，类似  12 13 23 ...
@@ -71,66 +29,269 @@ namespace Test1
         // 顺：手牌 三张 相临，类似  123  567 ...
         // 刻：手牌 三张 相同，类似  555  999 ...
         // 坎：手牌 四张 相同，类似  2222 7777 ...
+        const int 
+            P单_同 = 5, 
+            P单_临 = 3,
+            P单_跳 = 2,
+
+            P根 = 200,
+            P根_人 = 10,
+
+            P靠_同 = 5,
+            P靠_临 = 10,
+            P靠_跳 = 3,
+
+            P对_未现 = 150,
+            P对_现一 = 100,
+            P对_现二 = 10,
+            P对_临 = 5,
+            P对_跳 = 2,
+
+            P顺 = 200,
+            P顺_同 = 1,
+            P顺_临 = 3,
+            P顺_跳 = 2,
+
+            P刻_未现 = 300,
+            P刻_现一 = 200,
+            P刻_临 = 3,
+            P刻_跳 = 2,
+
+            P坎 = 800,
+            P坎_临 = 3,
+            P坎_跳 = 2,
+
+            P碰_未现 = 250,
+            P碰_现一 = 200,
+
+            P杠_暗 = 1000,
+            P杠_弯 = 401,
+            P杠_弯人 = 10,
+            P杠_引 = 422;
 
 
-        const int P单_同 = 5;
-        const int P单_临 = 3;
-        const int P单_嵌 = 2;
+        /// <summary>
+        /// 玩家手上的牌
+        /// </summary>
+        public static int[][] 玩家_手牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
+        /// <summary>
+        /// 玩家碰的牌
+        /// </summary>
+        public static int[][] 玩家_碰牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
+        /// <summary>
+        /// 玩家杠的牌
+        /// </summary>
+        public static int[][] 玩家_杠牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
+        /// <summary>
+        /// 所有牌 = 手牌 + 碰牌 + 杠牌
+        /// </summary>
+        public static int[][] 玩家_所有牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
+        /// <summary>
+        /// 桌上所有能够知晓的牌（含桌上的弃牌，所有玩家 碰 杠 胡 的牌）
+        /// </summary>
+        public static int[][] 桌_所有明牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
+        /// <summary>
+        /// 已知牌 = 所有明牌 + 手牌
+        /// </summary>
+        public static int[][] 玩家_已知牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
 
-        const int P根 = 200;
-        const int P根_人 = 10;
-
-        const int P靠_同 = 5;
-        const int P靠_临 = 10;
-        const int P靠_嵌 = 3;
-
-        const int P对_未现 = 150;
-        const int P对_现一 = 100;
-        const int P对_现二 = 10;
-        const int P对_临 = 5;
-        const int P对_嵌 = 2;
-
-        const int P顺 = 200;
-        const int P顺_同 = 1;
-        const int P顺_临 = 3;
-        const int P顺_嵌 = 2;
-
-        const int P刻_未现 = 300;
-        const int P刻_现一 = 200;
-        const int P刻_临 = 3;
-        const int P刻_嵌 = 2;
-
-        const int P坎 = 800;
-        const int P坎_临 = 3;
-        const int P坎_嵌 = 2;
-
-        const int P碰_未现 = 250;
-        const int P碰_现一 = 200;
-
-        const int P杠_暗 = 1000;
-        const int P杠_弯 = 401;
-        const int P杠_弯人 = 10;
-        const int P杠_引 = 422;
-
-        public int[][] 已现张 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
-        public int[][] 玩家的牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
-        private int[][] 已知牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
-
-        public void 生成已知牌()
+        static void 生成已知牌()
         {
-            for (int i = 1; i < 10; i++)
+            for (int j = 1; j <= 3; j++)
+                for (int i = 1; i <= 9; i++)
+                    玩家_已知牌[j][i] = 桌_所有明牌[j][i] + 玩家_手牌[j][i];
+        }
+
+        static int 打分()
+        {
+            // todo: 碰，杠，手牌（每花色）依次打分，加起来
+            var score = 0;
+
+            score += 算碰();
+            score += 算杠();
+
+            // todo: 分花色算手牌分
+
+
+            return score;
+        }
+
+        static int 算碰()
+        {
+            var score = 0;
+            for (int j = 1; j <= 3; j++)
+                for (int i = 1; i <= 9; i++)
+                    if (玩家_碰牌[j][i] > 0) score += (玩家_已知牌[j][i] == 1 ? P碰_现一 : P碰_未现);
+            return score;
+        }
+
+        static int 算杠()
+        {
+            var score = 0;
+            for (int j = 1; j <= 3; j++)
+                for (int i = 1; i <= 9; i++)
+                    if (玩家_杠牌[j][i] > 0) score += P杠_暗;     // todo: 需要想办法识别 杠型
+            return score;
+        }
+
+        static int 算单(byte 花, int idx)
+        {
+            var score = 0;
+            // 判断是不是根牌（自己碰过的手牌单张）
+            if (玩家_碰牌[花][idx] > 0)      // 有碰牌，即：根
             {
-                已知牌[1][i] = 已现张[1][i] + 玩家的牌[1][i];
-                已知牌[2][i] = 已现张[1][i] + 玩家的牌[2][i];
-                已知牌[3][i] = 已现张[1][i] + 玩家的牌[3][i];
+                score += P根;
+                // todo: 加人分 需要想办法传入可胡/碰/杠人数
             }
+            else
+                score += (4 - 玩家_已知牌[花][idx]) * P单_同;
+            // 开始算临张，跳张的分
+            switch (idx)
+            {
+                case 1:                                         // 1 临 1 跳
+                    score += (4 - 玩家_已知牌[花][2]) * P单_临
+                           + (4 - 玩家_已知牌[花][3]) * P单_跳;
+                    break;
+                case 2:                                         // 2 临 1 跳
+                    score += (4 - 玩家_已知牌[花][1]) * P单_临
+                           + (4 - 玩家_已知牌[花][3]) * P单_临
+                           + (4 - 玩家_已知牌[花][4]) * P单_跳;
+                    break;
+                case 3:                                         // 2 临 2 跳 （下同）
+                    score += (4 - 玩家_已知牌[花][1]) * P单_跳
+                           + (4 - 玩家_已知牌[花][2]) * P单_临
+                           + (4 - 玩家_已知牌[花][4]) * P单_临
+                           + (4 - 玩家_已知牌[花][5]) * P单_跳;
+                    break;
+                case 4:
+                    score += (4 - 玩家_已知牌[花][2]) * P单_跳
+                           + (4 - 玩家_已知牌[花][3]) * P单_临
+                           + (4 - 玩家_已知牌[花][5]) * P单_临
+                           + (4 - 玩家_已知牌[花][6]) * P单_跳;
+                    break;
+                case 5:
+                    score += (4 - 玩家_已知牌[花][3]) * P单_跳
+                           + (4 - 玩家_已知牌[花][4]) * P单_临
+                           + (4 - 玩家_已知牌[花][6]) * P单_临
+                           + (4 - 玩家_已知牌[花][7]) * P单_跳;
+                    break;
+                case 6:
+                    score += (4 - 玩家_已知牌[花][4]) * P单_跳
+                           + (4 - 玩家_已知牌[花][5]) * P单_临
+                           + (4 - 玩家_已知牌[花][7]) * P单_临
+                           + (4 - 玩家_已知牌[花][8]) * P单_跳;
+                    break;
+                case 7:
+                    score += (4 - 玩家_已知牌[花][5]) * P单_跳
+                           + (4 - 玩家_已知牌[花][6]) * P单_临
+                           + (4 - 玩家_已知牌[花][8]) * P单_临
+                           + (4 - 玩家_已知牌[花][9]) * P单_跳;
+                    break;
+                case 8:                                         // 2 临 1 跳
+                    score += (4 - 玩家_已知牌[花][6]) * P单_跳
+                           + (4 - 玩家_已知牌[花][7]) * P单_临
+                           + (4 - 玩家_已知牌[花][9]) * P单_临;
+                    break;
+                case 9:                                         // 1 临 1 跳
+                    score += (4 - 玩家_已知牌[花][7]) * P单_跳
+                           + (4 - 玩家_已知牌[花][8]) * P单_临;
+                    break;
+            }
+
+            return score;
         }
 
-        public int 算单(int 负2, int 负1, int 零, int 正1, int 正2)
+        static int 算靠12(byte 花, int idx)
         {
-            //todo: 4 - 参数位置的已知牌张数 - 参数位置的牌张数
-            return 0;
+            var score = 0;
+
+            switch (idx)
+            {
+                case 1:                                         // 2 同 1 临 1 跳
+                    score += (4 - 玩家_已知牌[花][1]) * P靠_同
+                           + (4 - 玩家_已知牌[花][2]) * P靠_同
+                           + (4 - 玩家_已知牌[花][3]) * P靠_临
+                           + (4 - 玩家_已知牌[花][4]) * P靠_跳;
+                    break;
+                case 2:                                         // 2 同 2 临 1 跳
+                    score += (4 - 玩家_已知牌[花][1]) * P靠_临
+                           + (4 - 玩家_已知牌[花][2]) * P靠_同
+                           + (4 - 玩家_已知牌[花][3]) * P靠_同
+                           + (4 - 玩家_已知牌[花][4]) * P靠_临
+                           + (4 - 玩家_已知牌[花][5]) * P靠_跳;
+                    break;
+                case 3:                                         // 2 同 2 临 2 跳 （下同）
+                    score += (4 - 玩家_已知牌[花][1]) * P靠_跳
+                           + (4 - 玩家_已知牌[花][2]) * P靠_临
+                           + (4 - 玩家_已知牌[花][3]) * P靠_同
+                           + (4 - 玩家_已知牌[花][4]) * P靠_同
+                           + (4 - 玩家_已知牌[花][5]) * P靠_临
+                           + (4 - 玩家_已知牌[花][6]) * P靠_跳;
+                    break;
+                case 4:
+                    score += (4 - 玩家_已知牌[花][2]) * P靠_跳
+                           + (4 - 玩家_已知牌[花][3]) * P靠_临
+                           + (4 - 玩家_已知牌[花][4]) * P靠_同
+                           + (4 - 玩家_已知牌[花][5]) * P靠_同
+                           + (4 - 玩家_已知牌[花][6]) * P靠_临
+                           + (4 - 玩家_已知牌[花][7]) * P靠_跳;
+                    break;
+                case 5:
+                    score += (4 - 玩家_已知牌[花][3]) * P靠_跳
+                           + (4 - 玩家_已知牌[花][4]) * P靠_临
+                           + (4 - 玩家_已知牌[花][5]) * P靠_同
+                           + (4 - 玩家_已知牌[花][6]) * P靠_同
+                           + (4 - 玩家_已知牌[花][7]) * P靠_临
+                           + (4 - 玩家_已知牌[花][8]) * P靠_跳;
+                    break;
+                case 6:
+                    score += (4 - 玩家_已知牌[花][4]) * P靠_跳
+                           + (4 - 玩家_已知牌[花][5]) * P靠_临
+                           + (4 - 玩家_已知牌[花][6]) * P靠_同
+                           + (4 - 玩家_已知牌[花][7]) * P靠_同
+                           + (4 - 玩家_已知牌[花][8]) * P靠_临
+                           + (4 - 玩家_已知牌[花][9]) * P靠_跳;
+                    break;
+                case 7:                                         // 2 同 2 临 1 跳
+                    score += (4 - 玩家_已知牌[花][5]) * P靠_跳
+                           + (4 - 玩家_已知牌[花][6]) * P靠_临
+                           + (4 - 玩家_已知牌[花][7]) * P靠_同
+                           + (4 - 玩家_已知牌[花][8]) * P靠_同
+                           + (4 - 玩家_已知牌[花][9]) * P靠_临;
+                    break;
+                case 8:                                         // 2 同 1 临 1 跳
+                    score += (4 - 玩家_已知牌[花][6]) * P靠_跳
+                           + (4 - 玩家_已知牌[花][7]) * P靠_临
+                           + (4 - 玩家_已知牌[花][8]) * P靠_同
+                           + (4 - 玩家_已知牌[花][9]) * P靠_同;
+                    break;
+            }
+
+            return score;
         }
+
+        static int 算靠23(byte 花, int idx)
+        {
+            var score = 0;
+
+            // todo
+
+            return score;
+        }
+
+        static int 算靠13(byte 花, int idx)
+        {
+            var score = 0;
+
+            // todo
+
+            return score;
+        }
+
+
+
+
+        /*
 
         static int Score()
         {
@@ -210,10 +371,11 @@ namespace Test1
             else if (point > _maxPoint) _maxPoint = point;
         }
 
-
+        */
 
 
         #region Helper methods
+
         private static void WL()
         {
             Console.WriteLine();
