@@ -71,7 +71,7 @@ namespace Test1
             P杠_引 = 422;
 
 
-        enum 杠型 : int
+        public enum 杠型 : int
         {
             暗杠 = 1,
             引杠 = 2,
@@ -85,11 +85,7 @@ namespace Test1
         /// <summary>
         /// 玩家碰的牌
         /// </summary>
-        public static int[][] 玩家_碰牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
-        /// <summary>
-        /// 玩家杠的牌
-        /// </summary>
-        public static int[][] 玩家_杠牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
+        public static bool[][] 玩家_碰牌 = new bool[4][] { new bool[] { }, new bool[10], new bool[10], new bool[10] };
         /// <summary>
         /// 玩家杠的牌的类型
         /// </summary>
@@ -119,7 +115,7 @@ namespace Test1
             var score = 0;
             for (int j = 1; j <= 3; j++)
                 for (int i = 1; i <= 9; i++)
-                    if (玩家_碰牌[j][i] > 0) score += (玩家_已知牌[j][i] == 1 ? P碰_现一 : P碰_未现);
+                    if (玩家_碰牌[j][i]) score += (玩家_已知牌[j][i] == 1 ? P碰_现一 : P碰_未现);
             return score;
         }
 
@@ -128,7 +124,12 @@ namespace Test1
             var score = 0;
             for (int j = 1; j <= 3; j++)
                 for (int i = 1; i <= 9; i++)
-                    if (玩家_杠牌[j][i] > 0) score += P杠_暗;     // todo: 需要想办法识别 杠型
+                {
+                    var g = 玩家_杠型[j][i];
+                    if (g == 杠型.暗杠) score += P杠_暗;
+                    else if (g == 杠型.引杠) score += P杠_引;
+                    else if (g == 杠型.弯杠) score += P杠_弯;
+                }
             return score;
         }
 
@@ -138,7 +139,7 @@ namespace Test1
             var 已知牌 = 玩家_已知牌[花];
 
             // 判断是不是根牌（自己碰过的手牌单张）
-            if (玩家_碰牌[花][点] > 0)      // 有碰牌，即：根
+            if (玩家_碰牌[花][点])      // 有碰牌，即：根
             {
                 score += P根;
                 // todo: 加人分 需要想办法传入可胡/碰/杠人数
