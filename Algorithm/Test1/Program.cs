@@ -71,6 +71,13 @@ namespace Test1
             P杠_引 = 422;
 
 
+        enum 杠型 : int
+        {
+            暗杠 = 1,
+            引杠 = 2,
+            弯杠 = 3
+        }
+
         /// <summary>
         /// 玩家手上的牌
         /// </summary>
@@ -83,6 +90,10 @@ namespace Test1
         /// 玩家杠的牌
         /// </summary>
         public static int[][] 玩家_杠牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
+        /// <summary>
+        /// 玩家杠的牌的类型
+        /// </summary>
+        public static 杠型[][] 玩家_杠型 = new 杠型[4][] { new 杠型[] { }, new 杠型[10], new 杠型[10], new 杠型[10] };
         /// <summary>
         /// 所有牌 = 手牌 + 碰牌 + 杠牌
         /// </summary>
@@ -101,20 +112,6 @@ namespace Test1
             for (int j = 1; j <= 3; j++)
                 for (int i = 1; i <= 9; i++)
                     玩家_已知牌[j][i] = 桌_所有明牌[j][i] + 玩家_手牌[j][i];
-        }
-
-        static int 打分()
-        {
-            // todo: 碰，杠，手牌（每花色）依次打分，加起来
-            var score = 0;
-
-            score += 算碰();
-            score += 算杠();
-
-            // todo: 分花色算手牌分
-
-
-            return score;
         }
 
         static int 算碰()
@@ -530,6 +527,34 @@ namespace Test1
             return score;
         }
 
+
+        static byte 选定张()
+        {
+
+            return 1;   // 1/2/3
+        }
+
+        // 选择打哪张
+
+        // 判断要不要碰
+
+        // 判断要不要杠
+
+        static int 打分()
+        {
+            // todo: 碰，杠，手牌（每花色）依次打分，加起来
+            var score = 0;
+
+            score += 算碰();
+            score += 算杠();
+
+
+
+            // todo: 分花色算手牌分
+
+
+            return score;
+        }
 
 
         // todo: 改下面的代码，将 point + xxx 改为 + 算X
