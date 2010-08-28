@@ -159,10 +159,10 @@ namespace Test1
 
         #region 算手牌
 
-        static int 算手牌(int[] 花_已知牌, bool[] 花_碰牌)
+        static int 算手牌(int[] 花_已知牌, bool[] 花_碰牌, int[] 花_手牌)
         {
             var mp = 0;
-            ssp(花_已知牌, 花_碰牌, 1, 0, ref mp);
+            ssp(花_已知牌, 花_碰牌, 花_手牌, 1, 0, ref mp);
             return mp;
         }
 
@@ -175,72 +175,80 @@ namespace Test1
         /// <param name="d">点</param>
         /// <param name="f">分数</param>
         /// <param name="zgf">最高分数</param>
-        static void ssp(int[] y, bool[] p, int d, int f, ref int zgf)
+        static void ssp(int[] y, bool[] p, int[] s, int d, int f, ref int zgf)
         {
-            // 下面是老算法
-            // todo: 换成新算法
+            // 其实还可以令 var c1 = s[d], c2 = s[d + 1], c3 = s[d + 2] 以加快执行速度　但不易读了
 
             // 判坎
-            if (y[d] == 4)
+            if (s[d] == 4)
             {
-                y[d] = 0;
-                ssp(y, p, d + 1, f + 算坎(y, d), ref zgf);
-                y[d] = 4;
+                s[d] = 0;
+                ssp(y, p, s, d + 1, f + 算坎(y, d), ref zgf);
+                s[d] = 4;
             }
 
             // 判刻
-            if (y[d] >= 3)
+            if (s[d] >= 3)
             {
-                y[d] -= 3;
-                ssp(y, p, d + 1, f + 算刻(y, d), ref zgf);
-                y[d] += 3;
+                s[d] -= 3;
+                ssp(y, p, s, d + 1, f + 算刻(y, d), ref zgf);
+                s[d] += 3;
             }
 
             // 判对
-            if (y[d] >= 2)
+            if (s[d] >= 2)
             {
-                y[d] -= 2;
-                ssp(y, p, d, f + 算对(y, d), ref zgf);
-                y[d] += 2;
+                s[d] -= 2;
+                ssp(y, p, s, d, f + 算对(y, d), ref zgf);
+                s[d] += 2;
             }
 
             // 判单
-            if (y[d] >= 1)
+            if (s[d] >= 1)
             {
-                y[d] -= 1;
-                ssp(y, p, d, f + 算单(y, p, d), ref zgf);
-                y[d] += 1;
+                s[d] -= 1;
+                ssp(y, p, s, d, f + 算单(y, p, d), ref zgf);
+                s[d] += 1;
             }
 
             // 判靠  12/23
             if (d > 8) goto end;
-            if (y[d] >= 1 && y[d + 1] >= 1)
+            if (s[d] >= 1 && s[d + 1] >= 1)
             {
-                y[d] -= 1; y[d + 1] -= 1;
-                ssp(y, p, d, f + 算靠12(y, d), ref zgf);
-                y[d] += 1; y[d + 1] += 1;
+                s[d] -= 1; s[d + 1] -= 1;
+                ssp(y, p, s, d, f + 算靠12(y, d), ref zgf);
+                s[d] += 1; s[d + 1] += 1;
             }
 
             // 判靠  13
             if (d > 7) goto end;
-            if (y[d] >= 1 && y[d + 2] >= 1 && d < 8) // 13
+            if (s[d] >= 1 && s[d + 2] >= 1 && d < 8) // 13
             {
-                y[d] -= 1; y[d + 2] -= 1;
-                ssp(y, p, d, f + 算靠13(y, d), ref zgf);
-                y[d] += 1; y[d + 2] += 1;
+                s[d] -= 1; s[d + 2] -= 1;
+                ssp(y, p, s, d, f + 算靠13(y, d), ref zgf);
+                s[d] += 1; s[d + 2] += 1;
             }
 
             // 判顺
             if (d > 7) goto end;
-            if (y[d] >= 1 && y[d + 1] >= 1 && y[d + 2] >= 1)
+            if (s[d] >= 1 && s[d + 1] >= 1 && s[d + 2] >= 1)
             {
-                y[d] -= 1; y[d + 1] -= 1; y[d + 2] -= 1;
-                ssp(y, p, d, f + 算顺(y, d), ref zgf);
-                y[d] += 1; y[d + 1] += 1; y[d + 2] += 1;
+                s[d] -= 1; s[d + 1] -= 1; s[d + 2] -= 1;
+                ssp(y, p, s, d, f + 算顺(y, d), ref zgf);
+                s[d] += 1; s[d + 1] += 1; s[d + 2] += 1;
             }
         end:
-            if (d < 9) ssp(y, p, d + 1, f, ref zgf);
+            if (d < 9) ssp(y, p, s, d + 1, f, ref zgf);
             else if (f > zgf) zgf = f;
+        }
+
+        #endregion
+
+        #region 算花
+
+        static int 算花(int[] 花_已知牌, bool[] 花_碰牌, 杠型[] 花_杠牌, int[] 花_手牌)
+        {
+            return 0;
         }
 
         #endregion
@@ -748,9 +756,10 @@ namespace Test1
 
             if (b1 && b2 && b3)     // 三种花色都有：分别打分，选出分最低的花色编号返回
             {
-                var p1 = 算手牌(手牌[1], 空布尔数组[1]);
-                var p2 = 算手牌(手牌[2], 空布尔数组[2]);
-                var p3 = 算手牌(手牌[3], 空布尔数组[3]);
+                // 已知牌 = 手牌，碰牌为空
+                var p1 = 算手牌(手牌[1], 空布尔数组[1], 手牌[1]);
+                var p2 = 算手牌(手牌[2], 空布尔数组[2], 手牌[2]);
+                var p3 = 算手牌(手牌[3], 空布尔数组[3], 手牌[3]);
 
                 if (p1 == p2 && p1 == p3) return _rnd.Next(3) + 1;
                 else if (p1 == p2) return p1 > p3 ? 3 : (_rnd.Next(2) == 0 ? 1 : 2);
