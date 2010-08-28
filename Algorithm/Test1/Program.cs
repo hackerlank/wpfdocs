@@ -19,10 +19,10 @@ namespace Test1
             //};
 
             var 手牌 = new int[4][] {
-                  new int[10]{ 9, 3, 3, 3, 0, 0, 0, 0, 0, 0 }
-                , new int[10]{ 3, 1, 1, 1, 0, 0, 0, 0, 0, 0 }
-                , new int[10]{ 3, 1, 1, 1, 0, 0, 0, 0, 0, 0 }
-                , new int[10]{ 3, 1, 1, 1, 0, 0, 0, 0, 0, 0 }
+                  new int[10]{ 12, 3, 3, 3, 0, 0, 0, 1, 1, 1 }
+                , new int[10]{  4, 1, 1, 1, 0, 0, 0, 0, 0, 1 }
+                , new int[10]{  4, 1, 1, 1, 0, 0, 0, 0, 1, 0 }
+                , new int[10]{  4, 1, 1, 1, 0, 0, 0, 1, 0, 0 }
             };
             for (int i = 0; i < 100; i++) Console.Write(选定张(手牌));
         }
@@ -126,6 +126,15 @@ namespace Test1
 
         static Random _rnd = new Random(Environment.TickCount);
 
+        /// <summary>
+        /// 用来传递给  诸如　算定张　时需要  碰牌　参数的情况
+        /// </summary>
+        static bool[][] 空布尔数组 = new bool[4][] { new bool[] { }, new bool[10], new bool[10], new bool[10] };
+        /// <summary>
+        /// 用来传递给  诸如　算定张　时需要  碰牌　参数的情况
+        /// </summary>
+        static int[][] 空整数数组 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
+
         #region 算碰
         static int 算碰(int[][] 已知牌, bool[][] 碰牌)
         {
@@ -151,6 +160,94 @@ namespace Test1
                 }
             return p;
         }
+        #endregion
+
+        #region 算手牌
+
+        static int 算手牌(int[] 花_已知牌, bool[] 花_碰牌)
+        {
+            var mp = 0;
+            ssp(花_已知牌, 花_碰牌, 1, 0, ref mp);
+            return mp;
+        }
+
+        /// <summary>
+        /// 用所有组合打分，打分最大值写入 zdf 引用参数
+        /// </summary>
+        /// <param name="y">花_已知牌</param>
+        /// <param name="p">花_碰牌</param>
+        /// <param name="h">花</param>
+        /// <param name="d">点</param>
+        /// <param name="f">分数</param>
+        /// <param name="zgf">最高分数</param>
+        static void ssp(int[] y, bool[] p, int d, int f, ref int zgf)
+        {
+            // 下面是老算法
+            // todo: 换成新算法
+
+            // 判坎
+            if (y[d] == 4)
+            {
+                y[d] = 0;
+                ssp(y, p, d + 1, f + 算坎(y, d), ref zgf);
+                y[d] = 4;
+            }
+
+            // 判刻
+            if (y[d] >= 3)
+            {
+                y[d] -= 3;
+                ssp(y, p, d + 1, f + 算刻(y, d), ref zgf);
+                y[d] += 3;
+            }
+
+            // 判对
+            if (y[d] >= 2)
+            {
+                y[d] -= 2;
+                ssp(y, p, d, f + 算对(y, d), ref zgf);
+                y[d] += 2;
+            }
+
+            // 判单
+            if (y[d] >= 1)
+            {
+                y[d] -= 1;
+                ssp(y, p, d, f + 算单(y, p, d), ref zgf);
+                y[d] += 1;
+            }
+
+            // 判靠  12/23
+            if (d > 8) goto end;
+            if (y[d] >= 1 && y[d + 1] >= 1)
+            {
+                y[d] -= 1; y[d + 1] -= 1;
+                ssp(y, p, d, f + 算靠12(y, d), ref zgf);
+                y[d] += 1; y[d + 1] += 1;
+            }
+
+            // 判靠  13
+            if (d > 7) goto end;
+            if (y[d] >= 1 && y[d + 2] >= 1 && d < 8) // 13
+            {
+                y[d] -= 1; y[d + 2] -= 1;
+                ssp(y, p, d, f + 算靠13(y, d), ref zgf);
+                y[d] += 1; y[d + 2] += 1;
+            }
+
+            // 判顺
+            if (d > 7) goto end;
+            if (y[d] >= 1 && y[d + 1] >= 1 && y[d + 2] >= 1)
+            {
+                y[d] -= 1; y[d + 1] -= 1; y[d + 2] -= 1;
+                ssp(y, p, d, f + 算顺(y, d), ref zgf);
+                y[d] += 1; y[d + 1] += 1; y[d + 2] += 1;
+            }
+        end:
+            if (d < 9) ssp(y, p, d + 1, f, ref zgf);
+            else if (f > zgf) zgf = f;
+        }
+
         #endregion
 
 
@@ -632,90 +729,7 @@ namespace Test1
         }
         #endregion
 
-        #region 手牌打分（用于定张）
 
-        static int 手牌打分(int[] 花_已知牌, bool[] 花_碰牌)
-        {
-            var mp = 0;
-            spdf(花_已知牌, 花_碰牌, 1, 0, ref mp);
-            return mp;
-        }
-
-        /// <summary>
-        /// 用所有组合打分，打分最大值写入　zdf
-        /// </summary>
-        /// <param name="y">花_已知牌</param>
-        /// <param name="p">花_碰牌</param>
-        /// <param name="h">花</param>
-        /// <param name="d">点</param>
-        /// <param name="f">分数</param>
-        /// <param name="zgf">最高分数</param>
-        static void spdf(int[] y, bool[] p, int d, int f, ref int zgf)
-        {
-            // 下面是老算法
-            // todo: 换成新算法
-
-            // 判坎
-            if (y[d] == 4)
-            {
-                y[d] = 0;
-                spdf(y, p, d + 1, f + 算坎(y, d), ref zgf);
-                y[d] = 4;
-            }
-
-            // 判刻
-            if (y[d] >= 3)
-            {
-                y[d] -= 3;
-                spdf(y, p, d + 1, f + 算刻(y, d), ref zgf);
-                y[d] += 3;
-            }
-
-            // 判对
-            if (y[d] >= 2)
-            {
-                y[d] -= 2;
-                spdf(y, p, d, f + 算对(y, d), ref zgf);
-                y[d] += 2;
-            }
-
-            // 判单
-            if (y[d] >= 1)
-            {
-                y[d] -= 1;
-                spdf(y, p, d, f + 算单(y, p, d), ref zgf);
-                y[d] += 1;
-            }
-
-            // 判靠
-            if (d > 8) goto end;
-            if (y[d] >= 1 && y[d + 1] >= 1) // 12/23
-            {
-                y[d] -= 1; y[d + 1] -= 1;
-                spdf(y, p, d, f + 算靠12(y, d), ref zgf);
-                y[d] += 1; y[d + 1] += 1;
-            }
-            if (y[d] >= 1 && y[d + 2] >= 1 && d < 8) // 13
-            {
-                y[d] -= 1; y[d + 2] -= 1;
-                spdf(y, p, d, f + 算靠13(y, d), ref zgf);
-                y[d] += 1; y[d + 2] += 1;
-            }
-
-            // 判顺
-            if (d > 7) goto end;
-            if (y[d] >= 1 && y[d + 1] >= 1 && y[d + 2] >= 1)
-            {
-                y[d] -= 1; y[d + 1] -= 1; y[d + 2] -= 1;
-                spdf(y, p, d, f + 算顺(y, d), ref zgf);
-                y[d] += 1; y[d + 1] += 1; y[d + 2] += 1;
-            }
-        end:
-            if (d < 9) spdf(y, p, d + 1, f, ref zgf);
-            else if (f > zgf) zgf = f;
-        }
-
-        #endregion
 
         #region 选定张
         // 潜规则： 传入牌的 0 索引为 张数 sum
@@ -739,9 +753,9 @@ namespace Test1
 
             if (b1 && b2 && b3)     // 三种花色都有：分别打分，选出分最低的花色编号返回
             {
-                var p1 = 手牌打分(手牌[1]);
-                var p2 = 手牌打分(手牌[2]);
-                var p3 = 手牌打分(手牌[3]);
+                var p1 = 算手牌(手牌[1], 空布尔数组[1]);
+                var p2 = 算手牌(手牌[2], 空布尔数组[2]);
+                var p3 = 算手牌(手牌[3], 空布尔数组[3]);
 
                 if (p1 == p2 && p1 == p3) return _rnd.Next(3) + 1;
                 else if (p1 == p2) return p1 > p3 ? 3 : (_rnd.Next(2) == 0 ? 1 : 2);
