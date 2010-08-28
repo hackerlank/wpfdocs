@@ -139,6 +139,13 @@ namespace Test1
                     if (碰牌[j][i]) score += (已知牌[j][i] == 1 ? P碰_现一 : P碰_未现);
             return score;
         }
+        static int 算碰(int[] 花_已知牌, bool[] 花_碰牌)
+        {
+            var score = 0;
+            for (int i = 1; i <= 9; i++)
+                if (花_碰牌[i]) score += (花_已知牌[i] == 1 ? P碰_现一 : P碰_未现);
+            return score;
+        }
         #endregion
 
         #region 算杠
@@ -153,6 +160,18 @@ namespace Test1
                     else if (g == 杠型.引杠) p += P杠_引;
                     else if (g == 杠型.弯杠) p += P杠_弯;
                 }
+            return p;
+        }
+        static int 算杠(杠型[] 花_杠牌)
+        {
+            var p = 0;
+            for (int i = 1; i <= 9; i++)
+            {
+                var g = 花_杠牌[i];
+                if (g == 杠型.暗杠) p += P杠_暗;
+                else if (g == 杠型.引杠) p += P杠_引;
+                else if (g == 杠型.弯杠) p += P杠_弯;
+            }
             return p;
         }
         #endregion
@@ -248,8 +267,18 @@ namespace Test1
 
         static int 算花(int[] 花_已知牌, bool[] 花_碰牌, 杠型[] 花_杠牌, int[] 花_手牌)
         {
-            return 0;
+            var p = 0;
+            p += 算杠(花_杠牌);
+            p += 算碰(花_已知牌, 花_碰牌);
+            p += 算手牌(花_已知牌, 花_碰牌, 花_手牌);
+            return p;
         }
+
+        #endregion
+
+        #region 算牌
+
+        // foreach 花　算花
 
         #endregion
 
