@@ -770,6 +770,38 @@ namespace Test1
         }
         #endregion
 
+
+
+
+        // 选择打哪张
+
+        // 判断要不要碰
+
+        // 判断要不要杠
+
+        // 判断要不要碰杠胡（同时的情况）
+
+        //static int 打分()
+        //{
+        //    // todo: 碰，杠，手牌（每花色）依次打分，加起来
+        //    var score = 0;
+
+        //    score += 算碰();
+        //    score += 算杠();
+
+
+
+        //    // todo: 分花色算手牌分
+
+
+        //    return score;
+        //}
+
+
+
+
+
+
         #region Helper methods
 
         private static void WL()
