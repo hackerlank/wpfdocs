@@ -11,20 +11,13 @@ namespace Test1
     {
         static void Main(string[] args)
         {
-            //var 手牌2 = new int[4][] {
-            //      new int[12]{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-            //    , new int[12]{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-            //    , new int[12]{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-            //    , new int[12]{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-            //};
-
             var 手牌 = new int[4][] {
                   new int[10]{ 12, 3, 3, 3, 0, 0, 0, 1, 1, 1 }
                 , new int[10]{  4, 1, 1, 1, 0, 0, 0, 0, 0, 1 }
                 , new int[10]{  4, 1, 1, 1, 0, 0, 0, 0, 1, 0 }
                 , new int[10]{  4, 1, 1, 1, 0, 0, 0, 1, 0, 0 }
             };
-            for (int i = 0; i < 100; i++) Console.Write(选定张(手牌));
+            WL(选定张(手牌));
         }
 
         #region 打分定值
@@ -85,6 +78,7 @@ namespace Test1
             P杠_引 = 422;
         #endregion
 
+        #region 参数格式文档
         ///// <summary>
         ///// 玩家手上的牌
         ///// </summary>
@@ -116,6 +110,7 @@ namespace Test1
         //        for (int i = 1; i <= 9; i++)
         //            玩家_已知牌[j][i] = 桌_所有明牌[j][i] + 玩家_手牌[j][i];
         //}
+        #endregion
 
         public enum 杠型 : int
         {
