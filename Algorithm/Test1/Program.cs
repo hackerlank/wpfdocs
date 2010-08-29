@@ -86,7 +86,7 @@ namespace Test1
         ///// <summary>
         ///// 玩家碰的牌
         ///// </summary>
-        //public static bool[][] 玩家_碰牌 = new bool[4][] { new bool[] { }, new bool[10], new bool[10], new bool[10] };
+        //public static int[][] 玩家_碰牌 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
         ///// <summary>
         ///// 玩家杠的牌的类型
         ///// </summary>
@@ -114,36 +114,43 @@ namespace Test1
 
         public enum 杠型 : int
         {
+            无 = 0,
             暗杠 = 1,
             引杠 = 2,
             弯杠 = 3
         }
 
+        public enum 碰型 : int
+        {
+            无 = 0,
+            碰 = 1
+        }
+
         static Random _rnd = new Random(Environment.TickCount);
 
         /// <summary>
-        /// 用来传递给  诸如　算定张　时需要  碰牌　参数的情况
+        /// 用于传递空参数
         /// </summary>
-        static bool[][] 空布尔数组 = new bool[4][] { new bool[] { }, new bool[10], new bool[10], new bool[10] };
+        static 碰型[][] 空碰牌数组 = new 碰型[4][] { new 碰型[] { }, new 碰型[10], new 碰型[10], new 碰型[10] };
         /// <summary>
-        /// 用来传递给  诸如　算定张　时需要  碰牌　参数的情况
+        /// 用于传递空参数
         /// </summary>
-        static int[][] 空整数数组 = new int[4][] { new int[] { }, new int[10], new int[10], new int[10] };
+        static 杠型[][] 空杠牌数组 = new 杠型[4][] { new 杠型[] { }, new 杠型[10], new 杠型[10], new 杠型[10] };
 
         #region 算碰
-        static int 算碰(int[][] 已知牌, bool[][] 碰牌)
+        static int 算碰(int[][] 已知牌, 碰型[][] 碰牌)
         {
             var score = 0;
             for (int j = 1; j <= 3; j++)
                 for (int i = 1; i <= 9; i++)
-                    if (碰牌[j][i]) score += (已知牌[j][i] == 1 ? P碰_现一 : P碰_未现);
+                    if (碰牌[j][i] == 碰型.碰) score += (已知牌[j][i] == 1 ? P碰_现一 : P碰_未现);
             return score;
         }
-        static int 算碰(int[] 花_已知牌, bool[] 花_碰牌)
+        static int 算碰(int[] 花_已知牌, 碰型[] 花_碰牌)
         {
             var score = 0;
             for (int i = 1; i <= 9; i++)
-                if (花_碰牌[i]) score += (花_已知牌[i] == 1 ? P碰_现一 : P碰_未现);
+                if (花_碰牌[i] == 碰型.碰) score += (花_已知牌[i] == 1 ? P碰_现一 : P碰_未现);
             return score;
         }
         #endregion
@@ -178,7 +185,7 @@ namespace Test1
 
         #region 算手牌
 
-        static int 算手牌(int[] 花_已知牌, bool[] 花_碰牌, int[] 花_手牌)
+        static int 算手牌(int[] 花_已知牌, 碰型[] 花_碰牌, int[] 花_手牌)
         {
             var mp = 0;
             ssp(花_已知牌, 花_碰牌, 花_手牌, 1, 0, ref mp);
@@ -194,7 +201,7 @@ namespace Test1
         /// <param name="d">点</param>
         /// <param name="f">分数</param>
         /// <param name="zgf">最高分数</param>
-        static void ssp(int[] y, bool[] p, int[] s, int d, int f, ref int zgf)
+        static void ssp(int[] y, 碰型[] p, int[] s, int d, int f, ref int zgf)
         {
             // 其实还可以令 var c1 = s[d], c2 = s[d + 1], c3 = s[d + 2] 以加快执行速度　但不易读了
 
@@ -265,11 +272,11 @@ namespace Test1
 
         #region 算花
 
-        static int 算花(int[] 花_已知牌, bool[] 花_碰牌, 杠型[] 花_杠牌, int[] 花_手牌)
+        static int 算花(int[] 花_已知牌, 碰型[] 花_碰牌, 杠型[] 花_杠牌, int[] 花_手牌)
         {
             var p = 0;
-            p += 算杠(花_杠牌);
-            p += 算碰(花_已知牌, 花_碰牌);
+            if (花_杠牌[0] > 0) p += 算杠(花_杠牌);
+            if (花_碰牌[0] > 0) p += 算碰(花_已知牌, 花_碰牌);
             p += 算手牌(花_已知牌, 花_碰牌, 花_手牌);
             return p;
         }
@@ -278,19 +285,28 @@ namespace Test1
 
         #region 算牌
 
-        // foreach 花　算花
+        static int 算牌(int[][] 已知牌, 碰型[][] 碰牌, 杠型[][] 杠牌, int[][] 手牌, int[][] 所有牌)
+        {
+            var p = 0;
+
+            if (所有牌[1][0] > 0) p += 算花(已知牌[1], 碰牌[1], 杠牌[1], 手牌[1]);
+            if (所有牌[2][0] > 0) p += 算花(已知牌[2], 碰牌[2], 杠牌[2], 手牌[2]);
+            if (所有牌[3][0] > 0) p += 算花(已知牌[3], 碰牌[3], 杠牌[3], 手牌[3]);
+
+            return p;
+        }
 
         #endregion
 
 
         #region 算单
-        static int 算单(int[] 花_已知牌, bool[] 花_碰牌, int 点)
+        static int 算单(int[] 花_已知牌, 碰型[] 花_碰牌, int 点)
         {
             var p = 0;
             var c = 花_已知牌;
 
             // 判断是不是根牌（自己碰过的手牌单张）
-            if (花_碰牌[点])      // 有碰牌，即：根
+            if (花_碰牌[点] == 碰型.碰)      // 有碰牌，即：根
             {
                 p += P根;
                 // todo: 加人分 需要想办法传入可胡/碰/杠人数
@@ -786,9 +802,9 @@ namespace Test1
             if (b1 && b2 && b3)     // 三种花色都有：分别打分，选出分最低的花色编号返回
             {
                 // 已知牌 = 手牌，碰牌为空
-                var p1 = 算手牌(手牌[1], 空布尔数组[1], 手牌[1]);
-                var p2 = 算手牌(手牌[2], 空布尔数组[2], 手牌[2]);
-                var p3 = 算手牌(手牌[3], 空布尔数组[3], 手牌[3]);
+                var p1 = 算手牌(手牌[1], 空碰牌数组[1], 手牌[1]);
+                var p2 = 算手牌(手牌[2], 空碰牌数组[2], 手牌[2]);
+                var p3 = 算手牌(手牌[3], 空碰牌数组[3], 手牌[3]);
 
                 if (p1 == p2 && p1 == p3) return _rnd.Next(3) + 1;
                 else if (p1 == p2) return p1 > p3 ? 3 : (_rnd.Next(2) == 0 ? 1 : 2);
@@ -808,7 +824,14 @@ namespace Test1
         }
         #endregion
 
+        #region 选弃张
 
+        static 牌 选弃张(int[][] 已知牌, 碰型[][] 碰牌, 杠型[][] 杠牌, int[][] 手牌, int[][] 所有牌, int 定张花)
+        {
+            return 0;
+        }
+
+        #endregion
 
 
         // 选择打哪张
