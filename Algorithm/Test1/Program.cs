@@ -906,7 +906,7 @@ namespace Test1
         }
 
         /// <summary>
-        /// 根据　舍牌花色s，分别舍弃 这些花色的　每张牌，再将这些花色　分别打分，　找出　“舍弃哪张分最高”
+        /// 根据　舍牌花色s，分别舍弃 这些花色的　每张牌，再将这些花色　分别打分，　找出　“舍弃哪张分最高”  （牌的　标　存分数）
         /// </summary>
         static 牌 选弃张(int[][] z, 碰型[][] p, 杠型[][] g, int[][] s, int[][] sy, params byte[] hs)
         {
@@ -949,14 +949,57 @@ namespace Test1
 
         #endregion
 
+        #region 扫花色s
+
+        /// <summary>
+        /// 返回为 true 的布尔值的索引
+        /// </summary>
+        static byte[] 布尔转索引(bool b1, bool b2, bool b3)
+        {
+            byte[] result = null;
+            if (b1 && b2 && b3) result = new byte[] { 1, 2, 3 };
+            else if (b1 && b2) result = new byte[] { 1, 2 };
+            else if (b1 && b3) result = new byte[] { 1, 3 };
+            else if (b2 && b3) result = new byte[] { 2, 3 };
+            else if (b1) result = new byte[] { 1 };
+            else if (b2) result = new byte[] { 2 };
+            else if (b3) result = new byte[] { 3 };
+            return result;
+        }
+
+        #endregion
+
         #region 判断碰
 
-        static 牌? 判断碰()
+        static 牌? 判断碰(int[][] 已知牌, 碰型[][] 碰牌, 杠型[][] 杠牌, int[][] 手牌, int[][] 所有牌, 定张 定张花, 牌 目标牌)
         {
             // 如果是定张，返回不可以碰
-
             // 思路：尝试碰，碰前的牌打分，与碰之后任打一张的最高分作比较，如果值得碰，就返回碰之后要打哪张牌。否则返回空值
 
+            if (目标牌.花 == (byte)定张花) return null;
+            var 碰前分值 = 算牌(已知牌, 碰牌, 杠牌, 手牌, 所有牌);
+
+            // 预碰
+            碰牌[目标牌.花][目标牌.点] = 碰型.碰;
+            手牌[目标牌.花][目标牌.点] -= 3;
+            所有牌[目标牌.花][目标牌.点] += 1;
+
+            // 找出分最高的 碰后弃张
+            var hs = 布尔转索引(所有牌[1][0]>0, 所有牌[2][0]>0, 所有牌[3][0]>0);
+            var 弃张 = 选弃张(已知牌, 碰牌, 杠牌, 手牌, 所有牌, hs);
+            var 碰后分值 = (int)弃张.标;
+
+            // 还原
+            碰牌[目标牌.花][目标牌.点] = 碰型.无;
+            手牌[目标牌.花][目标牌.点] += 3;
+            所有牌[目标牌.花][目标牌.点] -= 1;
+
+            // 比较分值
+            if (碰前分值 < 碰后分值)
+            {
+                弃张.标 = 0;
+                return 弃张;
+            }
             return null;
         }
 
