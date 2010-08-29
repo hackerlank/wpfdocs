@@ -908,9 +908,28 @@ namespace Test1
         /// <summary>
         /// 根据　舍牌花色s，分别舍弃 这些花色的　每张牌，再将这些花色　分别打分，　找出　“舍弃哪张分最高”
         /// </summary>
-        static 牌 选弃张(int[][] 已知牌, 碰型[][] 碰牌, 杠型[][] 杠牌, int[][] 手牌, int[][] 所有牌, params int[] 舍牌花色s)
+        static 牌 选弃张(int[][] z, 碰型[][] p, 杠型[][] g, int[][] s, int[][] sy, params byte[] hs)
         {
-            return 0;
+            int zgf = 0, h = 0, d = 0;
+            foreach (var j in hs)
+            {
+                for (int i = 1; i <= 9; i++)
+                {
+                    if (s[h][i] > 0)
+                    {
+                        s[h][i] -= 1;           // 拿掉一张　打分
+                        var f = 算花(z[h], p[h], g[h], s[h]);
+                        if (f > zgf)
+                        {
+                            zgf = f;
+                            h = j;
+                            d = i;
+                        }
+                        s[h][i] += 1;           // 还原拿掉的
+                    }
+                }
+            }
+            return new 牌 { 花 = (byte)h, 点 = (byte)d };
         }
 
         #endregion
