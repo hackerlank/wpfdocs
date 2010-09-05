@@ -847,12 +847,11 @@ namespace Test1
 
 
         #region 选定张
-        // 潜规则： 传入牌的 0 索引为 张数 sum
-        // p[0][0] 为所有牌的张数 sum
-        // p[0][1~9] 为忽略花的同点张数 sum
-        // p[1~3][0] 为当前花色的所有张数 sum
+
         /// <summary>
         /// 选择玩家手里的牌最烂的一种花色，返回花色编号
+        /// 潜规则： 传入牌的 0 索引为 张数 sum
+        /// p[1~3][0] 为当前花色的所有张数 sum
         /// </summary>
         static int 选定张(int[][] 手牌)
         {
@@ -889,6 +888,7 @@ namespace Test1
 
             throw new Exception("至少有一门牌张数 > 0");
         }
+
         #endregion
 
 
