@@ -1092,6 +1092,9 @@ namespace Test1
         // 判断要不要碰杠胡（同时的情况）
 
 
+        // int -> byte
+
+
         #region 转索引　相关
 
         /// <summary>
