@@ -12,7 +12,7 @@ namespace Test1
         static void Main(string[] args)
         {
             var 手牌 = new int[4][] {
-                  new int[10]{ 12, 3, 3, 3, 0, 0, 0, 1, 1, 1 }
+                  null
                 , new int[10]{  4, 1, 1, 1, 0, 0, 0, 0, 1, 0 }
                 , new int[10]{  4, 1, 1, 1, 0, 0, 0, 0, 0, 1 }
                 , new int[10]{  4, 1, 1, 1, 0, 0, 0, 1, 0, 0 }
