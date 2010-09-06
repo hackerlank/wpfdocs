@@ -11,31 +11,29 @@ namespace Test1
     {
         static void Main(string[] args)
         {
-            var 手牌 = new int[4][] {
-                  null
-                , new int[10] {  4, 1, 1, 1, 0, 0, 0, 0, 1, 0 }
-                , new int[10] {  4, 1, 1, 1, 0, 0, 0, 0, 0, 1 }
-                , new int[10] {  4, 1, 1, 1, 0, 0, 0, 1, 0, 0 }
-            };
-            WL(选定张(手牌));
-
-
             var 已知牌 = new int[4][] {
                   null
-                , new int[10] {  4, 1, 1, 1, 0, 0, 0, 0, 1, 0 }
-                , new int[10] {  4, 1, 1, 1, 0, 0, 0, 0, 0, 1 }
-                , new int[10] {  4, 1, 1, 1, 0, 0, 0, 1, 0, 0 }
+                , new int[10] {  8, 1, 1, 1, 2, 1, 1, 1, 0, 0 }
+                , new int[10] {  2, 0, 1, 0, 0, 1, 0, 0, 0, 0 }
+                , new int[10] {  4, 0, 0, 0, 0, 0, 1, 0, 0, 3 }
+            };
+
+            var 手牌 = new int[4][] {
+                  null
+                , new int[10] {  8, 1, 1, 1, 2, 1, 1, 1, 0, 0 }
+                , new int[10] {  2, 0, 1, 0, 0, 1, 0, 0, 0, 0 }
+                , new int[10] {  4, 0, 0, 0, 0, 0, 1, 0, 0, 3 }
             };
 
             var 所有牌 = new int[4][] {
                   null
-                , new int[10] {  4, 1, 1, 1, 0, 0, 0, 0, 1, 0 }
-                , new int[10] {  4, 1, 1, 1, 0, 0, 0, 0, 0, 1 }
-                , new int[10] {  4, 1, 1, 1, 0, 0, 0, 1, 0, 0 }
+                , new int[10] {  8, 1, 1, 1, 2, 1, 1, 1, 0, 0 }
+                , new int[10] {  2, 0, 1, 0, 0, 1, 0, 0, 0, 0 }
+                , new int[10] {  4, 0, 0, 0, 0, 0, 1, 0, 0, 3 }
             };
 
 
-            var p = 选弃张(已知牌, 空碰牌数组, 空杠牌数组, 手牌, 所有牌, 定张.无);
+            var p = 选弃张(已知牌, 空碰牌数组, 空杠牌数组, 手牌, 所有牌, 定张.万);
 
             WL(p.花 + " " + p.点);
 
@@ -149,8 +147,8 @@ namespace Test1
         {
             无 = 0,
             暗杠 = 1,
-            引杠 = 2,
-            弯杠 = 3
+            弯杠 = 2,
+            直杠 = 3,
         }
 
         public enum 碰型 : int
@@ -205,7 +203,7 @@ namespace Test1
                 {
                     var g = 杠牌[j][i];
                     if (g == 杠型.暗杠) p += P杠_暗;
-                    else if (g == 杠型.引杠) p += P杠_引;
+                    else if (g == 杠型.直杠) p += P杠_引;
                     else if (g == 杠型.弯杠) p += P杠_弯;
                 }
             return p;
@@ -217,7 +215,7 @@ namespace Test1
             {
                 var g = 花_杠牌[i];
                 if (g == 杠型.暗杠) p += P杠_暗;
-                else if (g == 杠型.引杠) p += P杠_引;
+                else if (g == 杠型.直杠) p += P杠_引;
                 else if (g == 杠型.弯杠) p += P杠_弯;
             }
             return p;
@@ -245,12 +243,13 @@ namespace Test1
         static void ssp(int[] y, 碰型[] p, int[] s, int d, int f, ref int zgf)
         {
             // 其实还可以令 var c1 = s[d], c2 = s[d + 1], c3 = s[d + 2] 以加快执行速度　但不易读了
+            if (s[d] == 0) goto end;
 
             // 判坎
             if (s[d] == 4)
             {
                 s[d] = 0;
-                ssp(y, p, s, d + 1, f + 算坎(y, d), ref zgf);
+                ssp(y, p, s, d, f + 算坎(y, d), ref zgf);
                 s[d] = 4;
             }
 
@@ -258,7 +257,7 @@ namespace Test1
             if (s[d] >= 3)
             {
                 s[d] -= 3;
-                ssp(y, p, s, d + 1, f + 算刻(y, d), ref zgf);
+                ssp(y, p, s, d, f + 算刻(y, d), ref zgf);
                 s[d] += 3;
             }
 
@@ -305,7 +304,8 @@ namespace Test1
                 s[d] += 1; s[d + 1] += 1; s[d + 2] += 1;
             }
         end:
-            if (d < 9) ssp(y, p, s, d + 1, f, ref zgf);
+            if (d < 9)
+                ssp(y, p, s, d + 1, f, ref zgf);
             else if (f > zgf) zgf = f;
         }
 
@@ -1055,7 +1055,7 @@ namespace Test1
                         s[j][i] -= 1;           // 试拿掉一张，给指定花色的所有牌打分
                         var f = 0;
                         foreach (var th in hs) f += 算花(z[th], p[th], g[th], s[th]);
-                        if (f > zgf)
+                        if (f >= zgf)
                         {
                             zgf = f;
                             h = j;
